@@ -18,7 +18,7 @@
         <MSATable
           :rows="items"
           :columns="columns"
-          class="border border-gray-300 rounded-2xl overflow-auto"
+          class="border border-gray-300 rounded-2xl overflow-auto dark:text-white table-fixed"
         >
           <template #label-data="{ row, index }">
             {{ row.name }}

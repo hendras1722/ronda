@@ -33,7 +33,7 @@
       <UTable
         :columns="columns"
         :rows="itemsUsers"
-        class="border border-gray-300 rounded-2xl overflow-auto"
+        class="border border-gray-300 rounded-2xl overflow-auto table-fixed"
       />
       <div class="mt-3 flex justify-center">
         <UPagination
@@ -83,7 +83,7 @@ const masks = ref({
 })
 
 const users = await useFetch<{ users: any }>(
-  'https://dummyjson.com/users?limit=5'
+  'https://dummyjson.com/users?limit=10'
 )
 const itemsUsers = computed(() => users.data.value?.users)
 const columns = [

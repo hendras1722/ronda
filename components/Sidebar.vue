@@ -13,8 +13,8 @@
       </div>
       <div class="overflow-auto max-h-[calc(100vh-80px)] pb-3">
         <div
-          v-for="(itemMenu, index) in items"
-          :key="`sidebar-${itemMenu.label} + ${index}`"
+          v-for="(itemMenu, i) in items"
+          :key="`sidebar-${itemMenu.label} + ${i}`"
           class="px-3"
         >
           <div
@@ -53,8 +53,13 @@
               :items="[itemMenu]"
               :ui="{ wrapper: 'flex flex-col w-full text-black' }"
               multiple
+              :defaultOpen="
+                itemMenu.children.filter((item) => item.to === route.fullPath)
+                  .length > 0
+              "
+              ref="accordion"
             >
-              <template #default="{ open }">
+              <template #default="{ open, item, index }">
                 <UButton
                   :icon="itemMenu.icon"
                   class="dark:bg-gray-800 dark:text-white text-black w-full bg-white rounded-2xl shadow-lg"
@@ -62,8 +67,16 @@
                     rounded: 'rounded-none',
                     padding: { sm: 'p-3' },
                   }"
+                  @click="handleAccordionChildren(item.slot)"
                 >
-                  <span class="truncate md:block">
+                  <span
+                    class="truncate md:block"
+                    :class="[
+                      itemMenu.children.filter(
+                        (item) => item.to === route.fullPath
+                      ).length > 0 && 'text-blue-500 font-bold',
+                    ]"
+                  >
                     {{ itemMenu.label }}
                   </span>
                   <template #trailing>
@@ -129,7 +142,7 @@ import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 const breakpoints = useBreakpoints(breakpointsTailwind)
 const smallerMd = breakpoints.smaller('md')
 const router = useRouter()
-
+const route = useRoute()
 const items = ref([
   {
     title: 'Data Management',
@@ -164,6 +177,50 @@ const items = ref([
     ],
   },
   {
+    label: 'Table2',
+    icon: '',
+    slot: 'table2',
+    closeOthers: false,
+    children: [
+      {
+        label: 'Fruit',
+        icon: 'i-ion-fast-food',
+        children: [],
+        slot: 'table2',
+        to: '/fruit1',
+      },
+      {
+        label: 'Person',
+        icon: 'i-ion-person-stalker',
+        children: [],
+        slot: 'table2',
+        to: '/person1',
+      },
+    ],
+  },
+  {
+    label: 'Table3',
+    icon: '',
+    slot: 'table3',
+    closeOthers: false,
+    children: [
+      {
+        label: 'Fruit',
+        icon: 'i-ion-fast-food',
+        children: [],
+        slot: 'table3',
+        to: '/fruit2',
+      },
+      {
+        label: 'Person',
+        icon: 'i-ion-person-stalker',
+        children: [],
+        slot: 'table3',
+        to: '/person2',
+      },
+    ],
+  },
+  {
     label: 'Form',
     icon: 'i-ion-file-tray-full',
     slot: 'form',
@@ -181,9 +238,30 @@ const items = ref([
     children: [],
   },
 ])
+const accordion = ref([])
 
 const handleAccordion = (href: string) => {
   handlePushRouter(href)
+  if (!accordion.value || accordion.value.length < 1) return
+  accordion.value.forEach((element) => {
+    const buttonRefsElement: { buttonRefs: { close: Function }[] } = element
+    buttonRefsElement.buttonRefs.forEach((buttonrefs) => {
+      buttonrefs.close()
+    })
+  })
+}
+const handleAccordionChildren = (e: string) => {
+  if (!accordion.value || accordion.value.length < 1) return
+  const itemSidebar = items.value.filter(
+    (item) => item.children && item.children.length > 0
+  )
+  const getIndexItemSidebar = itemSidebar.findIndex((item) => item.slot === e)
+  itemSidebar.forEach((_, index) => {
+    if (index !== getIndexItemSidebar) {
+      const buttonRefsVariable: any = accordion.value[index]
+      buttonRefsVariable.buttonRefs[0].close()
+    }
+  })
 }
 const handlePushRouter = (href: string) => {
   const body = document.getElementById('sidebar')

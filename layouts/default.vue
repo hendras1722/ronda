@@ -15,7 +15,7 @@
         <div class="grid grid-cols-12 grid-rows-1 gap-4">
           <div class="col-span-12">
             <UContainer
-              class="mt-4 px-3 py-5 max-w-full bg-white shadow-md rounded-lg dark:bg-gray-900 dark:text-white"
+              class="mt-4 px-3 py-5 max-w-full bg-white shadow-md rounded-lg dark:bg-gray-900 dark:text-white dark:border dark:border-white"
             >
               <slot />
             </UContainer>
@@ -26,7 +26,7 @@
   </div>
 </template>
 
-<style lang="postcss">
+<style lang="scss">
 body {
   @apply bg-gray-50 dark:bg-gray-900;
 }
