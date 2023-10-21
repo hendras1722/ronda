@@ -1,0 +1,104 @@
+<template>
+  <nav class="dark:bg-gray-900 md:pr-0 pr-5 bg-gray-50">
+    <div class="flex flex-wrap justify-between items-center p-4">
+      <div class="flex items-center gap-2">
+        <div class="p-1 flex items-center rounded-xl">
+          <UButton color="primary" variant="ghost" @click="openSidebar">
+            <UIcon name="i-ion-reorder-four-outline text-lg" />
+          </UButton>
+        </div>
+      </div>
+      <UDropdown
+        :items="items"
+        :popper="{ placement: 'bottom-start' }"
+        :ui="{ item: { disabled: 'cursor-text select-text' } }"
+      >
+        <template #profile="{ item }">
+          <div class="text-left">
+            <p>Signed in as</p>
+            <div class="flex items-center gap-3 mt-3">
+              <img :src="item.avatar.src" class="w-6 h-6 rounded-full" />
+              <p class="truncate font-medium text-gray-900 dark:text-white">
+                {{ item.label }}
+              </p>
+            </div>
+          </div>
+        </template>
+        <UButton>
+          <img
+            src="https://static.vecteezy.com/system/resources/thumbnails/008/442/086/small/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg"
+            class="w-8 h-8 rounded-full"
+          />
+        </UButton>
+      </UDropdown>
+    </div>
+  </nav>
+
+  <!-- Breadcumb -->
+  <div class="border-b border-b-gray-100 flex">
+    <div v-for="(item, i) in breadcumb" :key="i">
+      <UButton
+        variant="ghost"
+        color="link"
+        :disabled="item.disabled"
+        class="disabled:text-black"
+        @click="handleHref(item.href)"
+        >{{ item.text }}
+      </UButton>
+      <span v-if="i !== breadcumb.length - 1">/</span>
+    </div>
+  </div>
+</template>
+
+<script lang="ts" setup>
+const router = useRouter()
+const handleHref = (handleHref: string) => {
+  router.push(handleHref)
+}
+const breadcumb = [
+  {
+    href: '/',
+    text: 'Dashboard',
+    disabled: false,
+  },
+  {
+    href: '/',
+    text: 'Profile',
+    disabled: true,
+  },
+]
+const openSidebar = () => {
+  const body = document.getElementById('sidebar')
+  if (body) {
+    if (!body.style.transform || body.style.transform === 'translateX(0%)') {
+      body.style.transform = 'translateX(-100%)'
+      body.classList.remove('w-52')
+      body.classList.add('w-0')
+      return
+    }
+    body.style.transform = 'translateX(0%)'
+    body.classList.add('w-52')
+    body.classList.remove('w-0')
+  }
+}
+
+const items = [
+  [
+    {
+      label: 'Muh Syahendra A',
+      slot: 'profile',
+      avatar: {
+        src: 'https://avatars.githubusercontent.com/u/739984?v=4',
+      },
+      disabled: true,
+    },
+  ],
+
+  [
+    {
+      label: 'Delete',
+      icon: 'i-heroicons-trash-20-solid',
+    },
+  ],
+]
+</script>

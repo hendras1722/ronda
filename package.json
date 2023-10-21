@@ -1,0 +1,29 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "devDependencies": {
+    "@iconify-json/ion": "^1.1.12",
+    "@nuxt/devtools": "latest",
+    "@vueuse/core": "^10.5.0",
+    "@vueuse/nuxt": "^10.5.0",
+    "nuxt": "^3.8.0"
+  },
+  "dependencies": {
+    "@nuxt/ui-edge": "^2.9.0-28295767.cca9dfb",
+    "@pinia/nuxt": "^0.5.1",
+    "@popperjs/core": "^2.11.8",
+    "pinia": "^2.1.7",
+    "sass": "^1.69.4",
+    "v-calendar": "^3.1.2",
+    "vue3-apexcharts": "^1.4.4",
+    "yup": "^1.3.2"
+  }
+}
