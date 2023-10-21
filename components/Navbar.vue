@@ -1,68 +1,70 @@
 <template>
-  <nav class="dark:bg-gray-900 md:pr-0 pr-5 bg-gray-50">
-    <div class="flex flex-wrap justify-between items-center p-4">
-      <div class="flex items-center gap-2">
-        <div class="p-1 flex items-center rounded-xl">
-          <UButton color="primary" variant="ghost" @click="openSidebar">
-            <UIcon name="i-ion-reorder-four-outline text-lg  dark:text-white" />
-          </UButton>
-          <ClientOnly>
-            <UButton
-              :icon="
-                isDark
-                  ? 'i-heroicons-moon-20-solid'
-                  : 'i-heroicons-sun-20-solid'
-              "
-              color="gray"
-              variant="ghost"
-              aria-label="Theme"
-              @click="isDark = !isDark"
-            />
+  <div>
+    <nav class="dark:bg-gray-900 md:pr-0 pr-5 bg-gray-50">
+      <div class="flex flex-wrap justify-between items-center p-4">
+        <div class="flex items-center gap-2">
+          <div class="p-1 flex items-center rounded-xl">
+            <UButton @click="openSidebar">
+              <UIcon
+                name="i-ion-reorder-four-outline text-lg  dark:text-white"
+              />
+            </UButton>
+            <ClientOnly>
+              <UButton
+                :icon="
+                  isDark
+                    ? 'i-heroicons-moon-20-solid'
+                    : 'i-heroicons-sun-20-solid'
+                "
+                aria-label="Theme"
+                @click="isDark = !isDark"
+              />
 
-            <template #fallback>
-              <div class="w-8 h-8" />
-            </template>
-          </ClientOnly>
-        </div>
-      </div>
-      <UDropdown
-        :items="items"
-        :popper="{ placement: 'bottom-start' }"
-        :ui="{ item: { disabled: 'cursor-text select-text' } }"
-      >
-        <template #profile="{ item }">
-          <div class="text-left">
-            <p>Signed in as</p>
-            <div class="flex items-center gap-3 mt-3">
-              <img :src="item.avatar.src" class="w-6 h-6 rounded-full" />
-              <p class="truncate font-medium text-gray-900 dark:text-white">
-                {{ item.label }}
-              </p>
-            </div>
+              <template #fallback>
+                <div class="w-8 h-8" />
+              </template>
+            </ClientOnly>
           </div>
-        </template>
-        <UButton>
-          <img
-            src="https://static.vecteezy.com/system/resources/thumbnails/008/442/086/small/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg"
-            class="w-8 h-8 rounded-full"
-          />
-        </UButton>
-      </UDropdown>
-    </div>
-  </nav>
+        </div>
+        <UDropdown
+          :items="items"
+          :popper="{ placement: 'bottom-start' }"
+          :ui="{ item: { disabled: 'cursor-text select-text' } }"
+        >
+          <template #profile="{ item }">
+            <div class="text-left">
+              <p>Signed in as</p>
+              <div class="flex items-center gap-3 mt-3">
+                <img :src="item.avatar.src" class="w-6 h-6 rounded-full" />
+                <p class="truncate font-medium text-gray-900 dark:text-white">
+                  {{ item.label }}
+                </p>
+              </div>
+            </div>
+          </template>
+          <UButton>
+            <img
+              src="https://static.vecteezy.com/system/resources/thumbnails/008/442/086/small/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg"
+              class="w-8 h-8 rounded-full"
+            />
+          </UButton>
+        </UDropdown>
+      </div>
+    </nav>
 
-  <!-- Breadcumb -->
-  <div class="border-b border-b-gray-100 flex">
-    <div v-for="(item, i) in breadcumb" :key="i">
-      <UButton
-        variant="ghost"
-        color="link"
-        :disabled="item?.disabled"
-        class="disabled:text-black dark:bg-transparent dark:text-white"
-        @click="handleHref(item && item.href ? item.href : '')"
-        >{{ item?.text }}
-      </UButton>
-      <span v-if="i !== breadcumb.length - 1">/</span>
+    <!-- Breadcumb -->
+    <div class="border-b border-b-gray-100 flex">
+      <div v-for="(item, i) in breadcumb" :key="i">
+        <UButton
+          variant="ghost"
+          color="link"
+          :disabled="item?.disabled"
+          class="disabled:text-black dark:bg-transparent dark:text-white"
+          @click="handleHref(item && item.href ? item.href : '')"
+          >{{ item?.text }}
+        </UButton>
+        <span v-if="i !== breadcumb.length - 1">/</span>
+      </div>
     </div>
   </div>
 </template>
@@ -78,19 +80,22 @@ const breadcumb = ref<
 watch(
   () => route.fullPath,
   (newValue) => {
+    const routeMap = newValue.split('/').filter(Boolean)
+    const newBreadcumb = routeMap.map((item) => {
+      const Capitalized = item.slice(0, 1).toUpperCase()
+      return {
+        href: '',
+        text: item.replace(/^\w/gm, Capitalized),
+        disabled: true,
+      }
+    })
     breadcumb.value = [
       {
         href: '/',
         text: 'Dashboard',
         disabled: false,
       },
-      newValue !== '/'
-        ? {
-            href: String(newValue),
-            text: route.name as string,
-            disabled: true,
-          }
-        : undefined,
+      ...newBreadcumb,
     ].filter((item) => item)
   },
   {

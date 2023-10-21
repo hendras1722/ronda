@@ -162,14 +162,14 @@ const items = ref([
         icon: 'i-ion-fast-food',
         children: [],
         slot: 'tables',
-        to: '/fruit',
+        to: '/tables/fruit',
       },
       {
         label: 'Person',
         icon: 'i-ion-person-stalker',
         children: [],
         slot: 'tables',
-        to: '/person',
+        to: '/tables/person',
       },
     ],
   },
@@ -265,6 +265,7 @@ const handleAccordionChildren = (e: string) => {
     }
   })
 }
+
 const handlePushRouter = (href: string) => {
   const body = document.getElementById('sidebar')
   router.push(href)

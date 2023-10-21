@@ -1,12 +1,4 @@
 <template>
-  <!-- <div class="grid grid-rows-3 grid-flow-col gap-4">
-    <div class="row-span-2">
-      <Sidebar />
-    </div>
-    <div class="col-span-2">
-      <Navbar />
-    </div>
-  </div> -->
   <div class="flex">
     <Sidebar />
     <div class="w-full">
