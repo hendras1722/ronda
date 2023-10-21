@@ -53,10 +53,7 @@
               :items="[itemMenu]"
               :ui="{ wrapper: 'flex flex-col w-full text-black' }"
               multiple
-              :defaultOpen="
-                itemMenu.children.filter((item) => item.to === route.fullPath)
-                  .length > 0
-              "
+              :defaultOpen="showOpenAccordion(itemMenu)"
               ref="accordion"
             >
               <template #default="{ open, item, index }">
@@ -250,6 +247,11 @@ const handleAccordion = (href: string) => {
     })
   })
 }
+
+const showOpenAccordion = (e: { children: { to: string }[] }) => {
+  return e.children.filter((item) => item.to === route.fullPath).length > 0
+}
+
 const handleAccordionChildren = (e: string) => {
   if (!accordion.value || accordion.value.length < 1) return
   const itemSidebar = items.value.filter(
