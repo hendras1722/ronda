@@ -57,10 +57,10 @@
       <UButton
         variant="ghost"
         color="link"
-        :disabled="item.disabled"
+        :disabled="item?.disabled"
         class="disabled:text-black dark:bg-transparent dark:text-white"
-        @click="handleHref(item.href)"
-        >{{ item.text }}
+        @click="handleHref(item && item.href ? item.href : '')"
+        >{{ item?.text }}
       </UButton>
       <span v-if="i !== breadcumb.length - 1">/</span>
     </div>
@@ -69,7 +69,35 @@
 
 <script lang="ts" setup>
 const router = useRouter()
+const route = useRoute()
 const colorMode = useColorMode()
+const breadcumb = ref<
+  ({ href: string; text: string; disabled: boolean } | undefined)[]
+>([])
+
+watch(
+  () => route.fullPath,
+  (newValue) => {
+    breadcumb.value = [
+      {
+        href: '/',
+        text: 'Dashboard',
+        disabled: false,
+      },
+      newValue !== '/'
+        ? {
+            href: String(newValue),
+            text: route.name as string,
+            disabled: true,
+          }
+        : undefined,
+    ].filter((item) => item)
+  },
+  {
+    deep: true,
+    immediate: true,
+  }
+)
 
 const isDark = computed({
   get() {
@@ -80,20 +108,9 @@ const isDark = computed({
   },
 })
 const handleHref = (handleHref: string) => {
-  router.push(handleHref)
+  window.location.href = handleHref
 }
-const breadcumb = [
-  {
-    href: '/',
-    text: 'Dashboard',
-    disabled: false,
-  },
-  {
-    href: '/',
-    text: 'Profile',
-    disabled: true,
-  },
-]
+
 const openSidebar = () => {
   const body = document.getElementById('sidebar')
   if (body) {
