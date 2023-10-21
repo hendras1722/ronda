@@ -15,7 +15,7 @@
         <div class="grid grid-cols-12 grid-rows-1 gap-4">
           <div class="col-span-12">
             <UContainer
-              class="mt-4 px-3 py-5 max-w-full bg-white shadow-md rounded-lg"
+              class="mt-4 px-3 py-5 max-w-full bg-white shadow-md rounded-lg dark:bg-gray-900 dark:text-white"
             >
               <slot />
             </UContainer>
@@ -28,6 +28,6 @@
 
 <style lang="postcss">
 body {
-  @apply bg-gray-50;
+  @apply bg-gray-50 dark:bg-gray-900;
 }
 </style>

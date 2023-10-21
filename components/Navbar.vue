@@ -4,8 +4,25 @@
       <div class="flex items-center gap-2">
         <div class="p-1 flex items-center rounded-xl">
           <UButton color="primary" variant="ghost" @click="openSidebar">
-            <UIcon name="i-ion-reorder-four-outline text-lg" />
+            <UIcon name="i-ion-reorder-four-outline text-lg  dark:text-white" />
           </UButton>
+          <ClientOnly>
+            <UButton
+              :icon="
+                isDark
+                  ? 'i-heroicons-moon-20-solid'
+                  : 'i-heroicons-sun-20-solid'
+              "
+              color="gray"
+              variant="ghost"
+              aria-label="Theme"
+              @click="isDark = !isDark"
+            />
+
+            <template #fallback>
+              <div class="w-8 h-8" />
+            </template>
+          </ClientOnly>
         </div>
       </div>
       <UDropdown
@@ -41,7 +58,7 @@
         variant="ghost"
         color="link"
         :disabled="item.disabled"
-        class="disabled:text-black"
+        class="disabled:text-black dark:bg-transparent dark:text-white"
         @click="handleHref(item.href)"
         >{{ item.text }}
       </UButton>
@@ -52,6 +69,16 @@
 
 <script lang="ts" setup>
 const router = useRouter()
+const colorMode = useColorMode()
+
+const isDark = computed({
+  get() {
+    return colorMode.value === 'dark'
+  },
+  set() {
+    colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
+  },
+})
 const handleHref = (handleHref: string) => {
   router.push(handleHref)
 }
@@ -93,11 +120,10 @@ const items = [
       disabled: true,
     },
   ],
-
   [
     {
-      label: 'Delete',
-      icon: 'i-heroicons-trash-20-solid',
+      label: 'Sign out',
+      icon: 'i-heroicons-arrow-left-on-rectangle',
     },
   ],
 ]

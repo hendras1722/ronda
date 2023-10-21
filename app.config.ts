@@ -20,6 +20,12 @@ export default defineAppConfig({
     input: {
       rounded: 'rounded-md',
       size,
+      color: {
+        white: {
+          outline:
+            'shadow-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-white ring-1 ring-inset ring-gray-300 dark:ring-gray-700 focus:ring-2 focus:ring-primary-500 dark:focus:ring-white ',
+        },
+      },
     },
     select: {
       rounded: 'rounded-md',
@@ -42,7 +48,7 @@ export default defineAppConfig({
       },
       color: {
         'royal-blue': {
-          ghost: 'text-black hover:bg-gray-200 ',
+          ghost: 'text-black hover:bg-gray-200 dark:hover:bg-gray-800',
           solid:
             'text-gray-700 dark:text-gray-200 hover:text-white dark:hover:text-white hover:bg-blue-900 dark:hover:bg-gray-800 focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400',
         },
@@ -89,12 +95,18 @@ export default defineAppConfig({
         inactiveButton: {
           color: 'gray',
         },
+        activeButton: {
+          color: 'primary',
+          class: 'dark:bg-gray-800 dark:text-white',
+        },
         prevButton: {
-          class: 'rtl:[&_span:first-child]:rotate-180 py-[0.475rem]',
+          class:
+            'rtl:[&_span:first-child]:rotate-180 py-[0.475rem] dark:bg-gray-800 dark:text-white',
           icon: 'i-iconoir-nav-arrow-left',
         },
         nextButton: {
-          class: 'rtl:[&_span:last-child]:rotate-180 py-[0.475rem]',
+          class:
+            'rtl:[&_span:last-child]:rotate-180 py-[0.475rem] dark:bg-gray-800 dark:text-white',
           icon: 'i-iconoir-nav-arrow-right',
         },
       },

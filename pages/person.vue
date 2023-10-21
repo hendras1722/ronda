@@ -11,7 +11,12 @@
           placeholder="Search..."
         />
       </div>
-      <VDatePicker v-model="date" :masks="masks">
+      <VDatePicker
+        v-model="date"
+        :masks="masks"
+        :is-dark="isDark"
+        :popover="{ placement: 'bottom' }"
+      >
         <template v-slot="{ inputValue, inputEvents }">
           <div class="md:col-span-2 md:col-start-11 col-span-12">
             <UInput
@@ -45,7 +50,7 @@
                 icon="i-heroicons-arrow-small-left-20-solid"
                 color="primary"
                 :ui="{ rounded: 'rounded-full' }"
-                class="rtl:[&_span:first-child]:rotate-180 me-2"
+                class="rtl:[&_span:first-child]:rotate-180 me-2 dark:bg-gray-800 dark:text-white"
                 @click="onClick"
               />
             </UTooltip>
@@ -57,7 +62,7 @@
                 icon="i-heroicons-arrow-small-right-20-solid"
                 color="primary"
                 :ui="{ rounded: 'rounded-full' }"
-                class="rtl:[&_span:last-child]:rotate-180 ms-2"
+                class="rtl:[&_span:last-child]:rotate-180 ms-2 dark:bg-gray-800 dark:text-white"
                 @click="onClick"
               />
             </UTooltip>
@@ -69,6 +74,7 @@
 </template>
 
 <script setup lang="ts">
+const isDark = useColorMode()
 const date = ref(new Date())
 
 const page = ref(1)

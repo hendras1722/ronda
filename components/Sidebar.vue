@@ -1,5 +1,8 @@
 <template>
-  <div class="min-h-screen w-52 md:static duration-100" id="sidebar">
+  <div
+    class="min-h-screen w-52 md:static duration-100 dark:bg-gray-900"
+    id="sidebar"
+  >
     <div>
       <div class="flex justify-center items-center my-3 h-14 overflow-hidden">
         <div>
@@ -26,7 +29,7 @@
           >
             <NuxtLink :to="itemMenu.to" v-slot="{ href, isActive }" custom>
               <UButton
-                class="dark:border-gray-700 text-black w-full bg-white rounded-2xl shadow-lg"
+                class="dark:bg-gray-800 dark:text-white text-black w-full bg-white rounded-2xl shadow-lg"
                 :ui="{ rounded: 'rounded-none', padding: { sm: 'p-3' } }"
                 @click="handleAccordion(href)"
                 :class="[isActive && 'text-black bg-gray-200 ']"
@@ -54,7 +57,7 @@
               <template #default="{ open }">
                 <UButton
                   :icon="itemMenu.icon"
-                  class="text-black w-full bg-white rounded-2xl shadow-lg"
+                  class="dark:bg-gray-800 dark:text-white text-black w-full bg-white rounded-2xl shadow-lg"
                   :ui="{
                     rounded: 'rounded-none',
                     padding: { sm: 'p-3' },
@@ -73,7 +76,9 @@
                 </UButton>
               </template>
               <template #[itemMenu.slot]="{ item }">
-                <div class="bg-gray-300 p-3 rounded-lg">
+                <div
+                  class="bg-gray-300 p-3 rounded-lg dark:bg-gray-700 dark:text-white"
+                >
                   <div
                     class="flex justify-end"
                     v-for="(itemChildren, i) in item.children"
@@ -87,7 +92,7 @@
                       <UButton
                         color="royal-blue"
                         variant="ghost"
-                        class="dark:border-gray-700 text-black my-3 bg-white rounded-2xl w-full shadow-lg"
+                        class="dark:bg-gray-800 dark:text-white dark:border-gray-700 text-black my-3 bg-white rounded-2xl w-full shadow-lg"
                         :ui="{
                           rounded: 'rounded-none',
                           padding: { sm: 'p-3 ' },
