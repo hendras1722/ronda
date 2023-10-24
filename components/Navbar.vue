@@ -71,8 +71,13 @@
 </template>
 
 <script lang="ts" setup>
+import { useBreadcumbStore } from '@/stores/breadcumb'
+
 const route = useRoute()
 const colorMode = useColorMode()
+const router = useRouter()
+const { stateLink } = storeToRefs(useBreadcumbStore())
+
 const breadcumb = ref<
   ({ href: string; text: string; disabled: boolean } | undefined)[]
 >([])
@@ -85,7 +90,15 @@ watch(
       const Capitalized = item.slice(0, 1).toUpperCase()
       return {
         href: '',
-        text: item.replace(/^\w/gm, Capitalized),
+        text: item
+          .replace(/^\w/gm, Capitalized)
+          .split('-')
+          .map((items) => {
+            console.log(items, 'iniitems')
+            const Capitalized2 = items.slice(0, 1).toUpperCase()
+            return items.replace(/^\w/gm, Capitalized2)
+          })
+          .join(' '),
         disabled: true,
       }
     })
@@ -113,7 +126,8 @@ const isDark = computed({
   },
 })
 const handleHref = (handleHref: string) => {
-  window.location.href = handleHref
+  stateLink.value = true
+  router.push(handleHref)
 }
 
 const openSidebar = () => {

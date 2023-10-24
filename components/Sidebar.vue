@@ -134,12 +134,16 @@
 </template>
 
 <script lang="ts" setup>
-import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
+import { breakpointsTailwind, useBreakpoints, templateRef } from '@vueuse/core'
+import { useBreadcumbStore } from '@/stores/breadcumb'
 
 const breakpoints = useBreakpoints(breakpointsTailwind)
 const smallerMd = breakpoints.smaller('md')
 const router = useRouter()
 const route = useRoute()
+
+const { stateLink } = storeToRefs(useBreadcumbStore())
+
 const items = ref([
   {
     title: 'Data Management',
@@ -250,7 +254,16 @@ const items = ref([
     children: [],
   },
 ])
-const accordion = ref([])
+const accordion = templateRef('acordion', [])
+
+watch(
+  () => stateLink.value,
+  (newValue) => {
+    if (newValue) {
+      handleAccordionChildren(route.fullPath)
+    }
+  }
+)
 
 const handleAccordion = (href: string) => {
   handlePushRouter(href)
@@ -268,6 +281,7 @@ const showOpenAccordion = (e: { children: { to: string }[] }) => {
 }
 
 const handleAccordionChildren = (e: string) => {
+  stateLink.value = false
   if (!accordion.value || accordion.value.length < 1) return
   const itemSidebar = items.value.filter(
     (item) => item.children && item.children.length > 0
