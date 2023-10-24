@@ -18,6 +18,7 @@
                 "
                 aria-label="Theme"
                 @click="isDark = !isDark"
+                class="dark:text-white"
               />
 
               <template #fallback>

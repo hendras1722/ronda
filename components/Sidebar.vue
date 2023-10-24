@@ -225,6 +225,13 @@ const items = ref([
     children: [],
   },
   {
+    label: 'Lazy Image',
+    icon: 'i-ion-image',
+    slot: 'lazy_image',
+    to: '/lazy-image',
+    children: [],
+  },
+  {
     title: 'Settings',
   },
   {

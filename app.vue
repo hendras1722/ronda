@@ -6,7 +6,6 @@ store.pending()
 nuxtApp.hook('page:start', () => {
   store.pending()
 })
-
 nuxtApp.hook('page:finish', () => {
   store.finish()
 })

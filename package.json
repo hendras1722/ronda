@@ -11,12 +11,14 @@
   },
   "devDependencies": {
     "@iconify-json/ion": "^1.1.12",
-    "@nuxt/devtools": "latest",
+    "@nuxt/devtools": "^1.0.0",
+    "@nuxtjs/google-fonts": "^3.0.2",
     "@vueuse/core": "^10.5.0",
     "@vueuse/nuxt": "^10.5.0",
     "nuxt": "^3.8.0"
   },
   "dependencies": {
+    "@nuxt/devtools-edge": "^1.0.0-28295544.b97a942",
     "@nuxt/ui-edge": "^2.9.0-28295767.cca9dfb",
     "@pinia/nuxt": "^0.5.1",
     "@popperjs/core": "^2.11.8",

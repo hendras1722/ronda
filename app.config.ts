@@ -47,6 +47,9 @@ export default defineAppConfig({
         },
       },
       color: {
+        white: {
+          outline: 'text-white ring-1 ring-inset ring-white',
+        },
         'royal-blue': {
           ghost: 'text-black hover:bg-gray-200 dark:hover:bg-gray-800',
           solid:

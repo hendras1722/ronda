@@ -7,6 +7,17 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/ui-edge',
     '@vueuse/nuxt',
+    '@nuxt/devtools',
+    [
+      '@nuxtjs/google-fonts',
+      {
+        families: {
+          Roboto: true,
+          Mulish: true,
+          Nunito: true,
+        },
+      },
+    ],
     [
       '@pinia/nuxt',
       {
