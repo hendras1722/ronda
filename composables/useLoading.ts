@@ -1,5 +1,5 @@
 export const useLoading = defineStore('loading', () => {
-  const loading = ref(false)
+  const loading = ref<boolean>(false)
   const loadingPages = ref(false)
 
   function pendingLoadingPages() {

@@ -1,13 +1,13 @@
 <script setup lang="ts">
 const nuxtApp = useNuxtApp()
-const loading = ref(false)
+const loadingSkeleton = ref(false)
 
 nuxtApp.hook('page:start', () => {
-  loading.value = true
+  loadingSkeleton.value = true
 })
 nuxtApp.hook('page:finish', () => {
   setTimeout(() => {
-    loading.value = false
+    loadingSkeleton.value = false
   }, 500)
 })
 </script>
@@ -24,7 +24,7 @@ nuxtApp.hook('page:finish', () => {
               class="mt-4 px-3 py-5 max-w-full bg-white shadow-md rounded-lg dark:bg-gray-900 dark:text-white dark:border dark:border-white"
             >
               <div
-                v-show="loading"
+                v-show="loadingSkeleton"
                 role="status"
                 class="space-y-8 animate-pulse md:space-y-0 md:space-x-8 md:flex md:items-center"
               >
@@ -50,7 +50,7 @@ nuxtApp.hook('page:finish', () => {
                 </div>
                 <span class="sr-only">Loading...</span>
               </div>
-              <div v-show="!loading">
+              <div v-show="!loadingSkeleton">
                 <slot />
               </div>
             </UContainer>

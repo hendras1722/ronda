@@ -6,11 +6,11 @@ const isOpen = ref(false)
 const params = ref({
   q: '',
   limit: 10,
-  skipped: 0,
+  skip: 0,
   page: 1,
 })
 const itemsUsers = ref([])
-const limit = ref(10)
+const limit = ref(5)
 const totalPagination = ref<number>(0)
 const masks = ref({
   input: 'YYYY-MM-DD hh:mm',
@@ -21,6 +21,10 @@ const columns = [
   {
     key: 'username',
     label: 'Username',
+  },
+  {
+    key: 'firstName',
+    label: 'First Name',
   },
   {
     key: 'email',
@@ -40,12 +44,20 @@ const columns = [
   },
 ]
 
+const { loading } = storeToRefs(useLoading())
+
 async function getItemsData() {
-  const { data, status } = await useFetch<{ users: any; total: number }>(url, {
+  loading.value = true
+  const { data, status, pending } = await useFetch<{
+    users: any
+    total: number
+  }>(url, {
     params: {
       ...params.value,
     },
+    lazy: false,
   })
+  loading.value = pending.value
   itemsUsers.value = data.value?.users
   totalPagination.value = data.value?.total || 0
 }
@@ -55,19 +67,18 @@ function handleModal() {
   isOpen.value = true
 }
 
-watch(
+watchDebounced(
   () => params.value.q,
   () => {
-    url = `https://dummyjson.com/users/search`
     getItemsData()
-  }
+  },
+  { debounce: 550 }
 )
 
 watch(
   () => params.value.page,
   (newValue) => {
-    url = `https://dummyjson.com/users`
-    params.value.skipped = limit.value * newValue - limit.value
+    params.value.skip = limit.value * newValue - limit.value
     getItemsData()
   }
 )
@@ -75,7 +86,7 @@ watch(
 
 <template>
   <div>
-    <div class="text-2xl font-bold">Person</div>
+    <div class="text-2xl font-extrabold">Person</div>
     <div class="grid grid-cols-12 grid-rows-1 gap-4 mt-3">
       <div class="md:col-span-10 col-span-12">
         <UInput
@@ -108,12 +119,22 @@ watch(
 
     <div class="mt-3">
       <UTable
+        :loading="loading"
+        :loading-state="{
+          icon: 'i-heroicons-arrow-path-20-solid',
+          label: 'Loading...',
+        }"
         :columns="columns"
         :rows="itemsUsers"
         class="border border-gray-300 rounded-2xl overflow-auto table-fixed"
       >
+        <template #loading> woiii loading... </template>
         <template #actions-data="{ index }">
-          <UButton variant="outline" color="blue" @click="handleModal"
+          <UButton
+            :icon="'i-ion-add-circle-outline'"
+            variant="outline"
+            color="blue"
+            @click="handleModal"
             >ADD</UButton
           >
         </template>
@@ -126,7 +147,6 @@ watch(
           :total="totalPagination"
           :ui="{ rounded: 'rounded-lg' }"
         >
-          <!-- :value="1" -->
           <template #prev="{ onClick }">
             <UTooltip text="Previous page">
               <UButton

@@ -231,6 +231,14 @@ const items = ref([
     to: '/lazy-image',
     children: [],
   },
+
+  {
+    label: 'Lazy scroll',
+    icon: 'i-ion-ios-bug',
+    slot: 'lazy_scroll',
+    to: '/lazy-scroll',
+    children: [],
+  },
   {
     title: 'Settings',
   },
