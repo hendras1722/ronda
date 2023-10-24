@@ -3,6 +3,8 @@ const isDark = useColorMode()
 const date = ref(new Date())
 const isOpen = ref(false)
 
+const { loadingPages } = storeToRefs(useLoading())
+
 const params = ref({
   q: '',
   limit: 10,
@@ -55,7 +57,6 @@ async function getItemsData() {
     params: {
       ...params.value,
     },
-    lazy: false,
   })
   loading.value = pending.value
   itemsUsers.value = data.value?.users

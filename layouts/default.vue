@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const nuxtApp = useNuxtApp()
-const { loading } = storeToRefs(useLoading())
+const { loading, loadingPages } = storeToRefs(useLoading())
 const loadingSkeleton = ref(false)
 
 nuxtApp.hook('page:start', () => {
@@ -16,8 +16,7 @@ nuxtApp.hook('page:finish', () => {
 </script>
 
 <template>
-  <Loading />
-  <div class="flex">
+  <div class="flex" v-if="!loadingPages">
     <Sidebar />
     <div class="w-full">
       <Navbar />

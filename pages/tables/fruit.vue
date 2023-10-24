@@ -98,7 +98,6 @@
 <script lang="ts" setup>
 const helloworld = ref(null)
 const page = ref(1)
-const pagination = ref(Array(55))
 const handleTable = (e: any) => {
   if (e === helloworld.value) {
     helloworld.value = null

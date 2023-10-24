@@ -29,7 +29,7 @@ async function getItemsData() {
     dataEmpty.value = data.value?.users
   }
 }
-await getItemsData()
+getItemsData()
 
 useInfiniteScroll(
   () => el.value,
@@ -50,7 +50,9 @@ useInfiniteScroll(
     <div v-for="item in dataItems" :key="item">
       <div class="h-15 bg-gray-500/5 rounded p-3 text-center">
         <img :src="item.image" />
-        {{ item.firstName }}
+        <div class="mt-8">
+          {{ item.firstName }}
+        </div>
       </div>
     </div>
     <div
