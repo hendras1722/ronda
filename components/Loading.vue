@@ -1,5 +1,6 @@
 <template>
-  <div v-if="loadingMun" class="loading-overlay">
+  {{ loadingMun }}
+  <div v-show="loadingMun" class="loading-overlay">
     <div class="loading-container">
       <img class="loading-item" src="/msa_logo.jpeg" alt="Icon MSA" />
     </div>

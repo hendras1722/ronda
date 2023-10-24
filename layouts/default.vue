@@ -1,18 +1,22 @@
 <script setup lang="ts">
 const nuxtApp = useNuxtApp()
+const { loading } = storeToRefs(useLoading())
 const loadingSkeleton = ref(false)
 
 nuxtApp.hook('page:start', () => {
+  loading.value = true
   loadingSkeleton.value = true
 })
 nuxtApp.hook('page:finish', () => {
   setTimeout(() => {
+    loading.value = false
     loadingSkeleton.value = false
   }, 500)
 })
 </script>
 
 <template>
+  <Loading />
   <div class="flex">
     <Sidebar />
     <div class="w-full">
