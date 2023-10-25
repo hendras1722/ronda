@@ -189,7 +189,7 @@
                   :ui="{ wrapper: 'flex flex-col w-full text-black' }"
                   multiple
                   :defaultOpen="showOpenAccordion(itemMenu)"
-                  ref="accordion"
+                  ref="accordion2"
                 >
                   <template #default="{ open, item, index }">
                     <UButton
@@ -393,6 +393,7 @@ const items = ref([
   },
 ])
 const accordion = templateRef('acordion', [])
+const accordion2 = templateRef('acordion2', [])
 
 watch(
   () => stateLink.value,
@@ -406,6 +407,13 @@ watch(
 const handleAccordion = (href: string) => {
   handlePushRouter(href)
   if (!accordion.value || accordion.value.length < 1) return
+  if (!accordion2.value || accordion2.value.length < 1) return
+  accordion2.value.forEach((element) => {
+    const buttonRefsElement: { buttonRefs: { close: Function }[] } = element
+    buttonRefsElement.buttonRefs.forEach((buttonrefs) => {
+      buttonrefs.close()
+    })
+  })
   accordion.value.forEach((element) => {
     const buttonRefsElement: { buttonRefs: { close: Function }[] } = element
     buttonRefsElement.buttonRefs.forEach((buttonrefs) => {
@@ -421,6 +429,7 @@ const showOpenAccordion = (e: { children: { to: string }[] }) => {
 const handleAccordionChildren = (e: string) => {
   stateLink.value = false
   if (!accordion.value || accordion.value.length < 1) return
+  if (!accordion2.value || accordion2.value.length < 1) return
   const itemSidebar = items.value.filter(
     (item) => item.children && item.children.length > 0
   )
@@ -428,7 +437,9 @@ const handleAccordionChildren = (e: string) => {
   itemSidebar.forEach((_, index) => {
     if (index !== getIndexItemSidebar) {
       const buttonRefsVariable: any = accordion.value[index]
+      const buttonRefsVariable1: any = accordion2.value[index]
       buttonRefsVariable.buttonRefs[0].close()
+      buttonRefsVariable1.buttonRefs[0].close()
     }
   })
 }
