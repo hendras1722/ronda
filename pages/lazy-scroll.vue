@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useInfiniteScroll } from '@vueuse/core'
+import { useInfiniteScroll, useVirtualList } from '@vueuse/core'
 
 const el = ref<HTMLElement | null>(null)
 const dataItems = ref<any[]>([])
@@ -19,6 +19,7 @@ async function getItemsData() {
     params: {
       q: '',
       skip: skip.value,
+      limit: 10,
     },
     lazy: false,
   })
@@ -29,7 +30,11 @@ async function getItemsData() {
     dataEmpty.value = data.value?.users
   }
 }
-getItemsData()
+await getItemsData()
+
+const { list, containerProps, wrapperProps } = useVirtualList(dataItems, {
+  itemHeight: 1,
+})
 
 useInfiniteScroll(
   () => el.value,
@@ -43,25 +48,29 @@ useInfiniteScroll(
 </script>
 
 <template>
-  <div
-    ref="el"
-    class="flex flex-row p-4 h-[500px] gap-5 justify-around flex-wrap m-auto overflow-y-scroll rounded"
-  >
-    <div v-for="item in dataItems" :key="item">
-      <div class="h-15 bg-gray-500/5 rounded p-3 text-center">
-        <img :src="item.image" />
-        <div class="mt-8">
-          {{ item.firstName }}
+  <div v-bind="containerProps">
+    <div v-bind="wrapperProps" class="!h-[500px]">
+      <div ref="el" class="overflow-auto flex flex-wrap h-[500px] gap-16">
+        <div v-for="(item, index) in list" :key="index + ' ' + item.data">
+          <div class="h-15 bg-gray-500/5 rounded p-3 text-center">
+            {{ item.data.id }}
+            <img :src="item.data.image" />
+            <div class="mt-8">
+              {{ item.data.firstName }}
+            </div>
+          </div>
+        </div>
+        <div
+          v-if="loading"
+          v-for="_ in 3"
+          class="h-15 bg-gray-500/5 rounded p-3 text-center mt-3"
+        >
+          <USkeleton class="h-72 w-72" :ui="{ rounded: 'rounded' }" />
+          <USkeleton class="h-7 w-full mt-3" :ui="{ rounded: 'rounded' }" />
         </div>
       </div>
-    </div>
-    <div
-      v-if="loading"
-      v-for="_ in 3"
-      class="h-15 bg-gray-500/5 rounded p-3 text-center mt-3"
-    >
-      <USkeleton class="h-72 w-72" :ui="{ rounded: 'rounded' }" />
-      <USkeleton class="h-7 w-full mt-3" :ui="{ rounded: 'rounded' }" />
+
+      <!-- </div> -->
     </div>
   </div>
 </template>

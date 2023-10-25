@@ -16,7 +16,7 @@ nuxtApp.hook('page:finish', () => {
 </script>
 
 <template>
-  <div class="flex" v-if="!loadingPages">
+  <div class="flex" v-show="!loadingPages">
     <Sidebar />
     <div class="w-full">
       <Navbar />

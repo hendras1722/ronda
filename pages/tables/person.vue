@@ -40,7 +40,6 @@ const columns = [
     key: 'gender',
     label: 'Gender',
   },
-
   {
     key: 'actions',
   },
@@ -57,6 +56,7 @@ async function getItemsData() {
     params: {
       ...params.value,
     },
+    lazy: false,
   })
   loading.value = pending.value
   itemsUsers.value = data.value?.users
@@ -130,6 +130,14 @@ watch(
         class="border border-gray-300 rounded-2xl overflow-auto table-fixed"
       >
         <template #loading> woiii loading... </template>
+        <template #gender-data="{ row }">
+          <UBadge
+            class="!text-gray-200 capitalize"
+            variant="solid"
+            :color="row.gender.includes('female') ? 'blue' : 'red'"
+            >{{ row.gender }}</UBadge
+          >
+        </template>
         <template #actions-data="{ index }">
           <UButton
             :icon="'i-ion-add-circle-outline'"
