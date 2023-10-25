@@ -132,11 +132,12 @@
         </div>
       </div>
     </div>
+    <!-- mobile -->
     <div
-      class="md:hidden flex block w-full min-h-screen fixed z-50 backdrop-brightness-50"
+      class="md:hidden flex w-full min-h-screen fixed z-50 backdrop-brightness-50"
       id="sidebar2"
     >
-      <div class="w-52 md:static md:z-0 duration-100 dark:bg-gray-900">
+      <div class="w-52 md:static md:z-0 bg-white duration-100 dark:bg-gray-900">
         <div class="py-3">
           <div class="flex justify-center items-center h-14 overflow-hidden">
             <div>
