@@ -73,6 +73,11 @@
 <script lang="ts" setup>
 import { useBreadcumbStore } from '@/stores/breadcumb'
 
+import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
+
+const breakpoints = useBreakpoints(breakpointsTailwind)
+const smallerMd = breakpoints.smaller('md')
+
 const route = useRoute()
 const colorMode = useColorMode()
 const router = useRouter()
@@ -94,7 +99,6 @@ watch(
           .replace(/^\w/gm, Capitalized)
           .split('-')
           .map((items) => {
-            console.log(items, 'iniitems')
             const Capitalized2 = items.slice(0, 1).toUpperCase()
             return items.replace(/^\w/gm, Capitalized2)
           })
@@ -132,6 +136,19 @@ const handleHref = (handleHref: string) => {
 
 const openSidebar = () => {
   const body = document.getElementById('sidebar')
+  const body2 = document.getElementById('sidebar2')
+  if (body2 && smallerMd.value) {
+    if (!body2.style.transform || body2.style.transform === 'translateX(0%)') {
+      body2.style.transform = 'translateX(-100%)'
+      body2.classList.remove('w-52')
+      body2.classList.add('w-0')
+      return
+    }
+    body2.style.transform = 'translateX(0%)'
+    body2.classList.add('w-52')
+    body2.classList.remove('w-0')
+    return
+  }
   if (body) {
     if (!body.style.transform || body.style.transform === 'translateX(0%)') {
       body.style.transform = 'translateX(-100%)'
