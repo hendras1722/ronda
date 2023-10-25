@@ -186,7 +186,7 @@ watch(
           :ui="{ divide: 'divide-y divide-gray-100 dark:divide-gray-800' }"
         >
           <!-- Content -->
-          Euy
+          <UInput />
         </UCard>
       </UModal>
     </div>

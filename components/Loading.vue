@@ -15,9 +15,6 @@
 
 <script setup lang="ts">
 const { loadingPages, loading } = storeToRefs(useLoading())
-definePageMeta({
-  layout: false,
-})
 </script>
 
 <style lang="scss" scoped>

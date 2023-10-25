@@ -2,6 +2,7 @@
 const nuxtApp = useNuxtApp()
 const { loading, loadingPages } = storeToRefs(useLoading())
 const loadingSkeleton = ref(false)
+const navbar = ref({})
 
 nuxtApp.hook('page:start', () => {
   loading.value = true
@@ -17,9 +18,9 @@ nuxtApp.hook('page:finish', () => {
 
 <template>
   <div class="flex" v-show="!loadingPages">
-    <Sidebar />
+    <Sidebar :navbar="navbar" />
     <div class="w-full">
-      <Navbar />
+      <Navbar ref="navbar" />
       <div class="p-5">
         <div class="grid grid-cols-12 grid-rows-1 gap-4">
           <div class="col-span-12">

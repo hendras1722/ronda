@@ -163,4 +163,7 @@ const items = [
     },
   ],
 ]
+defineExpose({
+  openSidebar,
+})
 </script>

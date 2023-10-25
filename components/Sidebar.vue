@@ -1,8 +1,17 @@
 <template>
   <div
-    class="min-h-screen w-52 md:static duration-100 dark:bg-gray-900"
+    class="min-h-screen md:w-52 md:static duration-100 fixed z-[100] md:z-[0] md:block w-screen dark:bg-gray-900"
     id="sidebar"
   >
+    <div class="relative">
+      <div class="absolute top-0 right-0 mt-3 mr-3">
+        <UButton
+          @click="handleSidebarClose"
+          class="text-white"
+          :icon="'i-ion-close-outline'"
+        ></UButton>
+      </div>
+    </div>
     <div>
       <div class="flex justify-center items-center my-3 h-14 overflow-hidden">
         <div>
@@ -11,6 +20,7 @@
           </NuxtLink>
         </div>
       </div>
+
       <div class="overflow-auto max-h-[calc(100vh-80px)] pb-3">
         <div
           v-for="(itemMenu, i) in items"
@@ -255,6 +265,12 @@ const items = ref([
   },
 ])
 const accordion = templateRef('acordion', [])
+const props = defineProps({
+  navbar: {
+    type: Object,
+    default: () => {},
+  },
+})
 
 watch(
   () => stateLink.value,
@@ -264,6 +280,10 @@ watch(
     }
   }
 )
+
+function handleSidebarClose() {
+  props.navbar.openSidebar()
+}
 
 const handleAccordion = (href: string) => {
   handlePushRouter(href)
