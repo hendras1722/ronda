@@ -8,6 +8,119 @@ const size = {
 } as const
 
 export default defineAppConfig({
+  menu: [
+    {
+      title: 'Data Management',
+    },
+    {
+      label: 'Dashboard',
+      icon: 'i-ion-pie-chart',
+      slot: 'dashboard',
+      to: '/',
+      children: [],
+    },
+    {
+      label: 'Tables',
+      icon: '',
+      slot: 'tables',
+      closeOthers: false,
+      children: [
+        {
+          label: 'Fruit',
+          icon: 'i-ion-fast-food',
+          children: [],
+          slot: 'tables',
+          to: '/tables/fruit',
+        },
+        {
+          label: 'Person',
+          icon: 'i-ion-person-stalker',
+          children: [],
+          slot: 'tables',
+          to: '/tables/person',
+        },
+      ],
+    },
+    {
+      label: 'Table2',
+      icon: '',
+      slot: 'table2',
+      closeOthers: false,
+      children: [
+        {
+          label: 'Fruit',
+          icon: 'i-ion-fast-food',
+          children: [],
+          slot: 'table2',
+          to: '/fruit1',
+        },
+        {
+          label: 'Person',
+          icon: 'i-ion-person-stalker',
+          children: [],
+          slot: 'table2',
+          to: '/person1',
+        },
+      ],
+    },
+    {
+      label: 'Table3',
+      icon: '',
+      slot: 'table3',
+      closeOthers: false,
+      children: [
+        {
+          label: 'Fruit',
+          icon: 'i-ion-fast-food',
+          children: [],
+          slot: 'table3',
+          to: '/fruit2',
+        },
+        {
+          label: 'Person',
+          icon: 'i-ion-person-stalker',
+          children: [],
+          slot: 'table3',
+          to: '/person2',
+        },
+      ],
+    },
+    {
+      label: 'Form',
+      icon: 'i-ion-file-tray-full',
+      slot: 'form',
+      to: '/form',
+      children: [],
+    },
+    {
+      label: 'Lazy Image',
+      icon: 'i-ion-image',
+      slot: 'lazy_image',
+      to: '/lazy-image',
+      children: [],
+    },
+    {
+      label: 'Lazy scroll',
+      icon: 'i-ion-ios-bug',
+      slot: 'lazy_scroll',
+      to: '/lazy-scroll',
+      children: [],
+    },
+    {
+      title: 'Settings',
+    },
+    {
+      label: 'Profile',
+      icon: 'i-ion-android-contact',
+      slot: 'profile',
+      to: '/',
+      children: [],
+    },
+  ],
+  Navbar: {
+    container: 'dark:bg-gray-900 sm:pr-0 pr-5 bg-gray-50',
+    childContainer: 'flex flex-wrap justify-between items-center p-4',
+  },
   ui: {
     strategy: 'override',
     primary: 'blue',

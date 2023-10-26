@@ -11,8 +11,9 @@ const schema = object({
 })
 
 const state = ref({
-  email: undefined,
-  password: undefined,
+  firstName: '',
+  lastName: '',
+  age: 0,
 })
 
 const isDark = useColorMode()
@@ -104,9 +105,10 @@ watch(
 <template>
   <div>
     <div class="text-2xl font-extrabold">Person</div>
+
     <div class="grid grid-cols-12 grid-rows-1 gap-4 mt-3">
       <div class="md:col-span-10 col-span-12">
-        <UInput
+        <Input
           v-model="params.q"
           icon="i-heroicons-magnifying-glass-20-solid"
           color="white"
@@ -124,7 +126,7 @@ watch(
       >
         <template v-slot="{ inputValue, inputEvents }">
           <div class="md:col-span-2 md:col-start-11 col-span-12">
-            <UInput
+            <Input
               icon="i-ion-md-calendar"
               :value="inputValue"
               v-on="inputEvents"
@@ -204,16 +206,24 @@ watch(
           <!-- Content -->
           <UForm :schema="schema" :state="state">
             <UFormGroup
-              label="Email"
-              name="email"
+              label="First Name"
+              name="firstName"
               autocomplete="false"
               required
             >
-              <UInput type="email" autocomplete="false" />
+              <Input
+                parsing="text"
+                v-model="state.firstName"
+                autocomplete="false"
+              />
             </UFormGroup>
 
-            <UFormGroup label="Password" name="password" class="mt-3" required>
-              <UInput type="password" autocomplete="false" />
+            <UFormGroup label="Last Name" name="lastName" class="mt-3" required>
+              <Input v-model="state.lastName" autocomplete="false" />
+            </UFormGroup>
+
+            <UFormGroup label="age" name="lastName" class="mt-3" required>
+              <Input parsing="text" v-model="state.age" autocomplete="false" />
             </UFormGroup>
 
             <div class="flex justify-center mt-5 w-full">

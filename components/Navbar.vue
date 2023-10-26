@@ -1,7 +1,7 @@
 <template>
   <div>
-    <nav class="dark:bg-gray-900 sm:pr-0 pr-5 bg-gray-50">
-      <div class="flex flex-wrap justify-between items-center p-4">
+    <nav :class="appConfig.Navbar.container">
+      <div :class="appConfig.Navbar.childContainer">
         <div class="flex items-center gap-2">
           <div class="p-1 flex items-center rounded-xl">
             <UButton @click="openSidebar">
@@ -61,6 +61,8 @@ import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 const breakpoints = useBreakpoints(breakpointsTailwind)
 const smallerMd = breakpoints.smaller('md')
 const colorMode = useColorMode()
+const appConfig = useAppConfig()
+
 const isDark = computed({
   get() {
     return colorMode.value === 'dark'

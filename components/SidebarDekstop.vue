@@ -117,7 +117,7 @@
                               :class="[isActive && 'text-blue-500 text-md ']"
                               class="text-md"
                             />
-                            <span class="sm:block ml-1">
+                            <span class="sm:block ml-1 whitespace-normal">
                               {{ itemChildren.label }}
                             </span>
                           </span>
@@ -139,6 +139,7 @@
 import { breakpointsTailwind, useBreakpoints, templateRef } from '@vueuse/core'
 import { useBreadcumbStore } from '@/stores/breadcumb'
 
+const appConfig = useAppConfig()
 const breakpoints = useBreakpoints(breakpointsTailwind)
 const smallerMd = breakpoints.smaller('md')
 const router = useRouter()
@@ -146,116 +147,7 @@ const route = useRoute()
 
 const { stateLink } = storeToRefs(useBreadcumbStore())
 
-const items = ref([
-  {
-    title: 'Data Management',
-  },
-  {
-    label: 'Dashboard',
-    icon: 'i-ion-pie-chart',
-    slot: 'dashboard',
-    to: '/',
-    children: [],
-  },
-  {
-    label: 'Tables',
-    icon: '',
-    slot: 'tables',
-    closeOthers: false,
-    children: [
-      {
-        label: 'Fruit',
-        icon: 'i-ion-fast-food',
-        children: [],
-        slot: 'tables',
-        to: '/tables/fruit',
-      },
-      {
-        label: 'Person',
-        icon: 'i-ion-person-stalker',
-        children: [],
-        slot: 'tables',
-        to: '/tables/person',
-      },
-    ],
-  },
-  {
-    label: 'Table2',
-    icon: '',
-    slot: 'table2',
-    closeOthers: false,
-    children: [
-      {
-        label: 'Fruit',
-        icon: 'i-ion-fast-food',
-        children: [],
-        slot: 'table2',
-        to: '/fruit1',
-      },
-      {
-        label: 'Person',
-        icon: 'i-ion-person-stalker',
-        children: [],
-        slot: 'table2',
-        to: '/person1',
-      },
-    ],
-  },
-  {
-    label: 'Table3',
-    icon: '',
-    slot: 'table3',
-    closeOthers: false,
-    children: [
-      {
-        label: 'Fruit',
-        icon: 'i-ion-fast-food',
-        children: [],
-        slot: 'table3',
-        to: '/fruit2',
-      },
-      {
-        label: 'Person',
-        icon: 'i-ion-person-stalker',
-        children: [],
-        slot: 'table3',
-        to: '/person2',
-      },
-    ],
-  },
-  {
-    label: 'Form',
-    icon: 'i-ion-file-tray-full',
-    slot: 'form',
-    to: '/form',
-    children: [],
-  },
-  {
-    label: 'Lazy Image',
-    icon: 'i-ion-image',
-    slot: 'lazy_image',
-    to: '/lazy-image',
-    children: [],
-  },
-
-  {
-    label: 'Lazy scroll',
-    icon: 'i-ion-ios-bug',
-    slot: 'lazy_scroll',
-    to: '/lazy-scroll',
-    children: [],
-  },
-  {
-    title: 'Settings',
-  },
-  {
-    label: 'Profile',
-    icon: 'i-ion-android-contact',
-    slot: 'profile',
-    to: '/',
-    children: [],
-  },
-])
+const items = ref(appConfig.menu)
 const accordion = templateRef('acordion', [])
 
 watch(
