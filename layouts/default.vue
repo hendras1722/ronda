@@ -22,6 +22,8 @@ nuxtApp.hook('page:finish', () => {
     <Sidebar :navbar="navbar" :bodyRef="bodyRef" />
     <div class="w-full" ref="bodyRef">
       <Navbar ref="navbar" />
+      <!-- Breadcumb -->
+      <Breadcumb />
       <div class="p-5">
         <div class="grid grid-cols-12 grid-rows-1 gap-4">
           <div class="col-span-12">

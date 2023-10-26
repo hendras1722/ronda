@@ -1,6 +1,6 @@
 <template>
   <div>
-    <nav class="dark:bg-gray-900 md:pr-0 pr-5 bg-gray-50">
+    <nav class="dark:bg-gray-900 sm:pr-0 pr-5 bg-gray-50">
       <div class="flex flex-wrap justify-between items-center p-4">
         <div class="flex items-center gap-2">
           <div class="p-1 flex items-center rounded-xl">
@@ -52,75 +52,15 @@
         </UDropdown>
       </div>
     </nav>
-
-    <!-- Breadcumb -->
-    <div class="border-b border-b-gray-100 flex">
-      <div v-for="(item, i) in breadcumb" :key="i">
-        <UButton
-          variant="ghost"
-          color="link"
-          :disabled="item?.disabled"
-          class="disabled:text-black dark:bg-transparent dark:text-white"
-          @click="handleHref(item && item.href ? item.href : '')"
-          >{{ item?.text }}
-        </UButton>
-        <span v-if="i !== breadcumb.length - 1">/</span>
-      </div>
-    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { useBreadcumbStore } from '@/stores/breadcumb'
-
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 
 const breakpoints = useBreakpoints(breakpointsTailwind)
 const smallerMd = breakpoints.smaller('md')
-
-const route = useRoute()
 const colorMode = useColorMode()
-const router = useRouter()
-const { stateLink } = storeToRefs(useBreadcumbStore())
-
-const breadcumb = ref<
-  ({ href: string; text: string; disabled: boolean } | undefined)[]
->([])
-
-watch(
-  () => route.fullPath,
-  (newValue) => {
-    const routeMap = newValue.split('/').filter(Boolean)
-    const newBreadcumb = routeMap.map((item) => {
-      const Capitalized = item.slice(0, 1).toUpperCase()
-      return {
-        href: '',
-        text: item
-          .replace(/^\w/gm, Capitalized)
-          .split('-')
-          .map((items) => {
-            const Capitalized2 = items.slice(0, 1).toUpperCase()
-            return items.replace(/^\w/gm, Capitalized2)
-          })
-          .join(' '),
-        disabled: true,
-      }
-    })
-    breadcumb.value = [
-      {
-        href: '/',
-        text: 'Dashboard',
-        disabled: false,
-      },
-      ...newBreadcumb,
-    ].filter((item) => item)
-  },
-  {
-    deep: true,
-    immediate: true,
-  }
-)
-
 const isDark = computed({
   get() {
     return colorMode.value === 'dark'
@@ -129,10 +69,6 @@ const isDark = computed({
     colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
   },
 })
-const handleHref = (handleHref: string) => {
-  stateLink.value = true
-  router.push(handleHref)
-}
 
 const openSidebar = () => {
   const body = document.getElementById('sidebar')

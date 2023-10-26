@@ -1,4 +1,20 @@
 <script setup lang="ts">
+import { object, string } from 'yup'
+import type { InferType } from 'yup'
+import type { FormSubmitEvent } from '@nuxt/ui-edge/dist/runtime/types'
+
+const schema = object({
+  email: string().email('Invalid email').required('Required'),
+  password: string()
+    .min(8, 'Must be at least 8 characters')
+    .required('Required'),
+})
+
+const state = ref({
+  email: undefined,
+  password: undefined,
+})
+
 const isDark = useColorMode()
 const date = ref(new Date())
 const isOpen = ref(false)
@@ -186,7 +202,31 @@ watch(
           :ui="{ divide: 'divide-y divide-gray-100 dark:divide-gray-800' }"
         >
           <!-- Content -->
-          <UInput />
+          <UForm :schema="schema" :state="state">
+            <UFormGroup
+              label="Email"
+              name="email"
+              autocomplete="false"
+              required
+            >
+              <UInput type="email" autocomplete="false" />
+            </UFormGroup>
+
+            <UFormGroup label="Password" name="password" class="mt-3" required>
+              <UInput type="password" autocomplete="false" />
+            </UFormGroup>
+
+            <div class="flex justify-center mt-5 w-full">
+              <UButton
+                class="w-full ml-auto mr-auto block"
+                type="submit"
+                variant="solid"
+                color="blue"
+              >
+                Submit
+              </UButton>
+            </div>
+          </UForm>
         </UCard>
       </UModal>
     </div>

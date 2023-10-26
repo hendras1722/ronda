@@ -121,6 +121,7 @@ export default defineAppConfig({
       overlay: {
         background: 'backdrop-brightness-75',
       },
+      container: 'flex min-h-full  items-center justify-center text-center',
     },
   },
 })
