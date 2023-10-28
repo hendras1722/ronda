@@ -107,6 +107,13 @@ export default defineAppConfig({
       children: [],
     },
     {
+      label: 'Camera',
+      icon: 'i-ion-camera',
+      slot: 'Camera',
+      to: '/camera',
+      children: [],
+    },
+    {
       title: 'Settings',
     },
     {

@@ -19,7 +19,7 @@ const state = ref({
 
 async function submit(event: FormSubmitEvent<Schema>) {
   // Do something with event.data
-  console.log(event.data)
+  // console.log(event.data)/
 }
 </script>
 

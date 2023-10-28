@@ -21,7 +21,6 @@ const props = defineProps({
     type: String as PropType<'text' | 'uppercase' | 'number'>,
     default: () => 'text',
     validator(value: string) {
-      console.log(value, 'inivalue')
       return ['text', 'uppercase', 'number'].includes(value)
     },
   },

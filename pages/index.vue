@@ -50,7 +50,6 @@ const chartOptions = ref({
 watch(
   () => colorMode.value,
   (e) => {
-    console.log(e, 'inie')
     chartOptions.value = {
       chart: {
         id: 'vuechart-example',
