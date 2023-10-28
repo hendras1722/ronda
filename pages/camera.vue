@@ -1,6 +1,9 @@
 <template>
   <div>
-    <UButton @click="handleOpen">OPenModal</UButton>
+    <div class="font-bold text-2xl">Camera Oi Oi Oi</div>
+    <UButton @click="handleOpen" class="mt-3 dark:text-white"
+      >Klik Disini</UButton
+    >
     <UModal
       v-model="isOpen"
       fullscreen
