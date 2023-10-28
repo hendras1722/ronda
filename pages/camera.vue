@@ -40,20 +40,32 @@ async function cameraStream() {
   const userAgentData = (navigator as any).userAgentData
 
   let aspectRatioCalc = Number(ratioCalc[0]) / Number(ratioCalc[1])
-  if (userAgentData && userAgentData.mobile) {
-    alert('mobileuseragent')
-    aspectRatioCalc = Number(ratioCalc[1]) / Number(ratioCalc[0])
-  } else {
-    if (navigator.maxTouchPoints === 1) {
-      aspectRatioCalc = Number(ratioCalc[0]) / Number(ratioCalc[1])
-    } else if (
-      /Mobile|iP(hone|od|ad)|Android|BlackBerry|IEMobile|Kindle|NetFront|Silk-Accelerated|(hpw|web)OS|Fennec|Minimo|Opera M(obi|ini)|Blazer|Dolfin|Dolphin|Skyfire|Zune/.test(
-        navigator.userAgent
-      )
-    ) {
-      alert('regex')
-      aspectRatioCalc = Number(ratioCalc[1]) / Number(ratioCalc[0])
+  // if (userAgentData && userAgentData.mobile) {
+  //   alert('mobileuseragent')
+  //   aspectRatioCalc = Number(ratioCalc[1]) / Number(ratioCalc[0])
+  // } else {
+  //   if (navigator.maxTouchPoints === 1) {
+  //     aspectRatioCalc = Number(ratioCalc[0]) / Number(ratioCalc[1])
+  //   } else if (
+  //     /Mobile|iP(hone|od|ad)|Android|BlackBerry|IEMobile|Kindle|NetFront|Silk-Accelerated|(hpw|web)OS|Fennec|Minimo|Opera M(obi|ini)|Blazer|Dolfin|Dolphin|Skyfire|Zune/.test(
+  //       navigator.userAgent
+  //     )
+  //   ) {
+  //     alert('regex')
+  //     aspectRatioCalc = Number(ratioCalc[1]) / Number(ratioCalc[0])
+  //   }
+  // }
+
+  function isMobile() {
+    try {
+      document.createEvent('TouchEvent')
+      return true
+    } catch (e) {
+      return false
     }
+  }
+  if (isMobile()) {
+    aspectRatioCalc = Number(ratioCalc[1]) / Number(ratioCalc[0])
   }
 
   const arr: any = []
