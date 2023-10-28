@@ -5,7 +5,7 @@
       class="sm:hidden flex w-full min-h-screen fixed duration-100 z-50 backdrop-brightness-50"
       id="sidebar2"
     >
-      <div class="w-52 sm:static sm:z-0 bg-white dark:bg-gray-900">
+      <div class="w-96 sm:static sm:z-0 bg-white dark:bg-gray-900">
         <div class="py-3">
           <div class="flex justify-center items-center h-14 overflow-hidden">
             <div>
@@ -199,24 +199,24 @@ function handleSidebar() {
   if (body2 && smallerMd.value) {
     if (!body2.style.transform || body2.style.transform === 'translateX(0%)') {
       body2.style.transform = 'translateX(-100%)'
-      body2.classList.remove('w-52')
+      body2.classList.remove('w-96')
       body2.classList.add('w-0')
       return
     }
     body2.style.transform = 'translateX(0%)'
-    body2.classList.add('w-52')
+    body2.classList.add('w-96')
     body2.classList.remove('w-0')
     return
   }
   if (body) {
     if (!body.style.transform || body.style.transform === 'translateX(0%)') {
       body.style.transform = 'translateX(-100%)'
-      body.classList.remove('w-52')
+      body.classList.remove('w-96')
       body.classList.add('w-0')
       return
     }
     body.style.transform = 'translateX(0%)'
-    body.classList.add('w-52')
+    body.classList.add('w-96')
     body.classList.remove('w-0')
   }
 }
@@ -233,12 +233,12 @@ const handlePushRouter = (href: string) => {
           body2.style.transform === 'translateX(0%)'
         ) {
           body2.style.transform = 'translateX(-100%)'
-          body2.classList.remove('w-52')
+          body2.classList.remove('w-96')
           body2.classList.add('w-0')
           return
         }
         body2.style.transform = 'translateX(0%)'
-        body2.classList.add('w-52')
+        body2.classList.add('w-96')
         body2.classList.remove('w-0')
         return
       }
@@ -248,12 +248,12 @@ const handlePushRouter = (href: string) => {
           body.style.transform === 'translateX(0%)'
         ) {
           body.style.transform = 'translateX(-100%)'
-          body.classList.remove('w-52')
+          body.classList.remove('w-96')
           body.classList.add('w-0')
           return
         }
         body.style.transform = 'translateX(0%)'
-        body.classList.add('w-52')
+        body.classList.add('w-96')
         body.classList.remove('w-0')
       }
     }, 300)
