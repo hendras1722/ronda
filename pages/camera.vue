@@ -37,9 +37,9 @@ async function cameraStream() {
     window.innerHeight
   ).split(':')
 
-  const userAgentData = (navigator as any).userAgentData
+  // const userAgentData = (navigator as any).userAgentData
 
-  let aspectRatioCalc = Number(ratioCalc[0]) / Number(ratioCalc[1])
+  let aspectRatioCalc = undefined
   // if (userAgentData && userAgentData.mobile) {
   //   alert('mobileuseragent')
   //   aspectRatioCalc = Number(ratioCalc[1]) / Number(ratioCalc[0])
