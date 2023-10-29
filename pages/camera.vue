@@ -32,30 +32,34 @@
           <video id="video" class="h-full" />
         </div>
         <!-- Button Capture -->
-        <div
-          class="bg-white backdrop-blur-sm bg-opacity-10 w-20 h-20 rounded-full absolute bottom-0 mb-5 left-0 right-0 mx-auto overflow-hidden"
-          @click="handleCapture"
-        >
+        <div class="relative">
           <div
-            class="bg-white w-14 h-14 rounded-full z-10 absolute left-0 right-0 mx-auto top-0 bottom-0 my-auto"
-          ></div>
+            class="bg-white backdrop-blur-sm bg-opacity-10 w-20 h-20 rounded-full absolute bottom-2 mb-5 left-0 right-0 mx-auto overflow-hidden"
+            @click="handleCapture"
+          >
+            <div
+              class="bg-white w-14 h-14 rounded-full z-10 absolute left-0 right-0 mx-auto top-0 bottom-0 my-auto"
+            ></div>
+          </div>
         </div>
         <!--  button close -->
       </div>
       <div v-else>
         <img :src="imageSrc" />
 
-        <div
-          class="absolute bottom-0 mb-3 left-0 right-0 mx-auto flex justify-center"
-        >
-          <UButton
-            :ui="{ base: 'text-center text-white' }"
-            class="rounded-md overflow-hidden"
-            variant="outline"
-            color="green"
-            @click="isOpen = false"
-            >Save</UButton
+        <div class="relative">
+          <div
+            class="absolute bottom-0 mb-3 left-0 right-0 mx-auto flex justify-center"
           >
+            <UButton
+              :ui="{ base: 'text-center text-white' }"
+              class="rounded-md overflow-hidden"
+              variant="outline"
+              color="green"
+              @click="isOpen = false"
+              >Save</UButton
+            >
+          </div>
         </div>
       </div>
     </UModal>
