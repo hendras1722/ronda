@@ -214,10 +214,11 @@ function handleCapture() {
   canvas.width = window.innerWidth
   canvas.height = window.innerHeight
   if (!ctx) return
+  ctx.imageSmoothingEnabled = false
   ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
 
   // Convert the canvas image data to a data URL and create an image element
-  imageSrc.value = canvas.toDataURL('image/png')
+  imageSrc.value = canvas.toDataURL('image/png', 1.0)
   stopCameraStream('capture')
 }
 
