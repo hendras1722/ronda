@@ -31,15 +31,33 @@
         <div class="w-full">
           <video id="video" class="h-full" />
         </div>
+        <!-- Button Change -->
+        <div class="relative" v-if="!loadingVideos">
+          <div
+            class="bg-white backdrop-blur-sm bg-opacity-10 w-20 h-20 rounded-full absolute bottom-2 mb-5 left-0 ml-5 overflow-hidden"
+            @click="handleSync"
+          >
+            <UIcon
+              id="icon_sync"
+              name="i-ion-sync-circle-sharp"
+              class="text-7xl absolute left-0 right-0 mx-auto top-0 bottom-0 my-auto"
+            />
+          </div>
+        </div>
+        <!--  button close -->
         <!-- Button Capture -->
-        <div class="relative">
+        <div class="relative" v-if="!loadingVideos">
           <div
             class="bg-white backdrop-blur-sm bg-opacity-10 w-20 h-20 rounded-full absolute bottom-2 mb-5 left-0 right-0 mx-auto overflow-hidden"
             @click="handleCapture"
           >
-            <div
+            <UIcon
+              name="i-ion-ios-circle-filled"
+              class="text-7xl absolute left-0 right-0 mx-auto top-0 bottom-0 my-auto"
+            />
+            <!-- <div
               class="bg-white w-14 h-14 rounded-full z-10 absolute left-0 right-0 mx-auto top-0 bottom-0 my-auto"
-            ></div>
+            ></div> -->
           </div>
         </div>
         <!--  button close -->
@@ -72,6 +90,7 @@ import { useWindowSize } from '@vueuse/core'
 const isOpen = ref(false)
 const loadingVideos = ref(false)
 const imageSrc = ref('')
+const facingMode = ref(0)
 
 const { width } = useWindowSize()
 /*@@@@@@@
@@ -138,7 +157,7 @@ async function cameraStream() {
   const constraints = {
     audio: false,
     video: {
-      facingMode: 'environment',
+      facingMode: facingMode.value === 0 ? 'environment' : 'user',
       aspectRatio: aspectRatioCalc,
       deviceId: { exact: arr[arr.length - 1] },
     },
@@ -222,6 +241,19 @@ function handleCapture() {
   stopCameraStream('capture')
 }
 
+function handleSync() {
+  const sync = document.getElementById('icon_sync')
+  sync?.classList.add('sync_camera')
+  setTimeout(() => {
+    sync?.classList.remove('sync_camera')
+  }, 1000)
+  facingMode.value += facingMode.value
+  if (facingMode.value % 2 === 0) {
+    facingMode.value = 0
+  }
+  cameraStream()
+}
+
 watch(width, () => {
   stopCameraStream('resize')
 
@@ -235,4 +267,9 @@ watch(width, () => {
 // video {
 // height: 100vh;
 // }
+
+.sync_camera {
+  transform: rotate(360deg);
+  transition-duration: 150ms;
+}
 </style>

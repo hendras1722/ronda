@@ -34,7 +34,7 @@ const totalPagination = ref<number>(0)
 const masks = ref({
   input: 'YYYY-MM-DD hh:mm',
 })
-let url = `https://dummyjson.com/users/search`
+let url = `/api/users/search`
 
 const columns = [
   {

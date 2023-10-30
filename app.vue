@@ -4,10 +4,10 @@ const store = useLoading(nuxtApp.$pinia)
 const { loadingPages } = store
 
 store.pendingLoadingPages()
-nuxtApp.hook('app:beforeMount', () => {
+nuxtApp.hook('app:created', () => {
   store.pendingLoadingPages()
 })
-nuxtApp.hook('app:mounted', () => {
+nuxtApp.hook('page:finish', () => {
   store.finsihLoadingPages()
 })
 </script>
