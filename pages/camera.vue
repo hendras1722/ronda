@@ -247,7 +247,7 @@ function handleSync() {
   setTimeout(() => {
     sync?.classList.remove('sync_camera')
   }, 1000)
-  facingMode.value += facingMode.value
+  facingMode.value += 1
   if (facingMode.value % 2 === 0) {
     facingMode.value = 0
   }
