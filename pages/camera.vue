@@ -153,7 +153,7 @@ async function cameraStream() {
     .catch((err: Error) => {
       console.error(`${err.name} : ${err.message}`)
     })
-
+  console.log(facingMode.value, 'iniv')
   const constraints = {
     audio: false,
     video: {
@@ -251,7 +251,10 @@ function handleSync() {
   if (facingMode.value % 2 === 0) {
     facingMode.value = 0
   }
-  cameraStream()
+  stopCameraStream('change')
+  setTimeout(() => {
+    cameraStream()
+  }, 500)
 }
 
 watch(width, () => {
