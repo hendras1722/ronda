@@ -18,49 +18,51 @@
         base: 'fixed text-left rtl:text-right overflow-hidden w-full flex flex-col',
       }"
     >
-      <div v-if="!imageSrc">
-        <div class="relative cursor-pointer z-10" v-if="!loadingVideos">
-          <div
-            @click="stopCameraStream()"
-            class="absolute top-0 right-0 mt-3 mr-3 text-2xl"
-          >
-            <UIcon name="i-ion-close-circle"></UIcon>
+      <div v-if="!imageSrc" class="min-h-screen bg-black relative">
+        <div>
+          <div class="relative cursor-pointer z-10" v-if="!loadingVideos">
+            <div
+              @click="stopCameraStream()"
+              class="absolute top-0 right-0 mt-3 mr-3 text-2xl"
+            >
+              <UIcon name="i-ion-close-circle"></UIcon>
+            </div>
           </div>
-        </div>
-        <!-- end:Button close -->
-        <div class="w-full">
-          <video id="video" class="h-full" />
-        </div>
-        <!-- Button Change -->
-        <div class="relative" v-if="!loadingVideos">
-          <div
-            class="bg-white backdrop-blur-sm bg-opacity-10 w-20 h-20 rounded-full absolute bottom-2 mb-5 left-0 ml-5 overflow-hidden"
-            @click="handleSync"
-          >
-            <UIcon
-              id="icon_sync"
-              name="i-ion-sync-circle-sharp"
-              class="text-7xl absolute left-0 right-0 mx-auto top-0 bottom-0 my-auto"
-            />
+          <!-- end:Button close -->
+          <div class="w-full">
+            <video id="video" class="h-full" />
           </div>
-        </div>
-        <!--  button close -->
-        <!-- Button Capture -->
-        <div class="relative" v-if="!loadingVideos">
-          <div
-            class="bg-white backdrop-blur-sm bg-opacity-10 w-20 h-20 rounded-full absolute bottom-2 mb-5 left-0 right-0 mx-auto overflow-hidden"
-            @click="handleCapture"
-          >
-            <UIcon
-              name="i-ion-ios-circle-filled"
-              class="text-7xl absolute left-0 right-0 mx-auto top-0 bottom-0 my-auto"
-            />
-            <!-- <div
+          <!-- Button Change -->
+          <div class="relative" v-if="!loadingVideos">
+            <div
+              class="bg-white backdrop-blur-sm bg-opacity-10 w-20 h-20 rounded-full absolute bottom-2 mb-5 left-0 ml-5 overflow-hidden"
+              @click="handleSync"
+            >
+              <UIcon
+                id="icon_sync"
+                name="i-ion-sync-circle-sharp"
+                class="text-7xl absolute left-0 right-0 mx-auto top-0 bottom-0 my-auto"
+              />
+            </div>
+          </div>
+          <!--  button close -->
+          <!-- Button Capture -->
+          <div class="relative" v-if="!loadingVideos">
+            <div
+              class="bg-white backdrop-blur-sm bg-opacity-10 w-20 h-20 rounded-full absolute bottom-2 mb-5 left-0 right-0 mx-auto overflow-hidden"
+              @click="handleCapture"
+            >
+              <UIcon
+                name="i-ion-ios-circle-filled"
+                class="text-7xl absolute left-0 right-0 mx-auto top-0 bottom-0 my-auto"
+              />
+              <!-- <div
               class="bg-white w-14 h-14 rounded-full z-10 absolute left-0 right-0 mx-auto top-0 bottom-0 my-auto"
             ></div> -->
+            </div>
           </div>
+          <!--  button close -->
         </div>
-        <!--  button close -->
       </div>
       <div v-else>
         <img :src="imageSrc" />
@@ -153,7 +155,6 @@ async function cameraStream() {
     .catch((err: Error) => {
       console.error(`${err.name} : ${err.message}`)
     })
-  console.log(facingMode.value, 'iniv')
   const constraints = {
     audio: false,
     video: {
@@ -213,6 +214,9 @@ function stopCameraStream(e?: string) {
   const videos = document.getElementById('video') as HTMLVideoElement
   if (!videos) return
   const tracks = (videos?.srcObject as any)?.getTracks()
+  if (e === 'change') {
+    loadingVideos.value = true
+  }
 
   videos.src = ''
   tracks.forEach((track: any) => {
@@ -251,7 +255,9 @@ function handleSync() {
   if (facingMode.value % 2 === 0) {
     facingMode.value = 0
   }
-  stopCameraStream('change')
+  setTimeout(() => {
+    stopCameraStream('change')
+  }, 300)
   setTimeout(() => {
     cameraStream()
   }, 500)
