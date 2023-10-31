@@ -14,7 +14,7 @@
               </NuxtLink>
             </div>
           </div>
-          <div class="overflow-auto max-h-[calc(100vh-80px)] pb-3">
+          <div class="overflow-auto max-h-[calc(100vh-100px)] pb-3">
             <div
               v-for="(itemMenu, i) in items"
               :key="`sidebar-${itemMenu.label} + ${i}`"

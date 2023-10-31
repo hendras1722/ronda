@@ -268,7 +268,7 @@ watch(width, () => {
 
   setTimeout(() => {
     cameraStream()
-  }, 1000)
+  }, 300)
 })
 </script>
 

@@ -1,5 +1,9 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  app: {
+    rootId: 'MSA',
+    rootTag: 'MSA',
+  },
   ui: {
     icons: ['ion'],
   },
