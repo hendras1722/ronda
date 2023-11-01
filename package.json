@@ -2,7 +2,7 @@
   "name": "msa-template-nuxt3",
   "private": false,
   "type": "module",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "bin": {
     "msa-template-nuxt3": "bin/main.cjs"
   },
