@@ -2,10 +2,8 @@
   "name": "msa-template-nuxt3",
   "private": false,
   "type": "module",
-  "version": "1.0.12",
-  "bin": {
-    "msa-template-nuxt3": "bin/main.cjs"
-  },
+  "version": "1.0.15",
+  "bin": "bin/main.cjs",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
