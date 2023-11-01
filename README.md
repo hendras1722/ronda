@@ -2,6 +2,8 @@
 
 Nuxt 3 boilerplate using Nuxt UI. this is just a personal project. i only publish my own boilerplate so that it can be used immediately.
 
+read documentation nuxt ui [Nuxt UI](https://ui.nuxt.com/)
+
 ## Run Command
 
 ```

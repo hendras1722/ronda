@@ -14,7 +14,7 @@ const runCommand = (command) => {
 
 const repoName = process.argv[2]
 const runPackage = process.argv[3]
-console.log(repoName, process.argv, 'inireponame')
+
 const gitCheckOutCommand = `git clone https://github.com/hendras1722/nuxt3-with-nuxtui ${repoName}`
 const DepsCommand = `cd ${repoName} && npm install`
 const runProject = 'cd ' + repoName + ' && npm run dev'
