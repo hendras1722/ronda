@@ -1,75 +1,19 @@
-# Nuxt UI Minimal Starter
+## Boilerplate Nuxt 3 Using Nuxt ui
 
-Look at [Nuxt docs](https://nuxt.com/docs/getting-started/introduction) and [Nuxt UI docs](https://ui.nuxt.com) to learn more.
+Nuxt 3 boilerplate using Nuxt UI. this is just a personal project. i only publish my own boilerplate so that it can be used immediately.
 
-## Setup
+## Run Command
 
-Make sure to install the dependencies:
-
-```bash
-# npm
-npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
+```
+npx msa-template-nuxt3 <name_project>
 ```
 
-## Development Server
+optional
 
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm run dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
+```
+npx msa-template-nuxt3 <name_project> --run
 ```
 
-## Production
+## Screenshots
 
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+![Dashboard](https://imgdb.net/storage/uploads/476bd8f29bf196ecd3202a3a205cf86685d2074d77b14f087465716c164ffd05.png)

@@ -42,50 +42,6 @@ export default defineAppConfig({
       ],
     },
     {
-      label: 'Table2',
-      icon: '',
-      slot: 'table2',
-      closeOthers: false,
-      children: [
-        {
-          label: 'Fruit',
-          icon: 'i-ion-fast-food',
-          children: [],
-          slot: 'table2',
-          to: '/fruit1',
-        },
-        {
-          label: 'Person',
-          icon: 'i-ion-person-stalker',
-          children: [],
-          slot: 'table2',
-          to: '/person1',
-        },
-      ],
-    },
-    {
-      label: 'Table3',
-      icon: '',
-      slot: 'table3',
-      closeOthers: false,
-      children: [
-        {
-          label: 'Fruit',
-          icon: 'i-ion-fast-food',
-          children: [],
-          slot: 'table3',
-          to: '/fruit2',
-        },
-        {
-          label: 'Person',
-          icon: 'i-ion-person-stalker',
-          children: [],
-          slot: 'table3',
-          to: '/person2',
-        },
-      ],
-    },
-    {
       label: 'Form',
       icon: 'i-ion-file-tray-full',
       slot: 'form',
