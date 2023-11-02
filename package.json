@@ -2,7 +2,7 @@
   "name": "msa-template-nuxt3",
   "private": false,
   "type": "module",
-  "version": "1.0.15",
+  "version": "1.0.21",
   "bin": "bin/main.cjs",
   "scripts": {
     "build": "nuxt build",
@@ -31,5 +31,14 @@
     "yup": "^1.3.2"
   },
   "homepage": "https://github.com/hendras1722/nuxt3-with-nuxtui",
-  "repository": "https://github.com/hendras1722/nuxt3-with-nuxtui"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hendras1722/nuxt3-with-nuxtui.git"
+  },
+  "description": "Nuxt 3 boilerplate using Nuxt UI. this is just a personal project. i only publish my own boilerplate so that it can be used immediately.",
+  "bugs": {
+    "url": "https://github.com/hendras1722/nuxt3-with-nuxtui/issues"
+  },
+  "author": "",
+  "license": "ISC"
 }
