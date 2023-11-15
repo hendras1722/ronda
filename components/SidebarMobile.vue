@@ -73,7 +73,7 @@
                         class="truncate sm:block"
                         :class="[
                           itemMenu.children.filter(
-                            (item) => item.to === route.fullPath
+                            (item:any) => item.to === route.fullPath
                           ).length > 0 && 'text-blue-500 font-bold',
                         ]"
                       >
@@ -89,9 +89,7 @@
                     </UButton>
                   </template>
                   <template #[itemMenu.slot]="{ item }">
-                    <div
-                      class="bg-gray-300 p-3 rounded-lg dark:bg-gray-700 dark:text-white"
-                    >
+                    <div>
                       <div
                         class="flex justify-end"
                         v-for="(itemChildren, i) in item.children"
@@ -151,7 +149,7 @@ const appConfig = useAppConfig()
 
 const { stateLink } = storeToRefs(useBreadcumbStore())
 
-const items = ref(appConfig.menu)
+const items = ref<any>(appConfig.menu)
 const accordion2 = templateRef('acordion2', [])
 
 watch(
@@ -182,10 +180,12 @@ const handleAccordionChildren = (e: string) => {
   stateLink.value = false
   if (!accordion2.value || accordion2.value.length < 1) return
   const itemSidebar = items.value.filter(
-    (item) => item.children && item.children.length > 0
+    (item: any) => item.children && item.children.length > 0
   )
-  const getIndexItemSidebar = itemSidebar.findIndex((item) => item.slot === e)
-  itemSidebar.forEach((_, index) => {
+  const getIndexItemSidebar = itemSidebar.findIndex(
+    (item: any) => item.slot === e
+  )
+  itemSidebar.forEach((_: any, index: number) => {
     if (index !== getIndexItemSidebar) {
       const buttonRefsVariable1: any = accordion2.value[index]
       buttonRefsVariable1.buttonRefs[0].close()

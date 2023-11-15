@@ -1,5 +1,15 @@
 <template>
-  <div class="h-screen flex justify-center items-center p-5">
+  <div class="p-96">
+    name title
+    <UInput v-model="state.password" />
+
+    <br />
+    original name:
+    <UInput v-model="state.email" />
+
+    result : {{ result }}
+  </div>
+  <!-- <div class="h-screen flex justify-center items-center p-5">
     <div
       class="w-96 h-80 p-8 flex justify-center items-center rounded-tl-lg rounded-bl-lg border border-gray-200"
     >
@@ -59,30 +69,38 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 </template>
 
 <script setup lang="ts">
 import { object, string } from 'yup'
 import type { InferType } from 'yup'
-import type { FormSubmitEvent } from '@nuxt/ui-edge/dist/runtime/types'
+import type { FormSubmitEvent } from '@nuxt/ui/dist/runtime/types'
+import { removeName } from 'remove-title-name-ts'
 
 definePageMeta({
   layout: false,
 })
 const schema = object({
-  email: string().email('Invalid email').required('Required'),
-  password: string()
-    .min(8, 'Must be at least 8 characters')
-    .required('Required'),
+  email: string(),
+  password: string(),
 })
 
 type Schema = InferType<typeof schema>
 
 const state = ref({
-  email: undefined,
-  password: undefined,
+  email: '',
+  password: '',
 })
+
+const result = ref('')
+
+watch(
+  () => state.value.email,
+  () => {
+    result.value = removeName(state.value.email, state.value.password)
+  }
+)
 
 async function submit(event: FormSubmitEvent<Schema>) {
   // Do something with event.data

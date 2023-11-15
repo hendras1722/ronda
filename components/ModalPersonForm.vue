@@ -2,7 +2,7 @@
   <UModal v-model="isOpen">
     <UCard :ui="{ divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
       <!-- Content -->
-      <UForm :schema="schema" :state="state">
+      <UForm :state="state" @submit="handleSubmit">
         <UFormGroup
           label="First Name"
           name="firstName"
@@ -39,12 +39,40 @@
   </UModal>
 </template>
 
-<script setup>
-const props = defineProps({
-  modelValue: {
-    type: String,
-    default: '',
+<script setup lang="ts">
+// const props = defineProps({
+//   modelValue: {
+//     type: Boolean,
+//     default: false,
+//   },
+// })
+
+const state = ref({
+  firstName: '',
+  lastName: '',
+  age: '',
+})
+
+const isOpenRef = ref(false)
+
+const isOpen = computed({
+  get() {
+    return isOpenRef.value
   },
+  set(e) {
+    isOpenRef.value = e
+  },
+})
+function open() {
+  isOpenRef.value = true
+}
+async function handleSubmit() {
+  // const useSingloeTown = await useSingletonGureeeh2()
+  // console.log(useSingloeTown)
+  isOpenRef.value = false
+}
+defineExpose({
+  open,
 })
 </script>
 

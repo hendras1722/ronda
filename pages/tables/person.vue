@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { object, string } from 'yup'
 import type { InferType } from 'yup'
-import type { FormSubmitEvent } from '@nuxt/ui-edge/dist/runtime/types'
+import type { FormSubmitEvent } from '@nuxt/ui/dist/runtime/types'
 
 const schema = object({
   email: string().email('Invalid email').required('Required'),
@@ -21,6 +21,10 @@ const date = ref(new Date())
 const isOpen = ref(false)
 
 const { loadingPages } = storeToRefs(useLoading())
+const { data: navigation } = await useAsyncData('navigation', () =>
+  fetchContentNavigation()
+)
+console.log(navigation)
 
 const params = ref({
   q: '',
@@ -75,6 +79,10 @@ async function getItemsData() {
     },
     lazy: false,
   })
+  // const { data: navigation } = await useAsyncData('navigation', () =>
+  //   fetchContentNavigation()
+  // )
+  // console.log(navigation)
   loading.value = pending.value
   itemsUsers.value = data.value?.users
   totalPagination.value = data.value?.total || 0

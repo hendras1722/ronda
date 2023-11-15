@@ -9,7 +9,8 @@ export default defineNuxtConfig({
   },
   devtools: { enabled: true, vscode: {} },
   modules: [
-    '@nuxt/ui-edge',
+    '@nuxt/content',
+    '@nuxt/ui',
     '@vueuse/nuxt',
     '@nuxt/devtools',
     [
