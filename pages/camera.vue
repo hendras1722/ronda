@@ -18,6 +18,14 @@
         base: 'fixed text-left rtl:text-right overflow-hidden w-full flex flex-col',
       }"
     >
+      <div class="relative cursor-pointer z-10" v-if="!loadingVideos">
+        <div
+          @click="stopCameraStream()"
+          class="absolute top-0 right-0 mt-3 mr-3 text-2xl"
+        >
+          <UIcon name="i-ion-close-circle"></UIcon>
+        </div>
+      </div>
       <CameraJebreet
         ref="camera"
         facingModeCamera="user"
@@ -25,6 +33,9 @@
         :size="100"
         frame
       >
+        <template #frame>
+          <div class="w-56 h-56 bg-white"></div>
+        </template>
       </CameraJebreet>
     </UModal>
   </div>
@@ -38,6 +49,7 @@ const isOpen = ref(false)
 const loadingVideos = ref(false)
 const imageSrc = ref('')
 const facingMode = ref(0)
+const camera = ref()
 
 // const { width } = useWindowSize()
 // /*@@@@@@@
@@ -155,22 +167,10 @@ async function handleOpen() {
 //  *
 //  */
 
-// function stopCameraStream(e?: string) {
-//   const videos = document.getElementById('video') as HTMLVideoElement
-//   if (!videos) return
-//   const tracks = (videos?.srcObject as any)?.getTracks()
-//   if (e === 'change') {
-//     loadingVideos.value = true
-//   }
-
-//   videos.src = ''
-//   tracks.forEach((track: any) => {
-//     track.stop()
-//   })
-
-//   if (e) return
-//   isOpen.value = false
-// }
+async function stopCameraStream(e?: string) {
+  await camera.value.stop()
+  isOpen.value = false
+}
 
 // function handleCapture() {
 //   if (loadingVideos.value) return
