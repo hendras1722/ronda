@@ -4,16 +4,22 @@ Nuxt 3 boilerplate using Nuxt UI. this is just a personal project. i only publis
 
 read documentation nuxt ui [Nuxt UI](https://ui.nuxt.com/)
 
+## First Installation (Required)
+
+```
+npm i -g msa-cli
+```
+
 ## Run Command
 
 ```
-npx msa-template-nuxt3 <name_project>
+npx msa-cli <name_project>
 ```
 
 optional
 
 ```
-npx msa-template-nuxt3 <name_project> --run
+npx msa-cli <name_project> --run
 ```
 
 ## Screenshots
