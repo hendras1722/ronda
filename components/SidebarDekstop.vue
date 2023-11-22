@@ -25,8 +25,8 @@
               {{ itemMenu.title }}
             </div>
             <div
-              v-if="itemMenu.children && itemMenu.children?.length < 1"
               class="p-3 rounded-xl"
+              v-if="itemMenu.children && itemMenu.children?.length < 1"
             >
               <NuxtLink :to="itemMenu.to" v-slot="{ href, isActive }" custom>
                 <UButton
@@ -36,6 +36,7 @@
                   :class="[isActive && 'text-black bg-gray-200 ']"
                 >
                   <UIcon
+                    v-if="itemMenu.icon"
                     :name="itemMenu.icon"
                     :class="[isActive && 'text-blue-500 text-md']"
                     class="text-md"
@@ -46,11 +47,88 @@
                 </UButton>
               </NuxtLink>
             </div>
-            <div v-else class="p-3 rounded-xl">
-              <AccordionTree
+            <div
+              v-if="itemMenu.children && itemMenu.children?.length > 0"
+              class="p-3 rounded-xl"
+            >
+              <UAccordion
+                :items="[itemMenu]"
+                :ui="{ wrapper: 'flex flex-col w-full text-black' }"
+                multiple
+                :defaultOpen="showOpenAccordion(itemMenu)"
                 ref="accordion"
-                :itemMenu="itemMenu"
-              ></AccordionTree>
+              >
+                <template #default="{ open, item, index }">
+                  <UButton
+                    :icon="itemMenu.icon"
+                    class="dark:bg-gray-800 dark:text-white text-black w-full bg-white rounded-2xl shadow-lg"
+                    :ui="{
+                      rounded: 'rounded-none',
+                      padding: { sm: 'p-3' },
+                    }"
+                    @click="handleAccordionChildren(item.slot)"
+                  >
+                    <span
+                      class="truncate sm:block"
+                      :class="[
+                        itemMenu.children.filter(
+                          (item: any) => item.to === route.fullPath
+                        ).length > 0 && 'text-blue-500 font-bold',
+                      ]"
+                    >
+                      {{ itemMenu.label }}
+                    </span>
+                    <template #trailing>
+                      <UIcon
+                        name="i-heroicons-chevron-right-20-solid"
+                        class="w-5 h-5 ms-auto transform transition-transform duration-200"
+                        :class="[open && 'rotate-90']"
+                      />
+                    </template>
+                  </UButton>
+                </template>
+                <template #[itemMenu.slot]="{ item }">
+                  <div
+                    class="bg-gray-300 p-3 rounded-lg dark:bg-gray-700 dark:text-white"
+                  >
+                    <div
+                      class="flex justify-end"
+                      v-for="(itemChildren, i) in item.children"
+                      :key="i"
+                    >
+                      <NuxtLink
+                        :to="itemChildren.to"
+                        v-slot="{ href, isActive }"
+                        custom
+                      >
+                        <UButton
+                          color="royal-blue"
+                          variant="ghost"
+                          class="dark:bg-gray-800 dark:text-white dark:border-gray-700 text-black my-3 bg-white rounded-2xl w-full shadow-lg"
+                          :ui="{
+                            rounded: 'rounded-none',
+                            padding: { sm: 'p-3 ' },
+                          }"
+                          :class="[isActive && 'text-black bg-gray-200 ']"
+                          @click="handlePushRouter(href)"
+                        >
+                          <span class="pl-3 flex items-center">
+                            <UIcon
+                              v-if="itemChildren.icon"
+                              :name="itemChildren.icon"
+                              :class="[isActive && 'text-blue-500 text-md ']"
+                              class="text-md"
+                            />
+                            <span class="sm:block ml-1 whitespace-normal">
+                              {{ itemChildren.label }}
+                            </span>
+                          </span>
+                        </UButton>
+                      </NuxtLink>
+                    </div>
+                  </div>
+                </template>
+              </UAccordion>
             </div>
           </div>
         </div>
@@ -71,20 +149,8 @@ const route = useRoute()
 
 const { stateLink } = storeToRefs(useBreadcumbStore())
 
-const items = ref(appConfig.menu)
-const accordion = ref()
-
-watch(
-  () => route.fullPath,
-  (newValue) => {
-    const itemData = accordion.value
-      .map((item: any) => {
-        return item.accordion
-      })
-      .findIndex((item: any) => item && !item.class.includes(newValue))
-    accordion.value[itemData].accordion.buttonRefs[0].close()
-  }
-)
+const items = ref<any>(appConfig.menu)
+const accordion = templateRef('acordion', [])
 
 watch(
   () => stateLink.value,
@@ -98,28 +164,29 @@ watch(
 const handleAccordion = (href: string) => {
   handlePushRouter(href)
   if (!accordion.value || accordion.value.length < 1) return
-  accordion.value.forEach((element: any) => {
-    const buttonRefsElement: any = toRaw(element)
-    if (toRaw(buttonRefsElement).accordion) {
-      toRaw(buttonRefsElement).accordion.buttonRefs[0].close()
-    }
+
+  accordion.value.forEach((element) => {
+    const buttonRefsElement: { buttonRefs: { close: Function }[] } = element
+    buttonRefsElement.buttonRefs.forEach((buttonrefs) => {
+      buttonrefs.close()
+    })
   })
 }
 
 const showOpenAccordion = (e: { children: { to: string }[] }) => {
-  if (!e.children) return
   return e.children.filter((item) => item.to === route.fullPath).length > 0
 }
 
 const handleAccordionChildren = (e: string) => {
   stateLink.value = false
-  console.log(accordion.value)
   if (!accordion.value || accordion.value.length < 1) return
   const itemSidebar = items.value.filter(
-    (item) => item.children && item.children.length > 0
+    (item: any) => item.children && item.children.length > 0
   )
-  const getIndexItemSidebar = itemSidebar.findIndex((item) => item.slot === e)
-  itemSidebar.forEach((_, index) => {
+  const getIndexItemSidebar = itemSidebar.findIndex(
+    (item: any) => item.slot === e
+  )
+  itemSidebar.forEach((_: any, index: number) => {
     if (index !== getIndexItemSidebar) {
       const buttonRefsVariable: any = accordion.value[index]
       buttonRefsVariable.buttonRefs[0].close()

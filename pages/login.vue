@@ -1,15 +1,5 @@
 <template>
-  <div class="p-96">
-    name title
-    <UInput v-model="state.password" />
-
-    <br />
-    original name:
-    <UInput v-model="state.email" />
-
-    result : {{ result }}
-  </div>
-  <!-- <div class="h-screen flex justify-center items-center p-5">
+  <div class="h-screen flex justify-center items-center p-5">
     <div
       class="w-96 h-80 p-8 flex justify-center items-center rounded-tl-lg rounded-bl-lg border border-gray-200"
     >
@@ -65,18 +55,20 @@
           Create an account to start ordering today!
         </div>
         <div class="text-center mt-5">
-          <UButton variant="outline" color="white">Register</UButton>
+          <UButton variant="outline" color="white" @click="handleRegister"
+            >Register</UButton
+          >
         </div>
       </div>
     </div>
-  </div> -->
+  </div>
 </template>
 
 <script setup lang="ts">
 import { object, string } from 'yup'
 import type { InferType } from 'yup'
 import type { FormSubmitEvent } from '@nuxt/ui/dist/runtime/types'
-import { removeName } from 'remove-title-name-ts'
+import { supabase } from '~/utils/supabase'
 
 definePageMeta({
   layout: false,
@@ -92,19 +84,27 @@ const state = ref({
   email: '',
   password: '',
 })
+const token = useCookie('token')
 
-const result = ref('')
-
-watch(
-  () => state.value.email,
-  () => {
-    result.value = removeName(state.value.email, state.value.password)
-  }
-)
+// const {
+//   data: { user },
+// } = await supabase.auth.getUser()
 
 async function submit(event: FormSubmitEvent<Schema>) {
   // Do something with event.data
   // console.log(event.data)
+  const { data } = await useFetch<{ data: any }>('/api/login', {
+    method: 'POST',
+  })
+  if (data) {
+    token.value = data.value?.data
+    navigateTo('/')
+  }
+  console.log(data)
+}
+async function handleRegister() {
+  const { data } = await useFetch('/api/invite-member')
+  console.log(data)
 }
 </script>
 

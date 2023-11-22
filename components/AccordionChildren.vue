@@ -54,6 +54,7 @@
               >
                 <span class="pl-3 flex items-center">
                   <UIcon
+                    v-if="itemChildren.icon"
                     :name="itemChildren.icon"
                     :class="[isActive && 'text-blue-500 text-md ']"
                     class="text-md"

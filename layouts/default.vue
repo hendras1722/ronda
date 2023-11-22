@@ -2,8 +2,6 @@
 const nuxtApp = useNuxtApp()
 const { loading, loadingPages } = storeToRefs(useLoading())
 const loadingSkeleton = ref(false)
-const navbar = ref({})
-const bodyRef = ref()
 
 nuxtApp.hook('page:start', () => {
   loading.value = true
@@ -19,14 +17,14 @@ nuxtApp.hook('page:finish', () => {
 
 <template>
   <div class="flex" v-show="!loadingPages">
-    <Sidebar :navbar="navbar" :bodyRef="bodyRef" />
-    <div class="w-full" ref="bodyRef">
-      <Navbar ref="navbar" />
+    <Sidebar />
+    <div class="w-full">
+      <Navbar />
       <!-- Breadcumb -->
       <Breadcumb />
-      <div class="p-5">
+      <div class="pt-5 py-5 max-h-screen overflow-auto pb-40">
         <div class="grid grid-cols-12 grid-rows-1 gap-4">
-          <div class="col-span-12">
+          <div class="col-span-12 px-5">
             <UContainer
               class="mt-4 px-3 py-5 max-w-full bg-white shadow-md rounded-lg dark:bg-gray-900 dark:text-white dark:border dark:border-white"
             >

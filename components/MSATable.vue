@@ -357,3 +357,11 @@ export default defineComponent({
   },
 })
 </script>
+
+<style lang="scss" scoped>
+thead th {
+  @apply dark:bg-gray-900 bg-white;
+  @apply dark:text-white text-black;
+  @apply sticky -top-5;
+}
+</style>

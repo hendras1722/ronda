@@ -1,7 +1,6 @@
 <script setup lang="ts">
 const nuxtApp = useNuxtApp()
 const store = useLoading(nuxtApp.$pinia)
-const { loadingPages } = store
 
 store.pendingLoadingPages()
 nuxtApp.hook('app:created', () => {
@@ -22,3 +21,9 @@ nuxtApp.hook('page:finish', () => {
     </NuxtLayout>
   </div>
 </template>
+
+<style lang="scss" setup>
+body {
+  @apply overflow-hidden;
+}
+</style>

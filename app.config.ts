@@ -10,118 +10,47 @@ const size = {
 export default defineAppConfig({
   menu: [
     {
-      title: 'Data Management',
-    },
-    {
-      label: 'Tables22',
-      icon: '',
-      slot: 'tables1',
-      closeOthers: false,
-      type: 'accordion',
-      to: '/form',
-      children: [
-        {
-          label: 'Fruit123213',
-          icon: 'i-ion-fast-food',
-          type: 'link',
-          slot: 'tables1',
-          children: [
-            {
-              label: 'Fruit123213',
-              icon: 'i-ion-fast-food',
-              type: 'link',
-              slot: 'tables1',
-              children: [
-                {
-                  label: 'Fruit123213',
-                  icon: 'i-ion-fast-food',
-                  type: 'link',
-                  slot: 'tables1',
-                  children: [],
-                  to: '/form',
-                },
-              ],
-            },
-          ],
-        },
-        {
-          label: 'Person214124',
-          icon: 'i-ion-person-stalker',
-          slot: 'tables1',
-          to: '/tables/person1',
-          children: [],
-        },
-      ],
+      title: '',
     },
     {
       label: 'Dashboard',
-      icon: 'i-ion-pie-chart',
-      slot: 'dashboard',
-      to: '/',
-      type: 'link',
-      children: [],
-    },
-    {
-      label: 'Tables1',
-      icon: '',
-      slot: 'tables2',
-      closeOthers: false,
-      type: 'accordion',
-      to: '/tables/fruit',
-      children: [
-        {
-          label: 'Fruit',
-          icon: 'i-ion-fast-food',
-          children: [],
-          slot: 'tables2',
-          to: '/tables/fruit',
-        },
-        {
-          label: 'Person',
-          icon: 'i-ion-person-stalker',
-          children: [],
-          slot: 'tables2',
-          to: '/tables/person',
-        },
-      ],
-    },
-    {
-      label: 'Form',
-      icon: 'i-ion-file-tray-full',
-      slot: 'form',
-      to: '/form',
-      children: [],
-    },
-    {
-      label: 'Lazy Image',
-      icon: 'i-ion-image',
-      slot: 'lazy_image',
-      to: '/lazy-image',
-      children: [],
-    },
-    {
-      label: 'Lazy scroll',
-      icon: 'i-ion-ios-bug',
-      slot: 'lazy_scroll',
-      to: '/lazy-scroll',
-      children: [],
-    },
-    {
-      label: 'Camera',
-      icon: 'i-ion-camera',
-      slot: 'Camera',
-      to: '/camera',
-      children: [],
-    },
-    {
-      title: 'Settings',
-    },
-    {
-      label: 'Profile',
-      icon: 'i-ion-android-contact',
+      icon: 'i-ion-grid-sharp',
       slot: 'profile',
       to: '/',
       children: [],
+    },
+    {
+      label: 'Member',
+      icon: 'i-ion-person-stalker',
+      slot: 'member',
+      to: '/member',
+      children: [],
+    },
+    {
+      label: 'Catatan iuran',
+      icon: 'i-ion-book',
+      slot: 'iuran',
+      to: '/iuran',
+      children: [],
+    },
+    {
+      label: 'Ronda',
+      icon: 'i-ion-ios-flashlight',
+      slot: 'ronda',
+      children: [
+        {
+          label: 'Jadwal',
+          slot: 'ronda',
+          to: '/ronda/jadwal',
+          children: [],
+        },
+        {
+          label: 'jimpitan',
+          slot: 'ronda',
+          to: '/ronda/jimpitan',
+          children: [],
+        },
+      ],
     },
   ],
   Navbar: {
@@ -193,6 +122,7 @@ export default defineAppConfig({
       },
     },
     table: {
+      wrapper: 'relative',
       loadingState: {
         label: 'text-md text-center text-wood-400 dark:text-white',
         icon: 'w-10 h-10 mx-auto text-wood-400 dark:text-wood-400 mb-4 animate-spin',

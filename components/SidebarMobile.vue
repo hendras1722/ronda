@@ -38,6 +38,7 @@
                     :class="[isActive && 'text-black bg-gray-200 ']"
                   >
                     <UIcon
+                      v-if="itemMenu.icon"
                       :name="itemMenu.icon"
                       :class="[isActive && 'text-blue-500 text-md']"
                       class="text-md"
@@ -113,6 +114,7 @@
                           >
                             <span class="pl-3 flex items-center">
                               <UIcon
+                                v-if="itemChildren.icon"
                                 :name="itemChildren.icon"
                                 :class="[isActive && 'text-blue-500 text-md ']"
                                 class="text-md"
