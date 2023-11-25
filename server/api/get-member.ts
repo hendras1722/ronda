@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
   const path = getHeaders(event)
   const query = getQuery(event)
 
-  if (String(path['user-agent'])?.toLocaleLowerCase().includes('postman')) {
+  if (path['postman-token']) {
     throw createError({
       statusCode: 403,
       message: 'Forbidden Access',
@@ -15,17 +15,22 @@ export default defineEventHandler(async (event) => {
 
   try {
     let { data, error } = await supabase
-      .from('db_warga_complex')
+      .from('db_user')
       .select(
         `
-              id,
-              name: name_warga,
-              blok,
-              phone
-            `
+          id,
+          name,
+          email,
+          role,
+          complex: id_complex(
+            *
+          ),
+          blok,
+          phone
+          `
       )
       .eq('id_complex', query.v)
-
+    console.log(data, 'inidata')
     if (error) {
       throw createError({
         statusCode: 403,

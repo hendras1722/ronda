@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
   const path = getHeaders(event)
   const body = await readBody(event)
 
-  if (String(path['postman-token'])) {
+  if (path['postman-token']) {
     throw createError({
       statusCode: 403,
       message: 'Forbidden Access',
@@ -13,10 +13,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const { data, error } = await supabase
-      .from('db_warga_complex')
-      .upsert(body)
-      .select()
+    const { data, error } = await supabase.from('db_user').upsert(body).select()
 
     if (error) {
       throw createError({

@@ -3,213 +3,239 @@
     <UContainer
       class="px-3 py-5 max-w-full bg-white shadow-md rounded-lg dark:bg-gray-900 dark:text-white dark:border dark:border-white"
     >
-      <UDivider class="mb-5">
-        <div class="text-2xl">Lengkapi Profilmu</div>
-      </UDivider>
-      <p class="mb-5">
-        Lengkapi profilmu bertujuan untuk memudahkan pendataan dikampungmu
-      </p>
-      <div class="relative" v-if="!register">
-        <div class="mb-5">
-          <div class="text-2xl">Cari alamat rumahmu</div>
-          <div>
-            <UInput
-              v-model="search"
-              @focus="handleFocus"
-              @focusout="handleBlur"
-            />
-          </div>
-          <small class="text-blue-500 font-extrabold"
-            >Alamatmu belum ada ?
-            <button class="text-black" @click="Register">Register</button>
-          </small>
-        </div>
-        <div
-          id="items_address"
-          v-show="isFocus && search"
-          class="w-full h-auto -mt-8 absolute bg-white z-10 border-2 border-blue-500 rounded-lg py-3 transition"
-        >
-          <div v-if="isLoading">please Wait</div>
-          <div v-else-if="checkResult" class="text-center block">
-            <div class="text-2xl font-extrabold">
-              Yah alamatmu belum tersedia nih. silahkan register alamatmu
-              terlebih dahulu
-            </div>
-            <UButton variant="soft" color="blue" class="mt-5" @click="Register"
-              >Daftar</UButton
-            >
+      <div v-if="step === 1">
+        <UDivider class="mb-5">
+          <div class="text-2xl">Lengkapi Profilmu</div>
+        </UDivider>
+        <p class="mb-5">
+          Lengkapi profilmu bertujuan untuk memudahkan pendataan dikampungmu
+        </p>
+        <div>
+          <div class="my-5">
+            <div>Nama</div>
+            <div><UInput v-model="formPersonal.name" /></div>
           </div>
 
-          <UButton
-            v-else
-            class="w-full"
-            @click="handleSelect(item)"
-            v-for="(item, index) in result"
-            :key="index"
-          >
-            <div class="px-4">
-              <div class="text-left truncate">
-                {{ item.name }} Rt {{ item.rt }}/{{ item.rw }}
-                {{ item.kelurahan }}
-                {{ item.kecamatan }}
+          <div class="my-5">
+            <div>Nomer Hp</div>
+            <div><UInput v-model="formPersonal.phone" /></div>
+          </div>
+        </div>
+      </div>
+      <div v-if="step === 2">
+        <UDivider class="mb-5">
+          <div class="text-2xl">Masukkan Alamatmu</div>
+        </UDivider>
+        <div v-if="stepSearchAddress === 1">
+          <div class="my-5 relative">
+            <div>Cari Alamatmu</div>
+            <div>
+              <UInput
+                :ui="{
+                  base: 'relative block w-full disabled:cursor-not-allowed disabled:opacity-75 disabled:bg-gray-300 focus:outline-none border-0',
+                }"
+                v-model="search"
+                @focus="handleFocus"
+                @focusout="handleFocusOut"
+              />
+            </div>
+            <div>
+              Alamatmu belum tersedia ?
+              <UButton class="mt-3" @click="stepSearchAddress = 2">
+                Daftar sekarang</UButton
+              >
+            </div>
+
+            <div
+              v-if="isFocus"
+              class="bg-white absolute shadow-md w-full rounded-lg p-5 mt-2"
+            >
+              <div v-if="isLoading">Data sedang dicari...</div>
+              <UButton
+                v-for="(item, index) in getResult"
+                :key="index"
+                class="w-full"
+                @click="handleGetSearch(item)"
+              >
+                <div class="truncate">
+                  {{ item.name }} Rt {{ item.rt }} Rw {{ item.rw }}
+                  {{ item.kecamatan }} {{ item.kelurahan }} {{ item.provinsi }}
+                  {{ item.kodepos }}
+                </div>
+              </UButton>
+            </div>
+            <div v-if="isResult" class="mt-5 font-bold">
+              <div class="my-5">
+                <div>Alamatmu</div>
+                <div>
+                  <UInput
+                    :ui="{
+                      base: 'relative block w-full disabled:cursor-not-allowed disabled:opacity-75 disabled:bg-gray-300 focus:outline-none border-0',
+                    }"
+                    v-model="formAddress.house_complex"
+                    @keydown="handleKeyDown"
+                    disabled
+                  />
+                </div>
+              </div>
+
+              <div class="my-5 flex gap-3">
+                <div class="w-full">
+                  <div>Rt</div>
+                  <div>
+                    <UInput
+                      :ui="{
+                        base: 'relative block w-full disabled:cursor-not-allowed disabled:opacity-75 disabled:bg-gray-300 focus:outline-none border-0',
+                      }"
+                      v-model="formAddress.rt"
+                      disabled
+                      @keydown="handleKeyDown"
+                    />
+                  </div>
+                </div>
+                <div class="w-full">
+                  <div>Rw</div>
+                  <div>
+                    <UInput
+                      :ui="{
+                        base: 'relative block w-full disabled:cursor-not-allowed disabled:opacity-75 disabled:bg-gray-300 focus:outline-none border-0',
+                      }"
+                      v-model="formAddress.rw"
+                      disabled
+                      @keydown="handleKeyDown"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="my-5">
+                <div>Kelurahan</div>
+                <div>
+                  <UInput
+                    :ui="{
+                      base: 'relative block w-full disabled:cursor-not-allowed disabled:opacity-75 disabled:bg-gray-300 focus:outline-none border-0',
+                    }"
+                    v-model="formAddress.kelurahan"
+                    disabled
+                    @keydown="handleKeyDown"
+                  />
+                </div>
+              </div>
+              <div class="my-5">
+                <div>Kecamatan</div>
+                <div>
+                  <UInput
+                    :ui="{
+                      base: 'relative block w-full disabled:cursor-not-allowed disabled:opacity-75 disabled:bg-gray-300 focus:outline-none border-0',
+                    }"
+                    v-model="formAddress.kecamatan"
+                    disabled
+                    @keydown="handleKeyDown"
+                  />
+                </div>
+              </div>
+              <div class="my-5">
+                <div>Provinsi</div>
+                <div>
+                  <UInput
+                    :ui="{
+                      base: 'relative block w-full disabled:cursor-not-allowed disabled:opacity-75 disabled:bg-gray-300 focus:outline-none border-0',
+                    }"
+                    v-model="formAddress.provinsi"
+                    disabled
+                    @keydown="handleKeyDown"
+                  />
+                </div>
+              </div>
+              <div class="my-5">
+                <div>kodepos</div>
+                <div>
+                  <UInput
+                    :ui="{
+                      base: 'relative block w-full disabled:cursor-not-allowed disabled:opacity-75 disabled:bg-gray-300 focus:outline-none border-0',
+                    }"
+                    v-model="formAddress.kodepos"
+                    disabled
+                    @keydown="handleKeyDown"
+                  />
+                </div>
+              </div>
+              <div class="my-5">
+                <div>blok</div>
+                <div>
+                  <UInput v-model="formPersonal.blok" />
+                </div>
               </div>
             </div>
-          </UButton>
+          </div>
         </div>
-        <div v-if="isSearch">
-          <div class="my-5">
-            <div>Nama</div>
-            <div><UInput v-model="formPersonal.name_warga" /></div>
+        <div v-else>
+          <div>
+            <div class="my-5">
+              <div>Alamat</div>
+              <div><UInput v-model="formAddress.house_complex" /></div>
+            </div>
+
+            <div class="my-5 flex gap-3">
+              <div class="w-full">
+                <div>Rt</div>
+                <div><UInput v-model="formAddress.rt" /></div>
+              </div>
+              <div class="w-full">
+                <div>Rw</div>
+                <div><UInput v-model="formAddress.rw" /></div>
+              </div>
+            </div>
+            <div class="my-5">
+              <div>Kelurahan</div>
+              <div><UInput v-model="formAddress.kelurahan" /></div>
+            </div>
+            <div class="my-5">
+              <div>Kecamatan</div>
+              <div><UInput v-model="formAddress.kecamatan" /></div>
+            </div>
+            <div class="my-5">
+              <div>Provinsi</div>
+              <div><UInput v-model="formAddress.provinsi" /></div>
+            </div>
+            <div class="my-5">
+              <div>kodepos</div>
+              <div><UInput v-model="formAddress.kodepos" /></div>
+            </div>
+            <div class="my-5">
+              <div>blok</div>
+              <div>
+                <UInput v-model="formPersonal.blok" />
+              </div>
+            </div>
           </div>
-          <div class="my-5">
-            <div>Blok Rumah</div>
-            <div><UInput v-model="formPersonal.blok" /></div>
-          </div>
-          <div class="my-5">
-            <div>Nomer Hp</div>
-            <div><UInput v-model="formPersonal.phone" /></div>
-          </div>
-          <UButton
-            :ui="{ base: 'w-full justify-center' }"
-            variant="soft"
-            color="primary"
-            @click="handleSave"
-            class="mt-5"
-            >Save</UButton
-          >
         </div>
       </div>
-      <div v-else>
-        <div class="mb-3">
-          <div>Masukkan alamat rumah</div>
-          <div>
-            <UInput
-              v-model="formAddress.house_complex"
-              :disabled="isDisabledAddress"
-            />
-          </div>
-        </div>
-        <div class="grid xl:grid-cols-5 grid-rows-1 gap-4 grid-cols-1">
-          <div>
-            <div>Rt</div>
-            <div>
-              <UInput
-                class="size"
-                v-model="formAddress.rt"
-                :disabled="isDisabledAddress"
-              />
-            </div>
-          </div>
-          <div>
-            <div>Rw</div>
-            <div>
-              <UInput
-                class="size"
-                v-model="formAddress.rw"
-                :disabled="isDisabledAddress"
-              />
-            </div>
-          </div>
-          <div>
-            <div>Kelurahan</div>
-            <div>
-              <UInput
-                class="size"
-                v-model="formAddress.kelurahan"
-                :disabled="isDisabledAddress"
-              />
-            </div>
-          </div>
-          <div>
-            <div>Kecamatan</div>
-            <div>
-              <UInput
-                class="size"
-                v-model="formAddress.kecamatan"
-                :disabled="isDisabledAddress"
-              />
-            </div>
-          </div>
-          <div>
-            <div>kodepos</div>
-            <div>
-              <UInput
-                class="size"
-                v-model="formAddress.kodepos"
-                :disabled="isDisabledAddress"
-              />
-            </div>
-          </div>
-          <div>
-            <div>Provinsi</div>
-            <div>
-              <UInput
-                class="size"
-                v-model="formAddress.provinsi"
-                :disabled="isDisabledAddress"
-              />
-            </div>
-          </div>
-        </div>
-        <div v-if="isSaveRegisterAddress">
-          <div class="my-5">
-            <div>Nama</div>
-            <div><UInput v-model="formPersonal.name_warga" /></div>
-          </div>
-          <div class="my-5">
-            <div>Blok Rumah</div>
-            <div><UInput v-model="formPersonal.blok" /></div>
-          </div>
-          <div class="my-5">
-            <div>Nomer Hp</div>
-            <div><UInput v-model="formPersonal.phone" /></div>
-          </div>
-        </div>
-        <UButton
-          :ui="{ base: 'w-full justify-center' }"
-          variant="soft"
-          color="primary"
-          @click="handleSave"
-          class="mt-5"
-          >Save</UButton
-        >
-      </div>
+
+      <UButton
+        :ui="{ base: 'w-full justify-center' }"
+        variant="soft"
+        color="primary"
+        @click="handleSave(step)"
+        class="mt-5"
+        >Save</UButton
+      >
     </UContainer>
   </div>
 </template>
 
 <script setup lang="ts">
-import { watchDebounced } from '@vueuse/core'
-import { supabase } from '@/utils/supabase'
-
 definePageMeta({
   layout: false,
 })
+const step = ref(1)
+const stepSearchAddress = ref(1)
+const search = ref('')
+const isLoading = ref(false)
+const getResult = ref<any[]>([])
+const store = storeToRefs(useGetuser())
 
-interface IComplex {
-  house_complex: string
-  kecamatan: string
-  kelurahan: string
-  kodepos: string
-  provinsi: string
-  rt: string
-  rw: string
-}
-
-interface Fx0ZEBVnkE {
-  id: string
+interface IName {
   name: string
-  kecamatan: string
-  kelurahan: string
-  kodepos: string
-  provinsi: string
-  rt: string
-  rw: string
-}
-
-// Generated by https://quicktype.io
-
-interface TopLevel {
   id: string
   house_complex: string
   created_at: string
@@ -222,137 +248,143 @@ interface TopLevel {
   rw: string
 }
 
-const result = ref<Fx0ZEBVnkE[]>([])
-const search = ref('')
-const formAddress = ref<IComplex>({
-  kecamatan: '',
-  kelurahan: '',
-  kodepos: '',
-  provinsi: '',
-  rt: '',
-  rw: '',
-  house_complex: '',
-})
+interface TopLevel {
+  name?: string
+  id: string
+  house_complex: string
+  created_at: string
+  updated_at: null
+  rt: string
+  provinsi: string
+  kodepos: string
+  kelurahan: string
+  kecamatan: string
+  rw: string
+}
+
 const formPersonal = ref({
-  id_complex: '',
+  id: store.userLogin.value.sub,
   phone: '',
-  id_warga: '',
-  name_warga: '',
+  name: '',
+  role: '',
+  email: store.userLogin.value.email,
   blok: '',
 })
-const isFocus = ref(false)
-const checkResult = ref(false)
-const register = ref(false)
-const isSearch = ref(false)
-const isLoading = ref(false)
-const isSaveRegisterAddress = ref(false)
-const isDisabledAddress = ref(false)
 
-watchDebounced(
-  () => search.value,
-  async (newValue) => {
-    checkResult.value = false
-    if (!newValue) return
-    isLoading.value = true
-    const { data } = await useFetch<{ data: Fx0ZEBVnkE[] }>(
-      '/api/search-address',
+const formAddress = ref({
+  house_complex: '',
+  provinsi: '',
+  kodepos: '',
+  kelurahan: '',
+  kecamatan: '',
+  rt: '',
+  rw: '',
+})
+
+const id_complex = ref('')
+const isResult = ref(false)
+const isFocus = ref(false)
+async function handleSave(e: number) {
+  if (e === 2) {
+    if (stepSearchAddress.value === 1) {
+      const { data: profile } = await useFetch<{ data: TopLevel[] }>(
+        '/api/settings-profile',
+        {
+          method: 'put',
+          body: {
+            house: id_complex.value,
+            id: store.userLogin.value.sub,
+            blok: formPersonal.value.blok,
+          },
+          server: false,
+          headers: {
+            'Content-Type': 'application/json',
+            id: store.userLogin.value.sub,
+          },
+        }
+      )
+      if (profile.value?.data) {
+        navigateTo('/')
+      }
+      return
+    }
+    const { data: address } = await useFetch<{ data: TopLevel[] }>(
+      '/api/settings-address',
       {
-        method: 'GET',
-        query: {
-          search: newValue,
+        method: 'post',
+        body: formAddress.value,
+        server: false,
+        headers: {
+          'Content-Type': 'application/json',
+          id: store.userLogin.value.sub,
         },
       }
     )
-    if (data.value && data.value?.data.length < 1) {
-      checkResult.value = true
+    if (address.value?.data) {
+      step.value = 2
     }
-    isLoading.value = false
-    result.value = data.value?.data as Fx0ZEBVnkE[]
-  },
-  { debounce: 500 }
-)
-
-watch(
-  () => search.value,
-  () => {
-    if (!search.value) {
-      isSearch.value = false
-    }
+    navigateTo('/')
+    return
   }
-)
-
-function Register() {
-  register.value = !register.value
+  const { data: profile } = await useFetch<{
+    data: {
+      id_complex: string
+      id: string
+      name: string
+      blok: string
+      phone: string
+      id_warga: string
+    }[]
+  }>('/api/settings-profile', {
+    method: 'POST',
+    body: formPersonal.value,
+    server: false,
+  })
+  if (profile.value?.data) {
+    step.value = 2
+  }
 }
 
-function handleBlur() {
-  setTimeout(() => {
-    isFocus.value = false
-  }, 300)
+function handleGetSearch(e: any) {
+  search.value = e.name
+  id_complex.value = e.id
+  formAddress.value = { ...e, house_complex: e.name || '' }
+  isResult.value = true
 }
 
 function handleFocus() {
   isFocus.value = true
 }
-
-function handleSelect(e: Fx0ZEBVnkE) {
-  search.value = e.name
-  formPersonal.value.id_complex = e.id
-  isSearch.value = true
-  handleBlur()
+function handleFocusOut() {
+  const i = setTimeout(() => {
+    isFocus.value = false
+    clearTimeout(i)
+  }, 350)
 }
 
-async function handleSave() {
-  try {
-    const { data } = await useFetch<{ user: any }>('/api/user', {
+function handleKeyDown(e: Event) {
+  e.preventDefault()
+  return false
+}
+
+watchDebounced(
+  () => search.value,
+  async (newValue) => {
+    if (!newValue) return
+    isLoading.value = true
+    const { data } = await useFetch<{ data: any[] }>('/api/search-address', {
       method: 'GET',
+      query: {
+        search: newValue,
+      },
     })
-    formPersonal.value.id_warga = data.value?.user?.id || ''
-  } catch (error) {
-    throw createError({ statusCode: 500, statusMessage: String(error) })
-    return
-  }
-  if (register.value) {
-    isSaveRegisterAddress.value = !isSaveRegisterAddress.value
-    if (isSaveRegisterAddress.value) {
-      const { data: address } = await useFetch<{ data: TopLevel[] }>(
-        '/api/save-address',
-        {
-          method: 'POST',
-          body: formAddress.value,
-        }
-      )
-      if (address.value?.data) {
-        isDisabledAddress.value = true
-      }
-      formPersonal.value.id_complex = address.value?.data[0].id || ''
-
-      return
+    isLoading.value = false
+    if (data.value && data.value?.data.length > 0) {
+      getResult.value = data.value.data
     }
-    const { data: address } = await useFetch<{ data: TopLevel[] }>(
-      '/api/settings-profile',
-      {
-        method: 'POST',
-        body: formPersonal.value,
-      }
-    )
-    if (address.value?.data) {
-      navigateTo('/')
-    }
-
-    return
-  }
-  const { data: address } = await useFetch<{ data: TopLevel[] }>(
-    '/api/settings-profile',
-    {
-      method: 'POST',
-      body: formPersonal.value,
-    }
-  )
-  if (address.value?.data) {
-    navigateTo('/')
-  }
-}
+  },
+  { debounce: 500 }
+)
 </script>
 
 <style scoped lang="scss">

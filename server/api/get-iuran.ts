@@ -3,6 +3,7 @@ import { supabase } from '@/utils/supabase'
 
 export default defineEventHandler(async (event) => {
   const path = getHeaders(event)
+  const query = getQuery(event)
 
   if (path['postman-token']) {
     throw createError({
@@ -10,24 +11,31 @@ export default defineEventHandler(async (event) => {
       message: 'Forbidden Access',
     })
   }
+
   try {
-    let { error: errMoney, data: contribution } = await supabase
-      .from('total_money')
-      .select('*')
-    let { error: errWarga, data: warga } = await supabase
-      .from('total_warga')
-      .select('*')
-    if (errMoney || errWarga) {
+    let { data, error } = await supabase
+      .from('db_contribution')
+      .select(
+        `
+      *,
+      ...db_user(
+        name
+      ),
+      ...db_complex(
+        house_complex
+      )
+      `
+      )
+      .eq('id_complex', query.v)
+
+    if (error) {
       throw createError({
         statusCode: 403,
-        message: String(errWarga?.message || errMoney?.message),
+        message: String(error.message),
       })
     }
     return {
-      data: {
-        ...contribution?.[0],
-        ...warga?.[0],
-      },
+      data,
     }
   } catch (error) {
     return {

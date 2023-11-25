@@ -9,9 +9,10 @@ export default defineEventHandler(async (event) => {
     ?.split(';')
     .map((s) => s.split('=').map((s) => s.trim()))
     .reduce((m, [k, v]) => (m.set(k, v), m), new Map())
-  const jwt = parseJwt(cookie?.get('sb-access-token'))
+  // const jwt = parseJwt(cookie?.get('sb-access-token'))
 
-  if (String(path['user-agent'])?.toLocaleLowerCase().includes('postman')) {
+  const query = getQuery(event)
+  if (path['postman-token']) {
     throw createError({
       statusCode: 403,
       message: 'Forbidden Access',
@@ -20,18 +21,21 @@ export default defineEventHandler(async (event) => {
 
   try {
     let { data, error } = await supabase
-      .from('db_warga_complex')
+      .from('db_user')
       .select(
         `
-        id_complex,
-        id,
-        name: name_warga,
-        blok,
-        phone,
-        id_warga
-      `
+    id,
+    name,
+    email,
+    role,
+    complex: id_complex(
+      *
+    ),
+    blok
+    `
       )
-      .eq('id_warga', jwt.sub)
+      .eq('id', query.q)
+    console.log(data, 'inidata')
     if (error) {
       throw createError({
         statusCode: 403,

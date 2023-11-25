@@ -64,7 +64,6 @@
 
 <script setup lang="ts">
 const isOpen = ref(false)
-const { $user } = useNuxtApp()
 
 const columns = ref([
   {
@@ -93,11 +92,11 @@ interface datas {
   name_warga: string
   blok: string
 }
-const user = storeToRefs(useGetuser())
-console.log(user.user.value)
+const user = useGetuser()
+
 const { data } = await useFetch<{ data: IMember }>('/api/get-member', {
   query: {
-    // v: user.user.value?.includes(item => item.),
+    v: user.user && user.user[0].complex.id,
   },
 })
 const item = computed(() => data.value?.data)

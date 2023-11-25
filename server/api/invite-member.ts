@@ -4,7 +4,7 @@ import { supabase } from '@/utils/supabase'
 export default defineEventHandler(async (event) => {
   const path = getHeaders(event)
 
-  if (String(path['user-agent'])?.toLocaleLowerCase().includes('postman')) {
+  if (path['postman-token']) {
     throw createError({
       statusCode: 403,
       message: 'Forbidden Access',

@@ -8,6 +8,9 @@ export default defineNuxtConfig({
     icons: ['ion'],
   },
   devtools: { enabled: true, vscode: {} },
+  supabase: {
+    redirect: false,
+  },
   modules: [
     '@nuxt/content',
     '@nuxt/ui',
@@ -22,6 +25,11 @@ export default defineNuxtConfig({
           Mulish: true,
           Nunito: true,
         },
+        prefetch: false,
+        preconnect: false,
+        preload: false,
+        download: true,
+        base64: false,
       },
     ],
     [

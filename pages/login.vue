@@ -68,7 +68,6 @@
 import { object, string } from 'yup'
 import type { InferType } from 'yup'
 import type { FormSubmitEvent } from '@nuxt/ui/dist/runtime/types'
-import { supabase } from '~/utils/supabase'
 
 definePageMeta({
   layout: false,
@@ -84,23 +83,20 @@ const state = ref({
   email: '',
   password: '',
 })
-const token = useCookie('token')
 
-// const {
-//   data: { user },
-// } = await supabase.auth.getUser()
+const sb_access = useCookie('sb_access')
 
 async function submit(event: FormSubmitEvent<Schema>) {
   // Do something with event.data
-  // console.log(event.data)
+  console.log(event.data)
   const { data } = await useFetch<{ data: any }>('/api/login', {
     method: 'POST',
+    body: event.data,
   })
-  if (data) {
-    token.value = data.value?.data
-    navigateTo('/')
+  if (data.value) {
+    sb_access.value = data.value?.data.session.access_token
+    window.location.href = '/'
   }
-  console.log(data)
 }
 async function handleRegister() {
   const { data } = await useFetch('/api/invite-member')

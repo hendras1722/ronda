@@ -6,9 +6,10 @@
         >Tambah</UButton
       >
     </div>
+
     <MSATable
       :columns="columns"
-      :rows="item"
+      :rows="itemIuran"
       :ui="{
         base: 'rounded-lg border border-collapse border-tools-table-outline border-[#ccc] border-1 w-full',
         divide: 'divide-y divide-[#ccc] dark:divide-gray-800',
@@ -23,68 +24,119 @@
 
     <UModal v-model="isOpenModal">
       <div class="p-4">
-        <div></div>
-        <UInput />
+        <UForm :state="state" @submit="submit">
+          <UFormGroup
+            label="Warga"
+            name="id_warga"
+            autocomplete="false"
+            required
+          >
+            <USelect
+              v-model="state.id_warga"
+              :options="options"
+              option-attribute="name"
+            />
+          </UFormGroup>
+
+          <UFormGroup
+            class="mt-3"
+            label="Uang sebesar"
+            name="contribution"
+            autocomplete="false"
+            required
+          >
+            <UInput v-model="state.contribution" />
+          </UFormGroup>
+          <div class="mt-4">
+            <UButton
+              class="w-full ml-auto mr-auto block"
+              type="submit"
+              variant="soft"
+              color="blue"
+              size="lg"
+            >
+              Submit
+            </UButton>
+          </div>
+        </UForm>
       </div>
     </UModal>
-
-    <USlideover v-model="isOpen">
-      <UCard
-        class="flex flex-col flex-1"
-        :ui="{
-          body: { base: 'flex-1' },
-          ring: '',
-          divide: 'divide-y divide-gray-100 dark:divide-gray-800',
-        }"
-      >
-        <template #header>
-          <div class="flex items-center justify-between">
-            <h3
-              class="text-base font-semibold leading-6 text-gray-900 dark:text-white"
-            >
-              Slideover
-            </h3>
-            <UButton
-              color="gray"
-              variant="ghost"
-              icon="i-heroicons-x-mark-20-solid"
-              class="-my-1"
-              @click="isOpen = false"
-            />
-          </div>
-        </template>
-      </UCard>
-    </USlideover>
   </div>
 </template>
 
 <script setup lang="ts">
+interface IMember {
+  created_at: Date
+  id_complex: string
+  phone: number | null
+  id: string
+  id_warga: string
+  name: string
+  blok: string
+}
+
 const isOpen = ref(false)
 const isOpenModal = ref(false)
-const item = ref([])
 const columns = ref([
   {
     key: 'id',
     label: 'No',
   },
   {
-    key: 'member',
+    key: 'name',
     label: 'Nama Warga',
   },
   {
-    key: 'iuran',
+    key: 'contribution',
     label: 'Iuran',
   },
   {
-    key: 'updated_at',
+    key: 'created_at',
     label: 'Tanggal',
   },
   {
     key: 'actions',
   },
 ])
-const token = useCookie('token')
-console.log(token.value)
+const options = ref<{ name: string; value: string }[]>([])
+const state = ref({
+  id_warga: '',
+  contribution: '',
+})
+const user = useGetuser()
+
+const { data: iuran } = await useFetch<{ data: any[] }>('/api/get-iuran', {
+  query: {
+    v: user.user && user.user[0].complex.id,
+  },
+})
+const itemIuran = computed(() => iuran.value?.data)
+
+const { data } = await useFetch<{ data: IMember[] }>('/api/get-member', {
+  method: 'GET',
+  query: {
+    v: user.user && user.user[0].complex.id,
+  },
+})
+if (data.value?.data) {
+  const item = data.value?.data.map((item) => {
+    return {
+      name: item.name,
+      value: item.id,
+    }
+  })
+  options.value = item
+}
+
+async function submit() {
+  const { data } = await useFetch<{ data: any }>('/api/iuran', {
+    method: 'POST',
+    body: state.value,
+  })
+  if (data.value) {
+    console.log(data.value)
+  }
+}
 </script>
 
 <style lang="scss" scoped></style>

@@ -3,31 +3,28 @@ import { supabase } from '@/utils/supabase'
 
 export default defineEventHandler(async (event) => {
   const path = getHeaders(event)
-
+  const body = await readBody(event)
   if (path['postman-token']) {
     throw createError({
       statusCode: 403,
       message: 'Forbidden Access',
     })
   }
+  console.log(body, 'inibody')
   try {
-    let { error: errMoney, data: contribution } = await supabase
-      .from('total_money')
-      .select('*')
-    let { error: errWarga, data: warga } = await supabase
-      .from('total_warga')
-      .select('*')
-    if (errMoney || errWarga) {
+    const { data, error } = await supabase
+      .from('db_contribution')
+      .upsert(body)
+      .select()
+
+    if (error) {
       throw createError({
         statusCode: 403,
-        message: String(errWarga?.message || errMoney?.message),
+        message: String(error.message),
       })
     }
     return {
-      data: {
-        ...contribution?.[0],
-        ...warga?.[0],
-      },
+      data,
     }
   } catch (error) {
     return {

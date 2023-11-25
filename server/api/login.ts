@@ -3,18 +3,15 @@ import { supabase } from '@/utils/supabase'
 
 export default defineEventHandler(async (event) => {
   const path = getHeaders(event)
-
-  if (String(path['user-agent'])?.toLocaleLowerCase().includes('postman')) {
+  const body = await readBody(event)
+  if (path['postman-token']) {
     throw createError({
       statusCode: 403,
       message: 'Forbidden Access',
     })
   }
   try {
-    let { data, error } = await supabase.auth.signInWithPassword({
-      email: 'muhsyahendraa1722@gmail.com',
-      password: '123123321',
-    })
+    let { data, error } = await supabase.auth.signInWithPassword(body)
 
     // let { data, error } = await supabase.auth.admin.inviteUserByEmail(
     //   'muhsyahendraa1722@gmail.com'

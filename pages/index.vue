@@ -59,6 +59,8 @@ interface IGraphicCount {
   total_money: number
   total_warga: number
 }
+const store = storeToRefs(useGetuser())
+console.log(store.user.value)
 
 const { data } = await useFetch<{ data: IGraphicCount }>('/api/dashboard')
 const countDashboard = computed(() => data.value?.data)

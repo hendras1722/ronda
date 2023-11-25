@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
       message: 'Forbidden Access',
     })
   }
-  if (String(path['user-agent'])?.toLocaleLowerCase().includes('postman')) {
+  if (path['postman-token']) {
     throw createError({
       statusCode: 403,
       message: 'Forbidden Access',
@@ -33,6 +33,7 @@ export default defineEventHandler(async (event) => {
         `
       )
       .ilike('house_complex', `%${body.search}%`)
+    console.log(data, 'inidata')
     if (error) {
       throw createError({
         statusCode: 403,

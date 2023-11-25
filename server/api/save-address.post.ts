@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
   const path = getHeaders(event)
   const body = await readBody(event)
 
-  if (String(path['user-agent'])?.toLocaleLowerCase().includes('postman')) {
+  if (path['postman-token']) {
     throw createError({
       statusCode: 403,
       message: 'Forbidden Access',
