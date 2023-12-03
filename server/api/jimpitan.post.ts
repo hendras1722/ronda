@@ -3,6 +3,7 @@ import { supabase } from '@/utils/supabase'
 
 export default defineEventHandler(async (event) => {
   const path = getHeaders(event)
+  const body = await readBody(event)
 
   if (path['postman-token']) {
     throw createError({
@@ -11,14 +12,10 @@ export default defineEventHandler(async (event) => {
     })
   }
   try {
-    let { data, error } = await supabase
-      .from('db_patrol')
-      .select(
-        `
-        day
-        `
-      )
-      .eq('id_complex', '08ce8193-54c3-4f3c-bf60-2dead7b68351')
+    const { data, error } = await supabase
+      .from('db_jimpitan')
+      .upsert(body)
+      .select()
 
     if (error) {
       throw createError({

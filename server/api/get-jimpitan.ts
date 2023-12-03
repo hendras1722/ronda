@@ -1,9 +1,10 @@
 import { createError } from 'h3'
 import { supabase } from '@/utils/supabase'
-import { serverSupabaseServiceRole } from '#supabase/server'
+import { endOfDay, startOfDay } from 'date-fns'
+import { serverSupabaseClient } from '#supabase/server'
 
 export default defineEventHandler(async (event) => {
-  const client = await serverSupabaseServiceRole(event)
+  const client = await serverSupabaseClient(event)
   const path = getHeaders(event)
   const cookie = path.cookie
     ?.split(';')
@@ -19,24 +20,34 @@ export default defineEventHandler(async (event) => {
     })
   }
 
+  const startDate = startOfDay(new Date()).getTime()
+  const endDate = endOfDay(new Date()).getTime()
+
   try {
     let { data, error } = await client
       .from('db_user')
       .select(
         `
+      *,
+      jimpitan: db_jimpitan(
         id,
-        name,
-        email,
-        role,
-        complex: id_complex(
-          *
-        ),
-        blok
-    `
+        created_at
       )
-      .eq('id', query.q || '')
-
-    const result = data?.filter((item) => item.complex)
+      `
+      )
+      .eq('id_complex', query.q || '')
+    const result =
+      data &&
+      data?.map((item: any) => {
+        return {
+          ...item,
+          jimpitan: item.jimpitan.filter(
+            (item: any) =>
+              new Date(item.created_at).getTime() >= startDate &&
+              new Date(item.created_at).getTime() <= endDate
+          ),
+        }
+      })
 
     if (error) {
       throw createError({
@@ -45,8 +56,7 @@ export default defineEventHandler(async (event) => {
       })
     }
     return {
-      data,
-      isComplex: (result && result?.length > 0) || null,
+      data: result,
     }
   } catch (error) {
     return {

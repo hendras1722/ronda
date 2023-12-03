@@ -1,6 +1,8 @@
 <template>
   <div>
-    <div class="text-2xl font-extrabold mb-5">Warga: Perumahan Barito 1</div>
+    <div class="text-2xl font-extrabold mb-5">
+      Warga: {{ user.user.data[0].complex.house_complex }}
+    </div>
     <div class="mb-5">
       <div class="grid grid-cols-12 grid-rows-1 gap-4">
         <div class="col-span-5">
@@ -93,13 +95,13 @@ interface datas {
   blok: string
 }
 const user = useGetuser()
-
-const { data } = await useFetch<{ data: IMember }>('/api/get-member', {
+const item = ref<IMember[]>()
+const { data } = await useFetch<{ data: IMember[] }>('/api/get-member', {
   query: {
-    v: user.user && user.user[0].complex.id,
+    v: user.user && user.user.data[0]?.complex?.id,
   },
 })
-const item = computed(() => data.value?.data)
+item.value = data.value?.data
 </script>
 
 <style lang="scss" scoped></style>

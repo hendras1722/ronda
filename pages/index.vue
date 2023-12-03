@@ -60,7 +60,18 @@ interface IGraphicCount {
   total_warga: number
 }
 const store = storeToRefs(useGetuser())
-console.log(store.user.value)
+// definePageMeta({
+//   layout: false,
+//   middleware: [
+//     function () {
+//       const { user } = storeToRefs(useGetuser())
+//       if (!user.value.isComplex) {
+//         return navigateTo('/settings-profile')
+//       }
+//     },
+//   ],
+// })
+// console.log(store.user.value)
 
 const { data } = await useFetch<{ data: IGraphicCount }>('/api/dashboard')
 const countDashboard = computed(() => data.value?.data)

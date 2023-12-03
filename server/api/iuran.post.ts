@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
       message: 'Forbidden Access',
     })
   }
-  console.log(body, 'inibody')
+  // console.log(body, 'inibody')
   try {
     const { data, error } = await supabase
       .from('db_contribution')

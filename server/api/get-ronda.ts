@@ -6,7 +6,6 @@ export default defineEventHandler(async (event) => {
   const client = await serverSupabaseClient(event)
   const path = getHeaders(event)
   const query = getQuery(event)
-
   if (path['postman-token']) {
     throw createError({
       statusCode: 403,
@@ -15,20 +14,15 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    let { data, error } = await client
-      .from('db_contribution')
-      .select(
-        `
-      *,
-      ...db_user(
-        name
-      ),
-      ...db_complex(
-        house_complex
-      )
-      `
-      )
-      .eq('id_complex', query.v || '')
+    // let { data, error } = await supabase.from('db_patrol').select()
+    // // .eq('id_complex', query.q)
+
+    let { data, error } = await client.from('db_patrol').select(`
+    *,
+    ...db_user(
+      name
+    )
+    `)
 
     if (error) {
       throw createError({

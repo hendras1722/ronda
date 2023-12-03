@@ -46,21 +46,6 @@
         </div>
       </div>
     </div>
-    <div
-      class="w-96 h-80 p-8 flex justify-center items-center rounded-tr-md rounded-br-md bg-blue-600"
-    >
-      <div class="w-full">
-        <div class="text-center text-2xl font-bold text-white">Sign Out</div>
-        <div class="mt-5 text-white">
-          Create an account to start ordering today!
-        </div>
-        <div class="text-center mt-5">
-          <UButton variant="outline" color="white" @click="handleRegister"
-            >Register</UButton
-          >
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -72,6 +57,21 @@ import type { FormSubmitEvent } from '@nuxt/ui/dist/runtime/types'
 
 definePageMeta({
   layout: false,
+  middleware: [
+    function (from) {
+      const user = useGetuser()
+      const path = from.path.replace('jimpitan-', '')
+      const regex = path.split(/[\/-]/gm).filter(Boolean)
+      regex.splice(regex.length - 1, 1)
+      const address = user.user.data.filter(
+        (item) => item.complex.link === regex[0]
+      )
+
+      if (address.length > 0) {
+        return navigateTo('/jimpitan-' + address[0].complex.link)
+      }
+    },
+  ],
 })
 const schema = object({
   email: string(),
@@ -86,7 +86,7 @@ const state = ref({
 })
 
 const sb_access = useCookie('sb_access')
-
+// sb_access.value = null
 // let { data, error } = await supabase.auth.auth.inviteUserByEmail('someone@email.com')
 
 async function submit(event: FormSubmitEvent<Schema>) {
@@ -98,7 +98,7 @@ async function submit(event: FormSubmitEvent<Schema>) {
   })
   if (data.value) {
     sb_access.value = data.value?.data.session.access_token
-    window.location.href = '/settings-profile'
+    window.location.reload()
   }
 }
 async function handleRegister() {

@@ -14,11 +14,11 @@ export function useHttp<T>(url: string, opts: CustomFetchOptions<T> = {}) {
     },
     // onResponse({ response }) {
     //   if (process.server)
-    //     console.log('useApi onResponse', response._data)
+    //     // console.log('useApi onResponse', response._data)
     // },
     async onResponseError({ response }) {
       // if (process.server)
-      //   console.log('useApi onResponseError', response._data)
+      //   // console.log('useApi onResponseError', response._data)
 
       const excludedInterceptor = (statusCode: number): boolean => {
         if (!excludeInterceptor) return false

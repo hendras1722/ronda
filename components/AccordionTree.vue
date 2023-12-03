@@ -103,7 +103,7 @@ watch(
   () => stateLink.value,
   (newValue) => {
     if (newValue) {
-      console.log(accordion.value)
+      // console.log(accordion.value)
       handleAccordionChildren(route.fullPath)
     }
   }
@@ -129,7 +129,7 @@ const showOpenAccordion = (e: { children: { to: string }[] }) => {
 const handleAccordionChildren = (e: string) => {
   stateLink.value = false
   if (!accordion.value || accordion.value.length < 1) return
-  // console.log(props.itemMenu, 'iniprops.itemMenu')
+  // // console.log(props.itemMenu, 'iniprops.itemMenu')
   // const itemSidebar = props.itemMenu.children.filter(
   //   (item: any) => item.children && item.children.length > 0
   // )

@@ -1,4 +1,9 @@
 export interface IUser {
+  data: IUserData[]
+  isComplex: boolean
+}
+
+export interface IUserData {
   id: string
   name: string
   email: string
@@ -18,6 +23,7 @@ export interface Complex {
   kelurahan: string
   kecamatan: string
   rw: string
+  link: string
 }
 
 interface IUserLogin {
@@ -49,8 +55,12 @@ interface AppMetadata {
 interface UserMetadata {}
 
 export const useGetuser = defineStore('useGetuser', () => {
-  const user = ref<IUser[]>()
-  const userLogin = ref<IUserLogin[]>()
+  const user = ref<IUser>({
+    data: [],
+    isComplex: false,
+  })
+  const userLogin = ref<IUserLogin>()
+
   return {
     user,
     userLogin,

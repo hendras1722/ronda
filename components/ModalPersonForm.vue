@@ -68,7 +68,7 @@ function open() {
 }
 async function handleSubmit() {
   // const useSingloeTown = await useSingletonGureeeh2()
-  // console.log(useSingloeTown)
+  // // console.log(useSingloeTown)
   isOpenRef.value = false
 }
 defineExpose({

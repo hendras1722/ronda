@@ -2,7 +2,7 @@ import { setupCalendar, Calendar, DatePicker } from 'v-calendar'
 import 'v-calendar/style.css'
 
 export default defineNuxtPlugin((nuxtApp) => {
-  console.log('ioioi')
+  // console.log('ioioi')
   // Doing something with nuxtApp
   nuxtApp.vueApp.use(setupCalendar, {})
 

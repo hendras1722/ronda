@@ -28,7 +28,7 @@
           </div>
         </div>
         <UDropdown
-          :items="items"
+          :items="itemsDropdown"
           :popper="{ placement: 'bottom-start' }"
           :ui="{ item: { disabled: 'cursor-text select-text' } }"
         >
@@ -36,12 +36,26 @@
             <div class="text-left">
               <p>Signed in as</p>
               <div class="flex items-center gap-3 mt-3">
-                <img :src="item.avatar.src" class="w-6 h-6 rounded-full" />
                 <p class="truncate font-medium text-gray-900 dark:text-white">
                   {{ item.label }}
                 </p>
               </div>
             </div>
+          </template>
+          <template #kompleks="{ item }">
+            <div class="text-left w-full">
+              <p>{{ item.label }}</p>
+              <UButton
+                v-for="(data, i) in complex"
+                :key="i"
+                class="w-full my-3 last:mb-0"
+              >
+                {{ data?.complex?.house_complex }}
+              </UButton>
+            </div>
+          </template>
+          <template #sign_out>
+            <UButton @click="logout" class="w-full"> Logout </UButton>
           </template>
           <UButton>
             <img
@@ -62,6 +76,15 @@ const breakpoints = useBreakpoints(breakpointsTailwind)
 const smallerMd = breakpoints.smaller('md')
 const colorMode = useColorMode()
 const appConfig = useAppConfig()
+
+const user = useGetuser()
+
+const name = computed(() => {
+  return (user.user && user.user.data[0]?.name) || ''
+})
+const complex = computed(() => {
+  return user.user.data
+})
 
 const isDark = computed({
   get() {
@@ -99,25 +122,50 @@ const openSidebar = () => {
     body.classList.remove('w-0')
   }
 }
-
-const items = [
+const itemsDropdown = ref([
   [
     {
-      label: 'Muh Syahendra A',
+      label: name.value || '',
       slot: 'profile',
-      avatar: {
-        src: 'https://avatars.githubusercontent.com/u/739984?v=4',
-      },
       disabled: true,
+    },
+  ],
+  [
+    {
+      label: 'Kompleks',
+      slot: 'kompleks',
+      disabled: true,
+    },
+  ],
+  [
+    {
+      label: 'Pengaturan',
+      slot: 'settings',
     },
   ],
   [
     {
       label: 'Sign out',
       icon: 'i-heroicons-arrow-left-on-rectangle',
+      slot: 'sign_out',
+      disabled: true,
     },
   ],
-]
+])
+
+async function logout() {
+  let { error } = await supabase.auth.signOut()
+  if (error) {
+    console.log(error)
+  } else {
+    const sb_access = useCookie('sb_access')
+    const token = useCookie('token')
+    sb_access.value = null
+    token.value = null
+
+    navigateTo('/login')
+  }
+}
 defineExpose({
   openSidebar,
 })

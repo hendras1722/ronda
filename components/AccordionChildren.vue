@@ -86,7 +86,7 @@ const { stateLink } = storeToRefs(useBreadcumbStore())
 
 const accordion = templateRef('acordion', [])
 const accordionChildren = templateRef('acordionChildren', [])
-console.log(accordion, accordionChildren)
+// console.log(accordion, accordionChildren)
 
 const props = defineProps({
   itemMenu: {

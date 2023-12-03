@@ -1,26 +1,50 @@
 <template>
   <div>
     <div class="text-2xl font-extrabold mb-5">Iuran Warga</div>
-    <div class="flex justify-end py-4">
-      <UButton variant="solid" color="green" @click="isOpenModal = true"
-        >Tambah</UButton
-      >
+    <div className="grid grid-cols-12 grid-rows-1 gap-4 mb-5">
+      <div className="col-span-5">
+        <UInput
+          placeholder="Search..."
+          icon="i-heroicons-magnifying-glass-20-solid"
+          autocomplete="off"
+          :ui="{ icon: { trailing: { pointer: '' } } }"
+        >
+          <template #trailing>
+            <UButton
+              color="gray"
+              variant="link"
+              icon="i-heroicons-x-mark-20-solid"
+              :padded="false"
+            />
+          </template>
+        </UInput>
+      </div>
+      <div className="flex justify-end col-start-12">
+        <UButton variant="solid" color="green" @click="isOpenModal = true"
+          >Tambah</UButton
+        >
+      </div>
     </div>
 
-    <MSATable
-      :columns="columns"
-      :rows="itemIuran"
-      :ui="{
-        base: 'rounded-lg border border-collapse border-tools-table-outline border-[#ccc] border-1 w-full',
-        divide: 'divide-y divide-[#ccc] dark:divide-gray-800',
-      }"
-    >
-      <template #actions-data>
-        <UButton :variant="'soft'" color="blue" @click="isOpen = true"
-          >Detail</UButton
-        >
-      </template>
-    </MSATable>
+    <div class="overflow-auto">
+      <MSATable
+        :columns="columns"
+        :rows="itemIuran"
+        :ui="{
+          base: 'rounded-lg border border-collapse border-tools-table-outline border-[#ccc] border-1 w-full',
+          divide: 'divide-y divide-[#ccc] dark:divide-gray-800',
+        }"
+      >
+        <template #created_at-data="{ row }">
+          <div>{{ convertDate(row.created_at) }}</div>
+        </template>
+        <template #actions-data>
+          <UButton :variant="'soft'" color="blue" @click="isOpen = true"
+            >Detail</UButton
+          >
+        </template>
+      </MSATable>
+    </div>
 
     <UModal v-model="isOpenModal">
       <div class="p-4">
@@ -65,6 +89,8 @@
 </template>
 
 <script setup lang="ts">
+import { format } from 'date-fns'
+
 interface IMember {
   created_at: Date
   id_complex: string
@@ -78,10 +104,6 @@ interface IMember {
 const isOpen = ref(false)
 const isOpenModal = ref(false)
 const columns = ref([
-  {
-    key: 'id',
-    label: 'No',
-  },
   {
     key: 'name',
     label: 'Nama Warga',
@@ -107,7 +129,7 @@ const user = useGetuser()
 
 const { data: iuran } = await useFetch<{ data: any[] }>('/api/get-iuran', {
   query: {
-    v: user.user && user.user[0].complex.id,
+    v: user.user && user.user.data[0].complex.id,
   },
 })
 const itemIuran = computed(() => iuran.value?.data)
@@ -115,7 +137,7 @@ const itemIuran = computed(() => iuran.value?.data)
 const { data } = await useFetch<{ data: IMember[] }>('/api/get-member', {
   method: 'GET',
   query: {
-    v: user.user && user.user[0].complex.id,
+    v: user.user && user.user.data[0].complex.id,
   },
 })
 if (data.value?.data) {
@@ -134,8 +156,13 @@ async function submit() {
     body: state.value,
   })
   if (data.value) {
-    console.log(data.value)
+    // console.log(data.value)
   }
+}
+
+function convertDate(e: any) {
+  if (!e) return
+  return format(new Date(e), 'dd MMMM yyyy')
 }
 </script>
 

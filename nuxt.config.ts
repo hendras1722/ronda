@@ -3,6 +3,9 @@ export default defineNuxtConfig({
   app: {
     rootId: 'MSA',
     rootTag: 'MSA',
+    head: {
+      title: 'Ronda Indonesia',
+    },
   },
   ui: {
     icons: ['ion'],

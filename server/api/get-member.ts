@@ -1,8 +1,9 @@
 import { createError } from 'h3'
 import { supabase } from '@/utils/supabase'
-import { useGetuser } from '~/stores/getuser'
+import { serverSupabaseClient } from '#supabase/server'
 
 export default defineEventHandler(async (event) => {
+  const client = await serverSupabaseClient(event)
   const path = getHeaders(event)
   const query = getQuery(event)
 
@@ -14,7 +15,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    let { data, error } = await supabase
+    let { data, error } = await client
       .from('db_user')
       .select(
         `
@@ -29,8 +30,8 @@ export default defineEventHandler(async (event) => {
           phone
           `
       )
-      .eq('id_complex', query.v)
-    console.log(data, 'inidata')
+      .eq('id_complex', query.v || '')
+
     if (error) {
       throw createError({
         statusCode: 403,

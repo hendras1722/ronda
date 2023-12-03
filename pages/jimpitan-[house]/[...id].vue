@@ -1,0 +1,322 @@
+<template>
+  <div class="p-10">
+    <UContainer
+      class="px-3 py-5 max-w-full bg-white shadow-md rounded-lg dark:bg-gray-900 dark:text-white dark:border dark:border-white"
+    >
+      <!-- {{ slideIndex }}
+      {{ item[slideIndex] }} -->
+      <div class="flex justify-center">Rumah dari:</div>
+      <div class="text-center mt-3">
+        {{ item?.[slideIndex - 1]?.name }}
+      </div>
+      <div class="text-center mt-5 grid place-items-center mb-5">
+        <div class="flex justify-between items-center">
+          <UButton @click="plusSlides(-1)">
+            <UIcon
+              :name="'i-ion-caret-back-outline'"
+              class="sm:text-[58px] text-[32px]"
+            ></UIcon>
+          </UButton>
+          <div class="slideshow-container relative">
+            <UIcon
+              :name="'i-ion-ios-home'"
+              class="sm:text-[308px] text-[58px]"
+            ></UIcon>
+            <div>
+              <div
+                v-for="(itemData, index) in item"
+                :key="index"
+                class="absolute left-0 right-0 mx-0 top-0 bottom-0 my-0 sm:mt-32 mt-5 sm:text-xl text-[8px] uppercase text-white z-10"
+              >
+                <div class="mySlides fade font-extrabold">
+                  {{ itemData.blok }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <UButton @click="plusSlides(1)">
+            <UIcon
+              :name="'i-ion-caret-forward-outline'"
+              class="sm:text-[58px] text-[32px]"
+            ></UIcon>
+          </UButton>
+        </div>
+
+        <UInput type="telp" v-model="money">
+          <template #leading>
+            <div>Rp</div>
+          </template>
+        </UInput>
+
+        <div class="mt-5" v-if="item?.[slideIndex - 1]?.jimpitan.length < 1">
+          <UButton variant="solid" color="primary" @click="handleSubmit">
+            Ambil
+          </UButton>
+        </div>
+      </div>
+      <MSATable
+        :columns="columns"
+        :rows="item"
+        :ui="{
+          base: 'rounded-lg border border-collapse border-tools-table-outline border-[#ccc] border-1 w-full',
+          divide: 'divide-y divide-[#ccc] dark:divide-white',
+        }"
+      >
+        <template #status-data="{ row }">
+          <div>
+            <div v-if="row?.jimpitan?.length > 0">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="32"
+                height="32"
+                viewBox="0 0 512 512"
+              >
+                <path
+                  fill="#61e563"
+                  d="M400 48H112a64.07 64.07 0 0 0-64 64v288a64.07 64.07 0 0 0 64 64h288a64.07 64.07 0 0 0 64-64V112a64.07 64.07 0 0 0-64-64Zm-35.75 138.29l-134.4 160a16 16 0 0 1-12 5.71h-.27a16 16 0 0 1-11.89-5.3l-57.6-64a16 16 0 1 1 23.78-21.4l45.29 50.32l122.59-145.91a16 16 0 0 1 24.5 20.58Z"
+                />
+              </svg>
+            </div>
+            <div v-else>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="32"
+                height="32"
+                viewBox="0 0 512 512"
+              >
+                <path
+                  fill="#fafafa"
+                  d="M400 48H112a64.07 64.07 0 0 0-64 64v288a64.07 64.07 0 0 0 64 64h288a64.07 64.07 0 0 0 64-64V112a64.07 64.07 0 0 0-64-64Zm-35.75 138.29l-134.4 160a16 16 0 0 1-12 5.71h-.27a16 16 0 0 1-11.89-5.3l-57.6-64a16 16 0 1 1 23.78-21.4l45.29 50.32l122.59-145.91a16 16 0 0 1 24.5 20.58Z"
+                />
+              </svg>
+            </div>
+          </div>
+        </template>
+      </MSATable>
+    </UContainer>
+  </div>
+</template>
+
+<script setup lang="ts">
+definePageMeta({
+  layout: false,
+  middleware: [
+    function (from) {
+      const user = useGetuser()
+      const path = from.path.replace('jimpitan-', '')
+      const regex = path.replace(/^\//gm, '')
+      const sb_access = useCookie('sb_access')
+
+      const jwt = sb_access.value
+
+      const address = user.user.data.filter(
+        (item) => item.complex.link === regex
+      )
+
+      if (!jwt) {
+        return navigateTo(from.path + '/login')
+      }
+      console.log(address, user.user.data, regex, 'adda')
+      if (address.length < 1) {
+        return abortNavigation({
+          statusCode: 403,
+          statusMessage: 'Forbidden access',
+        })
+      }
+
+      if (process.client) {
+        const data = parseJwt(jwt)
+
+        if (Date.now() >= data.exp * 1000 && from.path !== '/login') {
+          return navigateTo('/login')
+        }
+      }
+    },
+  ],
+})
+const columns = ref([
+  {
+    key: 'blok',
+    label: 'Rumah Blok',
+  },
+  {
+    key: 'status',
+    label: 'Status',
+  },
+])
+const slideIndex = ref(0)
+const item = ref<any[]>([])
+const money = ref(0)
+const route = useRoute()
+const user = useGetuser()
+
+onMounted(() => {
+  nextTick(() => {
+    showSlides(slideIndex.value)
+  })
+})
+
+// Next/previous controls
+function plusSlides(n: number) {
+  showSlides((slideIndex.value += n))
+}
+
+function showSlides(n: number) {
+  if (item.value.length < 1) return
+  let i
+  let slides = document.getElementsByClassName('mySlides') as any
+  if (n > slides.length) {
+    slideIndex.value = 1
+  }
+  if (n < 1) {
+    slideIndex.value = slides.length
+  }
+  for (i = 0; i < slides.length; i++) {
+    slides[i].style.display = 'none'
+  }
+  slides[slideIndex.value - 1].style.display = 'block'
+}
+
+async function handleSubmit() {
+  const dataJimpitan = item.value[slideIndex.value - 1]
+  const path = route.path.replace('jimpitan-', '')
+  const regex = path.replace(/^\//gm, '')
+
+  const address = user.user.data.filter((item) => item.complex.link === regex)
+  let obj = {
+    id_warga: dataJimpitan.id,
+    id_address: dataJimpitan.id_complex,
+    money: money.value,
+  }
+  const { data } = await useFetch<{ data: any }>('/api/jimpitan', {
+    method: 'POST',
+    body: obj,
+  })
+  if (data.value?.data) {
+    const { data: getData } = await useFetch<{ data: any }>(
+      '/api/get-jimpitan',
+      {
+        query: {
+          q: address[0].complex.id,
+        },
+      }
+    )
+    if (getData.value?.data) {
+      item.value = getData.value?.data
+    }
+  }
+}
+async function getData() {
+  const path = route.path.replace('jimpitan-', '')
+  const regex = path.replace(/^\//gm, '')
+
+  const address = user.user.data.filter((item) => item.complex.link === regex)
+  const { data } = await useFetch<{ data: any[] }>('/api/get-jimpitan', {
+    query: {
+      q: address[0].complex.id,
+    },
+  })
+
+  if (data.value?.data) {
+    console.log(data.value?.data)
+    item.value = data.value?.data
+    slideIndex.value = data.value?.data.length || 0
+  }
+}
+await getData()
+</script>
+
+<style scoped lang="scss">
+/* Slideshow container */
+.slideshow-container {
+  max-width: 1000px;
+  position: relative;
+  margin: auto;
+}
+
+/* Hide the images by default */
+.mySlides {
+  display: none;
+}
+
+/* Next & previous buttons */
+.prev,
+.next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  width: auto;
+  margin-top: -22px;
+  padding: 16px;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  transition: 0.6s ease;
+  border-radius: 0 3px 3px 0;
+  user-select: none;
+}
+
+/* Position the "next button" to the right */
+.next {
+  right: 0;
+  border-radius: 3px 0 0 3px;
+}
+
+/* On hover, add a black background color with a little bit see-through */
+.prev:hover,
+.next:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* Caption text */
+.text {
+  color: #f2f2f2;
+  font-size: 15px;
+  padding: 8px 12px;
+  position: absolute;
+  bottom: 8px;
+  width: 100%;
+  text-align: center;
+}
+
+/* Number text (1/3 etc) */
+.numbertext {
+  color: #f2f2f2;
+  font-size: 12px;
+  padding: 8px 12px;
+  position: absolute;
+  top: 0;
+}
+
+/* The dots/bullets/indicators */
+.dot {
+  cursor: pointer;
+  height: 15px;
+  width: 15px;
+  margin: 0 2px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+  transition: background-color 0.6s ease;
+}
+
+.active,
+.dot:hover {
+  background-color: #717171;
+}
+
+/* Fading animation */
+.fade {
+  animation-name: fade;
+  animation-duration: 1.5s;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0.4;
+  }
+  to {
+    opacity: 1;
+  }
+}
+</style>

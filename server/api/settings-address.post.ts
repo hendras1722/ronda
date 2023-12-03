@@ -13,21 +13,32 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
+    let r = (Math.random() + 1).toString(36).substring(7)
+    const blok = body.blok
+    delete body.blok
     const { data: db_complex, error: db_complex_error } = await supabase
       .from('db_complex')
-      .upsert(body)
+      .upsert({
+        ...body,
+        link:
+          String(body.house_complex.split(' ')[0]).toLocaleLowerCase() +
+          '_' +
+          r,
+      })
       .select()
+    console.log(db_complex_error, 'inidb_complex_error')
     if (db_complex && db_complex.length > 0) {
-      console.log(db_complex)
+      // console.log(db_complex)
       const { error } = await supabase
         .from('db_user')
         .update({
-          id_complex: db_complex[0].id,
+          id_complex: db_complex[0]?.id,
           role: 'admin',
-          blok: body.blok,
+          blok: blok,
         })
         .eq('id', path.id)
         .select()
+      console.log(error, 'iniwewe')
       if (error) {
         throw createError({
           statusCode: 403,

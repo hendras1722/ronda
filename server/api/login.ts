@@ -1,8 +1,13 @@
 import { createError } from 'h3'
 import { supabase } from '@/utils/supabase'
+import { serverSupabaseServiceRole } from '#supabase/server'
 
 export default defineEventHandler(async (event) => {
+  const client = serverSupabaseServiceRole(event)
   const path = getHeaders(event)
+  // let { data, error } = await client.auth.admin.inviteUserByEmail(
+  //   'hendrarmada2@gmail.com'
+  // )
   const body = await readBody(event)
   if (path['postman-token']) {
     throw createError({

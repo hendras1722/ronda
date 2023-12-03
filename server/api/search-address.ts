@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
         `
       )
       .ilike('house_complex', `%${body.search}%`)
-    console.log(data, 'inidata')
+
     if (error) {
       throw createError({
         statusCode: 403,

@@ -225,28 +225,23 @@
 
 <script setup lang="ts">
 definePageMeta({
-  layout: false,
+  layout: 'admin-only-navbar',
+  middleware: [
+    function () {
+      const { user } = storeToRefs(useGetuser())
+      if (user.value.isComplex) {
+        return navigateTo('/')
+      }
+    },
+  ],
 })
+
 const step = ref(1)
 const stepSearchAddress = ref(1)
 const search = ref('')
 const isLoading = ref(false)
 const getResult = ref<any[]>([])
-const store = storeToRefs(useGetuser())
-
-interface IName {
-  name: string
-  id: string
-  house_complex: string
-  created_at: string
-  updated_at: null
-  rt: string
-  provinsi: string
-  kodepos: string
-  kelurahan: string
-  kecamatan: string
-  rw: string
-}
+const { userLogin } = storeToRefs(useGetuser())
 
 interface TopLevel {
   name?: string
@@ -263,11 +258,11 @@ interface TopLevel {
 }
 
 const formPersonal = ref({
-  id: store.userLogin.value.sub,
+  id: userLogin.value?.sub,
   phone: '',
   name: '',
   role: '',
-  email: store.userLogin.value.email,
+  email: userLogin.value?.email,
   blok: '',
 })
 
@@ -284,6 +279,14 @@ const formAddress = ref({
 const id_complex = ref('')
 const isResult = ref(false)
 const isFocus = ref(false)
+
+const user = useGetuser()
+onMounted(() => {
+  if (!user.user.isComplex) {
+    step.value = 2
+  }
+})
+
 async function handleSave(e: number) {
   if (e === 2) {
     if (stepSearchAddress.value === 1) {
@@ -293,18 +296,19 @@ async function handleSave(e: number) {
           method: 'put',
           body: {
             house: id_complex.value,
-            id: store.userLogin.value.sub,
+            id: userLogin.value?.sub,
             blok: formPersonal.value.blok,
           },
           server: false,
           headers: {
             'Content-Type': 'application/json',
-            id: store.userLogin.value.sub,
+            id: userLogin.value?.sub || '',
           },
         }
       )
+      console.log(profile.value?.data, 'inipros')
       if (profile.value?.data) {
-        navigateTo('/')
+        window.location.reload()
       }
       return
     }
@@ -312,18 +316,19 @@ async function handleSave(e: number) {
       '/api/settings-address',
       {
         method: 'post',
-        body: formAddress.value,
+        body: { ...formAddress.value, blok: formPersonal.value.blok },
         server: false,
         headers: {
           'Content-Type': 'application/json',
-          id: store.userLogin.value.sub,
+          id: userLogin.value?.sub || '',
         },
       }
     )
     if (address.value?.data) {
       step.value = 2
     }
-    navigateTo('/')
+    console.log(address.value?.data, 'inipros')
+    window.location.reload()
     return
   }
   const { data: profile } = await useFetch<{
@@ -339,6 +344,7 @@ async function handleSave(e: number) {
     method: 'POST',
     body: formPersonal.value,
     server: false,
+    watch: false,
   })
   if (profile.value?.data) {
     step.value = 2

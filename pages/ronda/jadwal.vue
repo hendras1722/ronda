@@ -20,6 +20,11 @@
             </template>
           </UInput>
         </div>
+        <div class="col-span-3 col-start-10 flex justify-end">
+          <UButton variant="solid" color="green" @click="handleAdd"
+            >Tambah
+          </UButton>
+        </div>
       </div>
     </div>
     <MSATable
@@ -54,24 +59,67 @@
         </div>
       </template>
     </MSATable>
+    <UModal v-model="isOpen">
+      <div class="p-4">
+        <UForm :state="state" @submit="handleSubmit">
+          <UFormGroup
+            label="Warga"
+            name="id_warga"
+            autocomplete="false"
+            required
+          >
+            <USelect
+              v-model="state.id_warga"
+              :options="options"
+              option-attribute="name"
+            />
+          </UFormGroup>
+
+          <UFormGroup
+            class="mt-3"
+            label=""
+            name="day"
+            autocomplete="false"
+            required
+          >
+            <div class="flex justify-between">
+              <UButton
+                :id="'days_' + item.value"
+                v-for="(item, index) in daysItems"
+                :key="index"
+                :color="state.day === item.value ? 'green' : 'black'"
+                @click="handleDays(item.value)"
+                >{{ item.label }}</UButton
+              >
+            </div>
+          </UFormGroup>
+          <div class="mt-4">
+            <UButton
+              class="w-full ml-auto mr-auto block"
+              type="submit"
+              variant="soft"
+              color="blue"
+              size="lg"
+            >
+              Submit
+            </UButton>
+          </div>
+        </UForm>
+      </div>
+    </UModal>
   </div>
 </template>
 
 <script setup lang="ts">
-const isOpen = ref(false)
-const columns = ref([
-  {
-    key: 'name_warga',
-    label: 'Nama Warga',
-  },
-  {
-    key: 'days',
-    label: 'Hari',
-  },
-  // {
-  //   key: 'actions',
-  // },
-])
+interface IMember {
+  created_at: Date
+  id_complex: string
+  phone: number | null
+  id: string
+  id_warga: string
+  name: string
+  blok: string
+}
 
 interface IJadwal {
   data: datas[]
@@ -82,8 +130,83 @@ interface datas {
   name_warga: string
   house_complex: string
 }
+const isOpen = ref(false)
+const columns = ref([
+  {
+    key: 'name',
+    label: 'Nama Warga',
+  },
+  {
+    key: 'days',
+    label: 'Hari',
+  },
+])
 
-const { data } = await useFetch<{ data: IJadwal }>('/api/patroli')
+const daysItems = [
+  {
+    label: 'Senin',
+    value: 1,
+  },
+  {
+    label: 'Selasa',
+    value: 2,
+  },
+  {
+    label: 'Rabu',
+    value: 3,
+  },
+  {
+    label: 'Kamis',
+    value: 4,
+  },
+  {
+    label: "Jum'at",
+    value: 5,
+  },
+  {
+    label: 'Sabtu',
+    value: 6,
+  },
+  {
+    label: 'Minggu',
+    value: 7,
+  },
+]
+
+const state = ref({
+  id_complex: '',
+  id_warga: '',
+  day: 0,
+})
+
+const options = ref<{ name: string; value: string }[]>([])
+const user = useGetuser()
+
+function handleAdd() {
+  isOpen.value = true
+}
+
+function handleDays(e: number) {
+  state.value.day = e
+}
+
+async function handleSubmit() {
+  // console.log('wewe')
+  state.value.id_complex = (user.user && user.user.data[0]?.complex.id) || ''
+  const { error } = await useFetch<{ data: IJadwal }>('/api/ronda', {
+    method: 'POST',
+    body: state.value,
+  })
+  if (!error.value) {
+    isOpen.value = false
+  }
+}
+
+const { data } = await useFetch<{ data: IJadwal }>('/api/get-ronda', {
+  query: {
+    q: user.user && user.user.data[0]?.complex.id,
+  },
+})
 const item = computed(() => data.value?.data)
 
 function useDays(e: number) {
@@ -102,6 +225,27 @@ function useDays(e: number) {
       return 'Sabtu'
     case 7:
       return 'Minggu'
+  }
+}
+
+if (options.value.length < 1) {
+  const { data: dataMember } = await useFetch<{ data: IMember[] }>(
+    '/api/get-member',
+    {
+      method: 'GET',
+      query: {
+        v: user.user && user.user.data[0]?.complex.id,
+      },
+    }
+  )
+  if (data.value?.data) {
+    const itemMember = dataMember.value?.data.map((item) => {
+      return {
+        name: item.name,
+        value: item.id,
+      }
+    })
+    options.value = itemMember || []
   }
 }
 </script>
