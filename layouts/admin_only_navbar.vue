@@ -18,7 +18,7 @@ async function handleOut() {
   if (error) {
     console.log(error)
   } else {
-    const sb_access = useCookie('sb_access')
+    const sb_access = useCookie('sb_access_admin')
     const token = useCookie('token')
     sb_access.value = null
     token.value = null

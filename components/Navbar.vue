@@ -54,6 +54,7 @@
               </UButton>
             </div>
           </template>
+
           <template #sign_out>
             <UButton @click="logout" class="w-full"> Logout </UButton>
           </template>
@@ -78,6 +79,7 @@ const colorMode = useColorMode()
 const appConfig = useAppConfig()
 
 const user = useGetuser()
+const router = useRouter()
 
 const name = computed(() => {
   return (user.user && user.user.data[0]?.name) || ''
@@ -141,6 +143,7 @@ const itemsDropdown = ref([
     {
       label: 'Pengaturan',
       slot: 'settings',
+      click: () => handlePengaturan(),
     },
   ],
   [
@@ -153,12 +156,16 @@ const itemsDropdown = ref([
   ],
 ])
 
+function handlePengaturan() {
+  router.push('/settings')
+}
+
 async function logout() {
   let { error } = await supabase.auth.signOut()
   if (error) {
     console.log(error)
   } else {
-    const sb_access = useCookie('sb_access')
+    const sb_access = useCookie('sb_access_admin')
     const token = useCookie('token')
     sb_access.value = null
     token.value = null

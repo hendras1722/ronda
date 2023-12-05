@@ -8,25 +8,23 @@ interface IUser {
 }
 
 export default defineNuxtRouteMiddleware(async (from, to) => {
-  const token = useCookie('sb_access')
+  const token = useCookie('sb_access_admin')
   const jwt = token.value
 
   if (from.path.match(/\/jimpitan-(\w+)/gm)) {
     return
   }
-  if (!token.value && from.path !== '/login') {
+  if (!jwt && from.path !== '/login') {
     return navigateTo('/login')
   }
 
   if (!jwt) return
 
-  if (jwt && from.path === '/login') {
-    return navigateTo('/')
-  }
-  if (process.client) {
+  if (!process.server) {
     const data = parseJwt(jwt)
 
-    if (Date.now() >= data.exp * 1000 && from.path !== '/login') {
+    if (data && Date.now() >= data.exp * 1000 && from.path !== '/login') {
+      token.value = null
       return navigateTo('/login')
     }
   }

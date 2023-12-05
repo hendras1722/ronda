@@ -11,7 +11,7 @@
           >
             <div class="block text-center">
               <div class="text-5xl font-extrabold">
-                {{ countDashboard?.total_warga }}
+                {{ countDashboard?.warga }}
               </div>
               <div>Warga</div>
             </div>
@@ -23,7 +23,7 @@
           >
             <div class="block text-center">
               <div class="text-5xl font-extrabold">
-                {{ countDashboard?.total_money }}
+                {{ countDashboard?.contribution }}
               </div>
               <div>Total Iuran</div>
             </div>
@@ -36,6 +36,11 @@
       <UDivider class="mb-5">
         <div class="text-2xl">Hasil Jimpitan nih</div>
       </UDivider>
+      <VDatePicker>
+        <template #default="{ inputValue, inputEvents }">
+          <UInput :value="inputValue" v-on="inputEvents" />
+        </template>
+      </VDatePicker>
       <div>Tanggal</div>
       <div>
         <ClientOnly>
@@ -53,13 +58,18 @@
 </template>
 
 <script lang="ts" setup>
+import type vcalendar from '~/plugins/vcalendar'
+
 const colorMode = useColorMode()
 const renderKey = ref(0)
 interface IGraphicCount {
-  total_money: number
-  total_warga: number
+  contribution: number
+  warga: number
+  graphicData: string[]
+  graphicDate: string[]
 }
-const store = storeToRefs(useGetuser())
+
+const user = useGetuser()
 // definePageMeta({
 //   layout: false,
 //   middleware: [
@@ -73,7 +83,11 @@ const store = storeToRefs(useGetuser())
 // })
 // console.log(store.user.value)
 
-const { data } = await useFetch<{ data: IGraphicCount }>('/api/dashboard')
+const { data } = await useFetch<{ data: IGraphicCount }>('/api/dashboard', {
+  query: {
+    v: user.user && user.user.data[0].complex.id,
+  },
+})
 const countDashboard = computed(() => data.value?.data)
 
 const renderTimeout = setTimeout(() => {
@@ -94,7 +108,7 @@ const chartOptions = ref({
     mode: colorMode.value,
   },
   xaxis: {
-    categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998],
+    categories: countDashboard.value?.graphicDate || [],
     lines: {
       show: true,
     },
@@ -122,7 +136,7 @@ watch(
         mode: e,
       },
       xaxis: {
-        categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998],
+        categories: countDashboard.value?.graphicDate || [],
         lines: {
           show: true,
         },
@@ -142,8 +156,8 @@ watch(
 
 const series = ref([
   {
-    name: 'series-1',
-    data: [30, 40, 35, 50, 49, 60, 70, 91],
+    name: 'Jimpitan',
+    data: countDashboard.value?.graphicData,
   },
 ])
 </script>

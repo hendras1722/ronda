@@ -86,9 +86,8 @@ const state = ref({
 })
 
 const sb_access = useCookie('sb_access')
-// sb_access.value = null
-// let { data, error } = await supabase.auth.auth.inviteUserByEmail('someone@email.com')
-
+const sb_access_admin = useCookie('sb_access_admin')
+sb_access_admin.value = null
 async function submit(event: FormSubmitEvent<Schema>) {
   // Do something with event.data
   // console.log(event.data)

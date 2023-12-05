@@ -9,7 +9,7 @@ export default defineNuxtRouteMiddleware(async (from) => {
       from.path
     )
   ) {
-    return navigateTo('/settings-profile')
+    return navigateTo('/register-profile')
   }
   return
 })

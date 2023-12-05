@@ -156,6 +156,9 @@ onMounted(() => {
   })
 })
 
+const sb_access_admin = useCookie('sb_access_admin')
+sb_access_admin.value = null
+
 // Next/previous controls
 function plusSlides(n: number) {
   showSlides((slideIndex.value += n))

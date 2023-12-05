@@ -8,6 +8,15 @@ const size = {
 } as const
 
 export default defineAppConfig({
+  menu_settings: [
+    {
+      label: 'Profile',
+      icon: '',
+      slot: 'profile',
+      to: '/settings/profile',
+      children: [],
+    },
+  ],
   menu: [
     {
       title: '',

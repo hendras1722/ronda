@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="text-2xl font-extrabold mb-5">Jadwal Ronda</div>
+    <div class="text-2xl font-extrabold mb-5">Ambil Jimpitan</div>
     <div class="mb-5">
       <div class="grid grid-cols-12 grid-rows-1 gap-4">
         <div class="col-span-5">
