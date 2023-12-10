@@ -20,7 +20,8 @@ export default defineEventHandler(async (event) => {
         `
         id,
         contribution,
-        created_at
+        created_at,
+        status
           `
       )
       .eq('id_complex', query.v || '')
@@ -35,9 +36,12 @@ export default defineEventHandler(async (event) => {
           `
       )
       .eq('id_address', query.v || '')
+      .gte('created_at', query.dateStart || '')
+      .lte('created_at', query.dateEnd || '')
 
     const money = contribution
-      ?.map((item) => item.contribution)
+      ?.filter((item) => item.status)
+      .map((item) => item.contribution)
       .reduce((partialSum, a) => partialSum + a, 0)
 
     const result: { money: number; created_at: string }[] = []
@@ -75,7 +79,7 @@ export default defineEventHandler(async (event) => {
           }
         }
       },
-      { money: 0 }
+      { money: null }
     )
 
     const resultIn = [...resultNotDay, i]
@@ -84,12 +88,16 @@ export default defineEventHandler(async (event) => {
         (a: any, b: any) =>
           new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
       )
+      .filter(Boolean)
 
     const graphicData = resultIn?.map((item) => item?.money)
-    const graphicDate = resultIn?.map(
-      (item) =>
-        (item?.created_at && format(new Date(item.created_at), 'dd/MM')) || null
-    )
+    const graphicDate = resultIn
+      ?.map(
+        (item) =>
+          (item?.created_at && format(new Date(item.created_at), 'dd/MM')) ||
+          null
+      )
+      .filter(Boolean)
     let { count: warga, error: errWarga } = await client
       .from('db_user')
       .select(

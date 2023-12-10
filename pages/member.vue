@@ -7,6 +7,8 @@
       <div class="grid grid-cols-12 grid-rows-1 gap-4">
         <div class="col-span-5">
           <UInput
+            v-model="search"
+            name="search"
             placeholder="Search..."
             icon="i-heroicons-magnifying-glass-20-solid"
             autocomplete="off"
@@ -14,10 +16,12 @@
           >
             <template #trailing>
               <UButton
+                v-show="search !== ''"
                 color="gray"
                 variant="link"
                 icon="i-heroicons-x-mark-20-solid"
                 :padded="false"
+                @click="search = ''"
               />
             </template>
           </UInput>
@@ -81,6 +85,7 @@ const columns = ref([
     label: 'Nomer Hp',
   },
 ])
+
 interface IMember {
   data: datas[]
 }
@@ -96,12 +101,26 @@ interface datas {
 }
 const user = useGetuser()
 const item = ref<IMember[]>()
-const { data } = await useFetch<{ data: IMember[] }>('/api/get-member', {
-  query: {
-    v: user.user && user.user.data[0]?.complex?.id,
+const search = ref('')
+
+watchDebounced(
+  () => search.value,
+  (newValue) => {
+    getData(newValue)
   },
-})
-item.value = data.value?.data
+  { debounce: 500 }
+)
+
+async function getData(e?: string) {
+  const { data } = await useFetch<{ data: IMember[] }>('/api/get-member', {
+    query: {
+      v: user.user && user.user.data[0]?.complex?.id,
+      q: e ? e : '',
+    },
+  })
+  item.value = data.value?.data
+}
+getData()
 </script>
 
 <style lang="scss" scoped></style>

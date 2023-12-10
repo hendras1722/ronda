@@ -130,6 +130,7 @@ export default defineAppConfig({
         variant: 'ghost',
       },
     },
+
     table: {
       wrapper: 'relative',
       loadingState: {
@@ -163,7 +164,7 @@ export default defineAppConfig({
         },
         prevButton: {
           class:
-            'rtl:[&_span:first-child]:rotate-180 py-[0.475rem] dark:bg-gray-800 dark:text-white',
+            'rtl:[&_span:first-child]:rotate-180 py-[0.475rem] dark:bg-gray-800 dark:text-white m-0',
           icon: 'i-iconoir-nav-arrow-left',
         },
         nextButton: {
@@ -172,6 +173,9 @@ export default defineAppConfig({
           icon: 'i-iconoir-nav-arrow-right',
         },
       },
+      wrapper: 'flex items-center -space-x-px',
+      base: '',
+      rounded: 'first-of-type:rounded-s-md last-of-type:rounded-e-md',
     },
     notifications: {
       position: 'top-0 right-0',

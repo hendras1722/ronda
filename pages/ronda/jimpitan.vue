@@ -1,27 +1,6 @@
 <template>
   <div>
     <div class="text-2xl font-extrabold mb-5">Ambil Jimpitan</div>
-    <div class="mb-5">
-      <div class="grid grid-cols-12 grid-rows-1 gap-4">
-        <div class="col-span-5">
-          <UInput
-            placeholder="Search..."
-            icon="i-heroicons-magnifying-glass-20-solid"
-            autocomplete="off"
-            :ui="{ icon: { trailing: { pointer: '' } } }"
-          >
-            <template #trailing>
-              <UButton
-                color="gray"
-                variant="link"
-                icon="i-heroicons-x-mark-20-solid"
-                :padded="false"
-              />
-            </template>
-          </UInput>
-        </div>
-      </div>
-    </div>
 
     <MSATable
       :columns="columns"

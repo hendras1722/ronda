@@ -5,6 +5,8 @@
       <div class="grid grid-cols-12 grid-rows-1 gap-4">
         <div class="col-span-5">
           <UInput
+            v-model="search"
+            name="search"
             placeholder="Search..."
             icon="i-heroicons-magnifying-glass-20-solid"
             autocomplete="off"
@@ -12,76 +14,83 @@
           >
             <template #trailing>
               <UButton
+                v-show="search !== ''"
                 color="gray"
                 variant="link"
                 icon="i-heroicons-x-mark-20-solid"
                 :padded="false"
+                @click="search = ''"
               />
             </template>
           </UInput>
         </div>
-        <div class="col-span-3 col-start-10 flex justify-end">
-          <UButton variant="solid" color="green" @click="handleAdd"
-            >Tambah
-          </UButton>
-        </div>
       </div>
     </div>
-    <MSATable
-      :columns="columns"
-      :rows="item"
-      :ui="{
-        base: 'rounded-lg border border-collapse border-tools-table-outline border-[#ccc] border-1 w-full',
-        divide: 'divide-y divide-[#ccc] dark:divide-gray-800',
-      }"
-    >
-      <template #days-data="{ row, index }">
-        <div>
-          <UBadge
-            :color="
-              row.day === 1
-                ? 'green'
-                : row.day === 2
-                ? 'yellow'
-                : row.day === 3
-                ? 'pink'
-                : row.day === 4
-                ? 'blue'
-                : row.day === 5
-                ? 'cyan'
-                : row.day === 6
-                ? 'purple'
-                : 'red'
-            "
-            variant="solid"
-            >{{ useDays(row.day) }}</UBadge
-          >
-        </div>
-      </template>
-    </MSATable>
+
+    <div class="overflow-auto">
+      <MSATable
+        :columns="columns"
+        :rows="item"
+        :ui="{
+          base: 'rounded-lg border border-collapse border-tools-table-outline border-[#ccc] border-1 w-full',
+          divide: 'divide-y divide-[#ccc] dark:divide-gray-800',
+        }"
+      >
+        <template #days-data="{ row }">
+          <div>
+            <UBadge
+              v-if="row.day >= 0"
+              :color="
+                row.day === 1
+                  ? 'green'
+                  : row.day === 2
+                  ? 'yellow'
+                  : row.day === 3
+                  ? 'pink'
+                  : row.day === 4
+                  ? 'blue'
+                  : row.day === 5
+                  ? 'cyan'
+                  : row.day === 6
+                  ? 'purple'
+                  : 'red'
+              "
+              variant="solid"
+              >{{ useDays(row.day) }}</UBadge
+            >
+          </div>
+        </template>
+        <template #actions-data="{ row }">
+          <div>
+            <div v-if="row.day >= 0" class="flex justify-between w-40">
+              <UButton
+                :variant="'solid'"
+                color="blue"
+                @click="handleUpdate(row)"
+              >
+                Update</UButton
+              >
+              <UButton
+                :variant="'solid'"
+                color="red"
+                @click="handleDelete(row)"
+              >
+                Delete</UButton
+              >
+            </div>
+            <div v-else>
+              <UButton variant="solid" color="green" @click="handleAdd(row)"
+                >Update
+              </UButton>
+            </div>
+          </div>
+        </template>
+      </MSATable>
+    </div>
     <UModal v-model="isOpen">
       <div class="p-4">
         <UForm :state="state" @submit="handleSubmit">
-          <UFormGroup
-            label="Warga"
-            name="id_warga"
-            autocomplete="false"
-            required
-          >
-            <USelect
-              v-model="state.id_warga"
-              :options="options"
-              option-attribute="name"
-            />
-          </UFormGroup>
-
-          <UFormGroup
-            class="mt-3"
-            label=""
-            name="day"
-            autocomplete="false"
-            required
-          >
+          <UFormGroup label="" name="day" autocomplete="false" required>
             <div class="flex justify-between">
               <UButton
                 :id="'days_' + item.value"
@@ -111,25 +120,12 @@
 </template>
 
 <script setup lang="ts">
-interface IMember {
-  created_at: Date
-  id_complex: string
-  phone: number | null
-  id: string
-  id_warga: string
-  name: string
-  blok: string
-}
-
 interface IJadwal {
-  data: datas[]
-}
-
-interface datas {
   day: number
   name_warga: string
   house_complex: string
 }
+
 const isOpen = ref(false)
 const columns = ref([
   {
@@ -139,6 +135,9 @@ const columns = ref([
   {
     key: 'days',
     label: 'Hari',
+  },
+  {
+    key: 'actions',
   },
 ])
 
@@ -169,7 +168,7 @@ const daysItems = [
   },
   {
     label: 'Minggu',
-    value: 7,
+    value: 0,
   },
 ]
 
@@ -180,9 +179,13 @@ const state = ref({
 })
 
 const options = ref<{ name: string; value: string }[]>([])
+const item = ref<IJadwal[]>([])
 const user = useGetuser()
+const search = ref('')
 
-function handleAdd() {
+async function handleAdd(e: any) {
+  state.value.id_warga = e.id
+  state.value.id_complex = e.complex.id
   isOpen.value = true
 }
 
@@ -191,23 +194,73 @@ function handleDays(e: number) {
 }
 
 async function handleSubmit() {
-  // console.log('wewe')
   state.value.id_complex = (user.user && user.user.data[0]?.complex.id) || ''
   const { error } = await useFetch<{ data: IJadwal }>('/api/ronda', {
     method: 'POST',
     body: state.value,
+    watch: false,
   })
   if (!error.value) {
     isOpen.value = false
+    getData()
   }
 }
 
-const { data } = await useFetch<{ data: IJadwal }>('/api/get-ronda', {
-  query: {
-    q: user.user && user.user.data[0]?.complex.id,
-  },
-})
-const item = computed(() => data.value?.data)
+interface IUpdate {
+  id: string
+  name: string
+  complex: Complex
+  day: number
+  id_user: string
+}
+
+interface Complex {
+  id: string
+  house_complex: string
+  link: string
+}
+
+async function handleUpdate(e: IUpdate) {
+  state.value.id_warga = e.id
+  state.value.day = e.day
+  state.value.id_complex = e.complex.id
+  isOpen.value = true
+}
+
+async function handleDelete(e: IUpdate) {
+  const { error } = await useFetch<{ data: IUpdate }>('/api/delete-ronda', {
+    method: 'DELETE',
+    watch: false,
+    query: {
+      id: e.id_user,
+    },
+  })
+  if (!error.value) {
+    isOpen.value = false
+    getData()
+  }
+}
+
+async function getData(e?: string) {
+  const { data } = await useFetch<{ data: IJadwal[] }>('/api/get-ronda', {
+    query: {
+      v: user.user && user.user.data[0]?.complex.id,
+      q: e ? e : '',
+    },
+  })
+  if (data.value?.data) {
+    item.value = data.value?.data
+    options.value = data.value?.data
+      .filter((item) => !item.day)
+      .map((item: any) => {
+        return {
+          name: item.name,
+          value: item.id,
+        }
+      })
+  }
+}
+getData()
 
 function useDays(e: number) {
   switch (e) {
@@ -223,31 +276,18 @@ function useDays(e: number) {
       return 'Jumat'
     case 6:
       return 'Sabtu'
-    case 7:
+    default:
       return 'Minggu'
   }
 }
 
-if (options.value.length < 1) {
-  const { data: dataMember } = await useFetch<{ data: IMember[] }>(
-    '/api/get-member',
-    {
-      method: 'GET',
-      query: {
-        v: user.user && user.user.data[0]?.complex.id,
-      },
-    }
-  )
-  if (data.value?.data) {
-    const itemMember = dataMember.value?.data.map((item) => {
-      return {
-        name: item.name,
-        value: item.id,
-      }
-    })
-    options.value = itemMember || []
-  }
-}
+watchDebounced(
+  () => search.value,
+  (newValue) => {
+    getData(newValue)
+  },
+  { debounce: 500 }
+)
 </script>
 
 <style lang="scss" scoped></style>

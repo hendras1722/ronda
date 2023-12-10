@@ -28,35 +28,71 @@ export default defineEventHandler(async (event) => {
       .from('db_user')
       .select(
         `
-      *,
-      jimpitan: db_jimpitan(
-        id,
-        created_at
-      )
+      *
       `
       )
       .eq('id_complex', query.q || '')
+
+    let { data: jimpitan, error: errJimpitan } = await client
+      .from('db_jimpitan')
+      .select(
+        `
+     id_warga,
+     created_at
+      `
+      )
+      .eq('id_address', query.q || '')
+
     const result =
       data &&
       data?.map((item: any) => {
+        let newArr: any = []
+        jimpitan?.forEach((element) => {
+          if (item.id === element.id_warga) {
+            newArr.push(element)
+            item.jimpitan = newArr
+          }
+          // return {
+          //   ...item,
+          //   // jimpitan: item.jimpitan
+          // .filter(
+          //     (item: any) =>
+          //       new Date(item.created_at).getTime() >= startDate &&
+          //       new Date(item.created_at).getTime() <= endDate
+          //   ),
+          // }
+        })
         return {
           ...item,
-          jimpitan: item.jimpitan.filter(
-            (item: any) =>
-              new Date(item.created_at).getTime() >= startDate &&
-              new Date(item.created_at).getTime() <= endDate
-          ),
+          jimpitan: item.jimpitan
+            ? item.jimpitan.filter(
+                (item: any) =>
+                  new Date(item.created_at).getTime() >= startDate &&
+                  new Date(item.created_at).getTime() <= endDate
+              )
+            : [],
         }
       })
+    console.log(result, 'result')
+    let { data: patrol, error: errPatrol } = await client
+      .from('db_patrol')
+      .select(
+        `
+        id,
+      day
+      `
+      )
+      .eq('id_complex', query.q || '')
 
-    if (error) {
+    if (error || errPatrol) {
       throw createError({
         statusCode: 403,
-        message: String(error.message),
+        message: String(error?.message) || String(errPatrol?.message),
       })
     }
     return {
       data: result,
+      day: patrol,
     }
   } catch (error) {
     return {

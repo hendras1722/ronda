@@ -1,8 +1,7 @@
 import { createError } from 'h3'
-import { serverSupabaseClient } from '#supabase/server'
+import { supabase } from '@/utils/supabase'
 
 export default defineEventHandler(async (event) => {
-  const client = await serverSupabaseClient(event)
   const path = getHeaders(event)
   const query = getQuery(event)
 
@@ -12,25 +11,11 @@ export default defineEventHandler(async (event) => {
       message: 'Forbidden Access',
     })
   }
-
   try {
-    let { data, error } = await client
-      .from('db_user')
-      .select(
-        `
-          id,
-          name,
-          email,
-          role,
-          complex: id_complex(
-            *
-          ),
-          blok,
-          phone
-          `
-      )
-      .eq('id_complex', query.v || '')
-      .ilike('name', `%${query.q}%`)
+    const { data, error } = await supabase
+      .from('db_patrol')
+      .delete()
+      .eq('id', query.id)
 
     if (error) {
       throw createError({

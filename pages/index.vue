@@ -13,7 +13,7 @@
               <div class="text-5xl font-extrabold">
                 {{ countDashboard?.warga }}
               </div>
-              <div>Warga</div>
+              <div>Total Warga</div>
             </div>
           </div>
         </div>
@@ -36,13 +36,23 @@
       <UDivider class="mb-5">
         <div class="text-2xl">Hasil Jimpitan nih</div>
       </UDivider>
-      <VDatePicker>
-        <template #default="{ inputValue, inputEvents }">
-          <UInput :value="inputValue" v-on="inputEvents" />
-        </template>
-      </VDatePicker>
-      <div>Tanggal</div>
-      <div>
+      <div class="grid place-items-end">
+        <div class="w-52 mb-3">
+          <VDatePicker
+            :popover="popover"
+            v-model.range="date"
+            :locale="{ masks: { input: 'DD/MM/YYYY' } }"
+          >
+            <template #default="{ inputValue, inputEvents }">
+              <UInput
+                :value="inputValue.start + '-' + inputValue.end"
+                v-on="inputEvents.start"
+              />
+            </template>
+          </VDatePicker>
+        </div>
+      </div>
+      <div class="-z-10">
         <ClientOnly>
           <apexchart
             v-show="renderKey === 100"
@@ -58,8 +68,7 @@
 </template>
 
 <script lang="ts" setup>
-import type vcalendar from '~/plugins/vcalendar'
-
+import { format } from 'date-fns'
 const colorMode = useColorMode()
 const renderKey = ref(0)
 interface IGraphicCount {
@@ -69,26 +78,27 @@ interface IGraphicCount {
   graphicDate: string[]
 }
 
+const date = ref({
+  start: format(new Date(), 'dd MMMM yyyy'),
+  end: format(new Date(), 'dd MMMM yyyy'),
+})
+const countDashboard = ref<IGraphicCount>()
+
 const user = useGetuser()
-// definePageMeta({
-//   layout: false,
-//   middleware: [
-//     function () {
-//       const { user } = storeToRefs(useGetuser())
-//       if (!user.value.isComplex) {
-//         return navigateTo('/settings-profile')
-//       }
-//     },
-//   ],
-// })
-// console.log(store.user.value)
+
+const popover = {
+  visibility: 'click',
+  placement: 'bottom-end',
+}
 
 const { data } = await useFetch<{ data: IGraphicCount }>('/api/dashboard', {
   query: {
     v: user.user && user.user.data[0].complex.id,
+    dateStart: format(new Date(date.value.start), 'dd MMMM yyyy'),
+    dateEnd: format(new Date(date.value.end), 'dd MMMM yyyy'),
   },
 })
-const countDashboard = computed(() => data.value?.data)
+countDashboard.value = data.value?.data
 
 const renderTimeout = setTimeout(() => {
   renderKey.value = 100
@@ -120,6 +130,59 @@ const chartOptions = ref({
     },
   ],
 })
+
+const series = ref([
+  {
+    name: 'Jimpitan',
+    data: countDashboard.value?.graphicData,
+  },
+])
+
+watch(
+  () => date.value,
+  async (newValue) => {
+    const { data } = await useFetch<{ data: IGraphicCount }>('/api/dashboard', {
+      query: {
+        v: user.user && user.user.data[0].complex.id,
+        dateStart: format(new Date(newValue.start), 'dd MMMM yyyy'),
+        dateEnd: format(new Date(newValue.end), 'dd MMMM yyyy'),
+      },
+    })
+    countDashboard.value = data.value?.data
+    series.value = [
+      {
+        name: 'Jimpitan',
+        data: countDashboard.value?.graphicData,
+      },
+    ]
+
+    chartOptions.value = {
+      chart: {
+        id: 'vuechart-example',
+        background: 'transparent',
+      },
+      tooltip: {
+        // theme: 'dark',
+        followCursor: true,
+      },
+      theme: {
+        mode: colorMode.value,
+      },
+      xaxis: {
+        categories: countDashboard.value?.graphicDate || [],
+        lines: {
+          show: true,
+        },
+      },
+      responsive: [
+        {
+          breakpoint: undefined,
+          options: {},
+        },
+      ],
+    }
+  }
+)
 
 watch(
   () => colorMode.value,
@@ -153,11 +216,8 @@ watch(
     deep: true,
   }
 )
-
-const series = ref([
-  {
-    name: 'Jimpitan',
-    data: countDashboard.value?.graphicData,
-  },
-])
 </script>
+
+<style lang="scss">
+@import url('@/assets/scss/calendar.scss');
+</style>

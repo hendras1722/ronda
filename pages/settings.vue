@@ -10,7 +10,6 @@
       </template>
       <NuxtPage />
     </NuxtErrorBoundary>
-    <NuxtPage />
   </div>
 </template>
 

@@ -8,6 +8,7 @@ export default defineNuxtPlugin(async (event) => {
 
   if (path.match(/jimpitan-\w+/gm)) {
     const jwt = tokenUser.value
+    if (!jwt) return
     const tokens: string[] = jwt?.split('.') || []
     const data = JSON.parse(atob(tokens[1]))
     delete data.iss

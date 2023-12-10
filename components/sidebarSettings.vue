@@ -131,6 +131,15 @@
               </UAccordion>
             </div>
           </div>
+          <div class="text-center px-5 mt-2">
+            <UButton
+              @click="handleQuit"
+              class="hover:no-underline w-full ml-auto mr-auto block"
+              variant="link"
+            >
+              Back
+            </UButton>
+          </div>
         </div>
       </div>
     </div>
@@ -220,6 +229,10 @@ function handleSidebar() {
     body.classList.add('w-52')
     body.classList.remove('w-0')
   }
+}
+
+function handleQuit() {
+  router.push('/')
 }
 
 const handlePushRouter = (href: string) => {

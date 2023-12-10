@@ -155,6 +155,7 @@ async function submit(event: FormSubmitEvent<Schema>) {
   const { data, error } = await useFetch<{ data: any }>('/api/login', {
     method: 'POST',
     body: event.data,
+    watch: false,
   })
   if (!error.value) {
     sb_access.value = data.value?.data.session.access_token
@@ -167,6 +168,7 @@ async function submitRegister(event: FormSubmitEvent<Schema>) {
   const { data, error } = await useFetch<{ data: any }>('/api/login', {
     method: 'POST',
     body: event.data,
+    watch: false,
   })
   if (!error.value) {
     sb_access.value = data.value?.data.session.access_token

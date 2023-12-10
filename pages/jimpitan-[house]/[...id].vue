@@ -1,10 +1,32 @@
 <template>
   <div class="p-10">
+    <div
+      v-if="checkJimpitanDay"
+      class="flex justify-center items-center min-h-screen"
+    >
+      <div>
+        <img src="/undraw_departing_re_mlq3.svg" width="430" />
+        <div class="mt-8 text-2xl text-center">
+          Ini bukan hari mu untuk jimpitan
+        </div>
+        <div>
+          <UButton
+            class="w-full ml-auto mr-auto block mt-5"
+            variant="solid"
+            color="red"
+            size="lg"
+            @click="logout"
+          >
+            Keluar
+          </UButton>
+        </div>
+      </div>
+    </div>
+
     <UContainer
+      v-else
       class="px-3 py-5 max-w-full bg-white shadow-md rounded-lg dark:bg-gray-900 dark:text-white dark:border dark:border-white"
     >
-      <!-- {{ slideIndex }}
-      {{ item[slideIndex] }} -->
       <div class="flex justify-center">Rumah dari:</div>
       <div class="text-center mt-3">
         {{ item?.[slideIndex - 1]?.name }}
@@ -54,6 +76,7 @@
           </UButton>
         </div>
       </div>
+
       <MSATable
         :columns="columns"
         :rows="item"
@@ -93,6 +116,17 @@
           </div>
         </template>
       </MSATable>
+      <div>
+        <UButton
+          class="w-full ml-auto mr-auto block mt-5"
+          variant="solid"
+          color="red"
+          size="lg"
+          @click="logout"
+        >
+          Keluar
+        </UButton>
+      </div>
     </UContainer>
   </div>
 </template>
@@ -101,22 +135,21 @@
 definePageMeta({
   layout: false,
   middleware: [
-    function (from) {
+    async function (from, to, next) {
       const user = useGetuser()
       const path = from.path.replace('jimpitan-', '')
       const regex = path.replace(/^\//gm, '')
       const sb_access = useCookie('sb_access')
 
       const jwt = sb_access.value
-
+      const pathname = from.path + '/login'
       const address = user.user.data.filter(
-        (item) => item.complex.link === regex
+        (item) => item.complex && item.complex.link === regex
       )
-
       if (!jwt) {
-        return navigateTo(from.path + '/login')
+        return navigateTo(pathname)
       }
-      console.log(address, user.user.data, regex, 'adda')
+
       if (address.length < 1) {
         return abortNavigation({
           statusCode: 403,
@@ -126,14 +159,19 @@ definePageMeta({
 
       if (process.client) {
         const data = parseJwt(jwt)
-
-        if (Date.now() >= data.exp * 1000 && from.path !== '/login') {
-          return navigateTo('/login')
+        if (Date.now() >= data.exp * 1000) {
+          console.log(sb_access, 'inisb_access')
+          sb_access.value = null
+          // return setTimeout(() => {
+          //   navigateTo(pathname)
+          // }, 300)
+          return navigateTo(pathname)
         }
       }
     },
   ],
 })
+const route = useRoute()
 const columns = ref([
   {
     key: 'blok',
@@ -147,8 +185,8 @@ const columns = ref([
 const slideIndex = ref(0)
 const item = ref<any[]>([])
 const money = ref(0)
-const route = useRoute()
 const user = useGetuser()
+const checkJimpitanDay = ref(false)
 
 onMounted(() => {
   nextTick(() => {
@@ -177,6 +215,7 @@ function showSlides(n: number) {
   for (i = 0; i < slides.length; i++) {
     slides[i].style.display = 'none'
   }
+  if (!slides[slideIndex.value - 1]) return
   slides[slideIndex.value - 1].style.display = 'block'
 }
 
@@ -209,19 +248,46 @@ async function handleSubmit() {
     }
   }
 }
+
+async function logout() {
+  let { error } = await supabase.auth.signOut()
+  if (error) {
+    console.log(error)
+  } else {
+    const sb_access = useCookie('sb_access_admin')
+    const sb_access_user = useCookie('sb_access')
+    const token = useCookie('token')
+    sb_access.value = null
+    sb_access_user.value = null
+    token.value = null
+    window.location.reload()
+  }
+}
+
 async function getData() {
   const path = route.path.replace('jimpitan-', '')
   const regex = path.replace(/^\//gm, '')
 
   const address = user.user.data.filter((item) => item.complex.link === regex)
-  const { data } = await useFetch<{ data: any[] }>('/api/get-jimpitan', {
-    query: {
-      q: address[0].complex.id,
-    },
-  })
+  const { data } = await useFetch<{ data: any[]; day: any[] }>(
+    '/api/get-jimpitan',
+    {
+      query: {
+        q: address[0].complex.id,
+      },
+    }
+  )
+
+  if (data.value?.day) {
+    const getDay = data.value?.day.filter(
+      (item: { day: number }) => item.day === new Date().getDay()
+    )
+    if (getDay.length < 1) {
+      checkJimpitanDay.value = true
+    }
+  }
 
   if (data.value?.data) {
-    console.log(data.value?.data)
     item.value = data.value?.data
     slideIndex.value = data.value?.data.length || 0
   }

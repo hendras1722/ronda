@@ -1,11 +1,16 @@
 import { createError } from 'h3'
-import { supabase } from '@/utils/supabase'
+import { getPagination } from '@/utils/pagination'
 import { serverSupabaseClient } from '#supabase/server'
 
 export default defineEventHandler(async (event) => {
   const client = await serverSupabaseClient(event)
   const path = getHeaders(event)
   const query = getQuery(event)
+  console.log(query)
+  const { from, to } = getPagination(
+    Number(query.page) - 1,
+    Number(query.limit)
+  )
 
   if (path['postman-token']) {
     throw createError({
@@ -15,20 +20,23 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    let { data, error } = await client
+    let { data, error, count } = await client
       .from('db_contribution')
       .select(
         `
       *,
-      ...db_user(
+      ...db_user!inner(
         name
       ),
       ...db_complex(
         house_complex
       )
-      `
+      `,
+        { count: 'exact' }
       )
       .eq('id_complex', query.v || '')
+      .ilike('db_user.name', `%${query.q}%`)
+      .range(from, to)
 
     if (error) {
       throw createError({
@@ -38,6 +46,8 @@ export default defineEventHandler(async (event) => {
     }
     return {
       data,
+      total: count,
+      page: Number(query.page),
     }
   } catch (error) {
     return {

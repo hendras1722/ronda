@@ -29,7 +29,9 @@ export default defineEventHandler(async (event) => {
         email,
         role,
         complex: id_complex(
-          *
+          id,
+          house_complex,
+          link
         ),
         blok
     `

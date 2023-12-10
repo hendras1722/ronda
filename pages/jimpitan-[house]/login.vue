@@ -59,16 +59,17 @@ definePageMeta({
   layout: false,
   middleware: [
     function (from) {
+      const sb_access = useCookie('sb_access')
       const user = useGetuser()
       const path = from.path.replace('jimpitan-', '')
       const regex = path.split(/[\/-]/gm).filter(Boolean)
       regex.splice(regex.length - 1, 1)
       const address = user.user.data.filter(
-        (item) => item.complex.link === regex[0]
+        (item) => item.complex?.link === regex[0]
       )
 
-      if (address.length > 0) {
-        return navigateTo('/jimpitan-' + address[0].complex.link)
+      if (sb_access.value && address.length > 0) {
+        return navigateTo('/jimpitan-' + address[0].complex?.link)
       }
     },
   ],
@@ -94,6 +95,7 @@ async function submit(event: FormSubmitEvent<Schema>) {
   const { data } = await useFetch<{ data: any }>('/api/login', {
     method: 'POST',
     body: event.data,
+    watch: false,
   })
   if (data.value) {
     sb_access.value = data.value?.data.session.access_token

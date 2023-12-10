@@ -132,7 +132,9 @@
             </td>
           </tr>
           <tr>
-            <slot name="expanded" :index="index" :rows="row" />
+            <td :colspan="columns.length" v-if="row.isExpanded">
+              <slot name="expanded" :index="index" :rows="row" />
+            </td>
           </tr>
         </template>
       </tbody>
