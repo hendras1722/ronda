@@ -87,7 +87,7 @@
       >
         <template #status-data="{ row }">
           <div>
-            <div v-if="row?.jimpitan?.length > 0">
+            <div v-if="row.jimpitan.length > 0">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="32"
@@ -229,6 +229,7 @@ async function handleSubmit() {
     id_warga: dataJimpitan.id,
     id_address: dataJimpitan.id_complex,
     money: money.value,
+    by: address[0].id,
   }
   const { data } = await useFetch<{ data: any }>('/api/jimpitan', {
     method: 'POST',

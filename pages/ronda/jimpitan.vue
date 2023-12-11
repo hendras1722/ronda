@@ -10,6 +10,9 @@
         divide: 'divide-y divide-[#ccc] dark:divide-white',
       }"
     >
+      <template #by-data="{ row }">
+        <div>{{ row?.by?.name }}</div>
+      </template>
       <template #status-data="{ row }">
         <div v-if="row?.jimpitan.length > 0">
           <svg
@@ -47,6 +50,10 @@ const columns = ref([
   {
     key: 'blok',
     label: 'Rumah Blok',
+  },
+  {
+    key: 'by',
+    label: 'Diambil oleh',
   },
   {
     key: 'status',

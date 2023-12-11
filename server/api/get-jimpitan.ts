@@ -38,11 +38,14 @@ export default defineEventHandler(async (event) => {
       .select(
         `
      id_warga,
-     created_at
+     created_at,
+     by: by(
+      name
+     )
       `
       )
       .eq('id_address', query.q || '')
-
+    console.log(jimpitan)
     const result =
       data &&
       data?.map((item: any) => {
@@ -51,6 +54,7 @@ export default defineEventHandler(async (event) => {
           if (item.id === element.id_warga) {
             newArr.push(element)
             item.jimpitan = newArr
+            item.by = element.by
           }
           // return {
           //   ...item,
@@ -84,10 +88,13 @@ export default defineEventHandler(async (event) => {
       )
       .eq('id_complex', query.q || '')
 
-    if (error || errPatrol) {
+    if (error || errPatrol || errJimpitan) {
       throw createError({
         statusCode: 403,
-        message: String(error?.message) || String(errPatrol?.message),
+        message:
+          String(error?.message) ||
+          String(errPatrol?.message) ||
+          String(errJimpitan?.message),
       })
     }
     return {

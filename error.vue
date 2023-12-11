@@ -58,7 +58,7 @@ async function logout() {
       </UButton>
     </div>
     <div v-if="error.statusCode >= 500">
-      <img src="undraw_dev_focus_re_6iwt.svg" />
+      <img src="/undraw_dev_focus_re_6iwt.svg" />
       <div class="text-center mt-5 text-2xl">
         Lagi sibuk nih entar aja yakkkk
       </div>

@@ -84,6 +84,10 @@ const columns = ref([
     key: 'phone',
     label: 'Nomer Hp',
   },
+  {
+    key: 'email',
+    label: 'Email',
+  },
 ])
 
 interface IMember {

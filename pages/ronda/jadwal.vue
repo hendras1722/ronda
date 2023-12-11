@@ -39,7 +39,7 @@
         <template #days-data="{ row }">
           <div>
             <UBadge
-              v-if="row.day >= 0"
+              v-if="row.day && row.day >= 0"
               :color="
                 row.day === 1
                   ? 'green'
@@ -62,7 +62,10 @@
         </template>
         <template #actions-data="{ row }">
           <div>
-            <div v-if="row.day >= 0" class="flex justify-between w-40">
+            <div
+              v-if="row.day && row.day >= 0"
+              class="flex justify-between w-40"
+            >
               <UButton
                 :variant="'solid'"
                 color="blue"
@@ -87,7 +90,7 @@
         </template>
       </MSATable>
     </div>
-    <UModal v-model="isOpen">
+    <UModal v-model="isOpen" prevent-close>
       <div class="p-4">
         <UForm :state="state" @submit="handleSubmit">
           <UFormGroup label="" name="day" autocomplete="false" required>
@@ -112,6 +115,9 @@
             >
               Submit
             </UButton>
+            <div class="text-center mt-3">
+              <UButton color="link" @click="handleClose">Tutup</UButton>
+            </div>
           </div>
         </UForm>
       </div>
@@ -175,7 +181,7 @@ const daysItems = [
 const state = ref({
   id_complex: '',
   id_warga: '',
-  day: 0,
+  day: new Date().getDay(),
 })
 
 const options = ref<{ name: string; value: string }[]>([])
@@ -240,6 +246,14 @@ async function handleDelete(e: IUpdate) {
     getData()
   }
 }
+function handleClose() {
+  isOpen.value = false
+  state.value = {
+    id_complex: '',
+    id_warga: '',
+    day: new Date().getDay(),
+  }
+}
 
 async function getData(e?: string) {
   const { data } = await useFetch<{ data: IJadwal[] }>('/api/get-ronda', {
@@ -276,7 +290,7 @@ function useDays(e: number) {
       return 'Jumat'
     case 6:
       return 'Sabtu'
-    default:
+    case 0:
       return 'Minggu'
   }
 }

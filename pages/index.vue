@@ -77,9 +77,13 @@ interface IGraphicCount {
   graphicData: string[]
   graphicDate: string[]
 }
+const datePrev = new Date()
 
 const date = ref({
-  start: format(new Date(), 'dd MMMM yyyy'),
+  start: format(
+    new Date(datePrev.setDate(datePrev.getDate() - 7)),
+    'dd MMMM yyyy'
+  ),
   end: format(new Date(), 'dd MMMM yyyy'),
 })
 const countDashboard = ref<IGraphicCount>()

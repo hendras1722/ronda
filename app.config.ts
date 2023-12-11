@@ -121,7 +121,7 @@ export default defineAppConfig({
           link: 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 underline-offset-4 hover:underline focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400',
         },
         link: {
-          ghost: 'text-blue-500 no-underline ',
+          ghost: 'text-blue-500 no-underline hover:bg-transparent text-black',
         },
       },
       default: {
@@ -153,29 +153,38 @@ export default defineAppConfig({
       },
     },
     pagination: {
-      default: {
-        size: 'sm',
-        inactiveButton: {
-          color: 'gray',
-        },
-        activeButton: {
-          color: 'primary',
-          class: 'dark:bg-gray-800 dark:text-white',
-        },
-        prevButton: {
-          class:
-            'rtl:[&_span:first-child]:rotate-180 py-[0.475rem] dark:bg-gray-800 dark:text-white m-0',
-          icon: 'i-iconoir-nav-arrow-left',
-        },
-        nextButton: {
-          class:
-            'rtl:[&_span:last-child]:rotate-180 py-[0.475rem] dark:bg-gray-800 dark:text-white',
-          icon: 'i-iconoir-nav-arrow-right',
-        },
-      },
       wrapper: 'flex items-center -space-x-px',
       base: '',
-      rounded: 'first-of-type:rounded-s-md last-of-type:rounded-e-md',
+      rounded: 'first:rounded-s-md last:rounded-e-md',
+      default: {
+        size: 'sm',
+        activeButton: {
+          color: 'primary',
+        },
+        inactiveButton: {
+          color: 'white',
+        },
+        firstButton: {
+          color: 'white',
+          class: 'rtl:[&_span:first-child]:rotate-180',
+          icon: 'i-heroicons-chevron-double-left-20-solid',
+        },
+        lastButton: {
+          color: 'white',
+          class: 'rtl:[&_span:last-child]:rotate-180',
+          icon: 'i-heroicons-chevron-double-right-20-solid',
+        },
+        prevButton: {
+          color: 'white',
+          class: 'rtl:[&_span:first-child]:rotate-180 me-5',
+          icon: 'i-heroicons-chevron-left-20-solid',
+        },
+        nextButton: {
+          color: 'white',
+          class: 'rtl:[&_span:last-child]:rotate-180',
+          icon: 'i-heroicons-chevron-right-20-solid',
+        },
+      },
     },
     notifications: {
       position: 'top-0 right-0',

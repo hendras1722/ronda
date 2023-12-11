@@ -28,6 +28,19 @@
           >Tambah</UButton
         >
       </div>
+      <div class="col-span-3 col-start-9 row-start-1">
+        <USelect
+          v-model="filterDana"
+          name="filter"
+          label="Filter"
+          :options="[
+            { name: 'All', value: '' },
+            { name: 'Dana Masuk', value: true },
+            { name: 'Dana Keluar', value: false },
+          ]"
+          option-attribute="name"
+        />
+      </div>
     </div>
 
     <div class="overflow-auto">
@@ -65,10 +78,10 @@
           </div>
         </template>
       </MSATable>
-      <div class="flex justify-center">
+      <div class="flex justify-center mt-3">
         <UPagination
           :max="limit"
-          :page-count="10"
+          :page-count="limit"
           :total="total"
           v-model="page"
         >
@@ -77,7 +90,7 @@
               icon="i-heroicons-arrow-small-left-20-solid"
               color="primary"
               :ui="{ rounded: 'rounded-full' }"
-              class="rtl:[&_span:first-child]:rotate-180 me-2"
+              class="rtl:[&_span:first-child]:rotate-180"
               @click="onClick"
             />
           </template>
@@ -223,6 +236,7 @@ const itemIuran = ref<IIuran[]>()
 const page = ref(1)
 const limit = ref(10)
 const total = ref(0)
+const filterDana = ref('')
 
 function handleOpen() {
   state.value.id_warga = user.user.data[0].id
@@ -246,6 +260,7 @@ async function getData() {
       q: search.value ? search.value : '',
       limit: limit.value,
       page: page.value || 1,
+      filter: filterDana.value,
     },
   })
 
@@ -262,6 +277,12 @@ getData()
 
 watch(
   () => page.value,
+  () => {
+    getData()
+  }
+)
+watch(
+  () => filterDana.value,
   () => {
     getData()
   }

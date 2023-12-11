@@ -20,6 +20,37 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
+    if (!query.filter) {
+      let { data, error, count } = await client
+        .from('db_contribution')
+        .select(
+          `
+      *,
+      ...db_user!inner(
+        name
+      ),
+      ...db_complex(
+        house_complex
+      )
+      `,
+          { count: 'exact' }
+        )
+        .eq('id_complex', query.v || '')
+        .ilike('db_user.name', `%${query.q}%`)
+        .range(from, to)
+
+      if (error) {
+        throw createError({
+          statusCode: 403,
+          message: String(error.message),
+        })
+      }
+      return {
+        data,
+        total: count,
+        page: Number(query.page),
+      }
+    }
     let { data, error, count } = await client
       .from('db_contribution')
       .select(
@@ -35,6 +66,7 @@ export default defineEventHandler(async (event) => {
         { count: 'exact' }
       )
       .eq('id_complex', query.v || '')
+      .eq('status', query.filter || '')
       .ilike('db_user.name', `%${query.q}%`)
       .range(from, to)
 
