@@ -139,9 +139,9 @@ definePageMeta({
       const user = useGetuser()
       const path = from.path.replace('jimpitan-', '')
       const regex = path.replace(/^\//gm, '')
-      const sb_access = useCookie('sb_access')
+      const sbAccessToken = useCookie('sb-access-token')
 
-      const jwt = sb_access.value
+      const jwt = sbAccessToken.value
       const pathname = from.path + '/login'
       const address = user.user.data.filter(
         (item) => item.complex && item.complex.link === regex
@@ -160,8 +160,7 @@ definePageMeta({
       if (process.client) {
         const data = parseJwt(jwt)
         if (Date.now() >= data.exp * 1000) {
-          console.log(sb_access, 'inisb_access')
-          sb_access.value = null
+          sbAccessToken.value = null
           // return setTimeout(() => {
           //   navigateTo(pathname)
           // }, 300)
@@ -194,8 +193,8 @@ onMounted(() => {
   })
 })
 
-const sb_access_admin = useCookie('sb_access_admin')
-sb_access_admin.value = null
+const sbAccessToken = useCookie('sb-access-token')
+sbAccessToken.value = null
 
 // Next/previous controls
 function plusSlides(n: number) {
@@ -255,11 +254,9 @@ async function logout() {
   if (error) {
     console.log(error)
   } else {
-    const sb_access = useCookie('sb_access_admin')
-    const sb_access_user = useCookie('sb_access')
+    const sbAccessToken = useCookie('sb-access-token')
     const token = useCookie('token')
-    sb_access.value = null
-    sb_access_user.value = null
+    sbAccessToken.value = null
     token.value = null
     window.location.reload()
   }

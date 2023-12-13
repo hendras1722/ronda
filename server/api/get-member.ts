@@ -1,8 +1,8 @@
 import { createError } from 'h3'
-import { serverSupabaseClient } from '#supabase/server'
+import { serverSupabaseServiceRole } from '#supabase/server'
 
 export default defineEventHandler(async (event) => {
-  const client = await serverSupabaseClient(event)
+  const client = await serverSupabaseServiceRole(event)
   const path = getHeaders(event)
   const query = getQuery(event)
 

@@ -22,10 +22,28 @@
             class="w-full h-60 relative rounded-lg border-4 border-[#B0D0D3] bg-[#b0d0d3ab] flex items-center justify-center"
           >
             <div class="block text-center">
-              <div class="text-5xl font-extrabold">
-                {{ countDashboard?.contribution }}
+              <div class="flex items-center">
+                <div>
+                  <div class="text-4xl font-extrabold">
+                    {{ countDashboard?.contribution }}
+                  </div>
+                  <div>Total Iuran</div>
+                </div>
+                <div class="sm:ml-8 ml-5 border-l-2 border-l-white pl-5">
+                  <div class="mb-5">
+                    <div class="text-3xl font-extrabold">
+                      {{ countDashboard?.danaMasuk.contribution }}
+                    </div>
+                    <div>Total Dana Masuk</div>
+                  </div>
+                  <div>
+                    <div class="text-2xl font-extrabold">
+                      {{ countDashboard?.danaKeluar.contribution }}
+                    </div>
+                    <div>Total Dana Keluar</div>
+                  </div>
+                </div>
               </div>
-              <div>Total Iuran</div>
             </div>
           </div>
         </div>
@@ -76,6 +94,8 @@ interface IGraphicCount {
   warga: number
   graphicData: string[]
   graphicDate: string[]
+  danaMasuk: { contribution: number[] }
+  danaKeluar: { contribution: number[] }
 }
 const datePrev = new Date()
 
@@ -94,10 +114,11 @@ const popover = {
   visibility: 'click',
   placement: 'bottom-end',
 }
+console.log(user.user)
 
 const { data } = await useFetch<{ data: IGraphicCount }>('/api/dashboard', {
   query: {
-    v: user.user && user.user.data[0].complex.id,
+    v: user.user && user.user.data[0]?.complex?.id,
     dateStart: format(new Date(date.value.start), 'dd MMMM yyyy'),
     dateEnd: format(new Date(date.value.end), 'dd MMMM yyyy'),
   },
@@ -138,7 +159,7 @@ const chartOptions = ref({
 const series = ref([
   {
     name: 'Jimpitan',
-    data: countDashboard.value?.graphicData,
+    data: countDashboard.value?.graphicData || [],
   },
 ])
 
@@ -147,7 +168,7 @@ watch(
   async (newValue) => {
     const { data } = await useFetch<{ data: IGraphicCount }>('/api/dashboard', {
       query: {
-        v: user.user && user.user.data[0].complex.id,
+        v: user.user && user.user.data[0]?.complex?.id,
         dateStart: format(new Date(newValue.start), 'dd MMMM yyyy'),
         dateEnd: format(new Date(newValue.end), 'dd MMMM yyyy'),
       },
@@ -156,7 +177,7 @@ watch(
     series.value = [
       {
         name: 'Jimpitan',
-        data: countDashboard.value?.graphicData,
+        data: countDashboard.value?.graphicData || [],
       },
     ]
 

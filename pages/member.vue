@@ -29,15 +29,17 @@
       </div>
     </div>
 
-    <MSATable
-      :columns="columns"
-      :rows="item"
-      :ui="{
-        base: 'rounded-lg border border-collapse border-tools-table-outline border-[#ccc] border-1 w-full',
-        divide: 'divide-y divide-[#ccc] dark:divide-gray-800',
-      }"
-    >
-    </MSATable>
+    <div class="overflow-auto">
+      <MSATable
+        :columns="columns"
+        :rows="item"
+        :ui="{
+          base: 'rounded-lg border border-collapse border-tools-table-outline border-[#ccc] border-1 w-full',
+          divide: 'divide-y divide-[#ccc] dark:divide-gray-800',
+        }"
+      >
+      </MSATable>
+    </div>
     <USlideover v-model="isOpen">
       <UCard
         class="flex flex-col flex-1"
@@ -114,7 +116,7 @@ watchDebounced(
   },
   { debounce: 500 }
 )
-
+console.log(user.user.data)
 async function getData(e?: string) {
   const { data } = await useFetch<{ data: IMember[] }>('/api/get-member', {
     query: {

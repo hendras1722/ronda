@@ -2,6 +2,16 @@
   <div>
     <div class="text-2xl font-extrabold mb-5">Ambil Jimpitan</div>
 
+    <div class="mb-5">
+      Link jimpitan:
+      <a
+        class="text-blue-500"
+        :href="'/jimpitan-' + user.user.data[0].complex.link"
+        target="”_blank”"
+        ><i>/jimpitan-{{ user.user.data[0].complex.link }}</i></a
+      >
+    </div>
+
     <MSATable
       :columns="columns"
       :rows="item"
@@ -62,12 +72,15 @@ const columns = ref([
 ])
 
 const user = useGetuser()
+
+const item = ref<any>([])
+
 const { data } = await useFetch<{ data: any[] }>('/api/get-jimpitan', {
   query: {
     q: user.user && user.user.data[0]?.complex.id,
   },
 })
-const item = computed(() => data.value?.data)
+item.value = data.value?.data
 </script>
 
 <style lang="scss" scoped></style>

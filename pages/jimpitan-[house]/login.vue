@@ -32,15 +32,15 @@
             </UFormGroup>
 
             <div class="flex justify-center mt-5 w-full">
-              <UButton
-                class="w-full ml-auto mr-auto block"
-                type="submit"
-                variant="solid"
-                color="blue"
-                size="lg"
-              >
-                Submit
-              </UButton>
+              <div class="google-btn">
+                <div class="google-icon-wrapper">
+                  <img
+                    class="google-icon"
+                    src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
+                  />
+                </div>
+                <p class="btn-text"><b>Sign in with google</b></p>
+              </div>
             </div>
           </UForm>
         </div>
@@ -59,7 +59,7 @@ definePageMeta({
   layout: false,
   middleware: [
     function (from) {
-      const sb_access = useCookie('sb_access')
+      const sbAccessToken = useCookie('sb-access-token')
       const user = useGetuser()
       const path = from.path.replace('jimpitan-', '')
       const regex = path.split(/[\/-]/gm).filter(Boolean)
@@ -68,7 +68,7 @@ definePageMeta({
         (item) => item.complex?.link === regex[0]
       )
 
-      if (sb_access.value && address.length > 0) {
+      if (sbAccessToken.value && address.length > 0) {
         return navigateTo('/jimpitan-' + address[0].complex?.link)
       }
     },
@@ -86,9 +86,7 @@ const state = ref({
   password: '',
 })
 
-const sb_access = useCookie('sb_access')
-const sb_access_admin = useCookie('sb_access_admin')
-sb_access_admin.value = null
+const sbAccessToken = useCookie('sb-access-token')
 async function submit(event: FormSubmitEvent<Schema>) {
   // Do something with event.data
   // console.log(event.data)
@@ -98,7 +96,7 @@ async function submit(event: FormSubmitEvent<Schema>) {
     watch: false,
   })
   if (data.value) {
-    sb_access.value = data.value?.data.session.access_token
+    sbAccessToken.value = data.value?.data.session.access_token
     window.location.reload()
   }
 }

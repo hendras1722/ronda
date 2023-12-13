@@ -8,14 +8,18 @@ interface IUser {
 }
 
 export default defineNuxtRouteMiddleware(async (from, to) => {
-  const token = useCookie('sb_access_admin')
+  const token = useCookie('sb-access-token')
   const jwt = token.value
 
   if (from.path.match(/\/jimpitan-(\w+)/gm)) {
     return
   }
   if (!jwt && from.path !== '/login') {
-    return navigateTo('/login')
+    if (process.client) {
+      window.location.href = '/login'
+      return
+    }
+    // return navigateTo('/login')
   }
 
   if (!jwt) return
@@ -25,9 +29,17 @@ export default defineNuxtRouteMiddleware(async (from, to) => {
 
     if (data && Date.now() >= data.exp * 1000 && from.path !== '/login') {
       token.value = null
-      return navigateTo('/login')
+      if (process.client) {
+        window.location.href = '/login'
+        return
+      }
     }
   }
-
+  if (!jwt && from.path !== '/login') {
+    if (process.client) {
+      window.location.href = '/login'
+      return
+    }
+  }
   return
 })

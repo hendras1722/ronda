@@ -1,10 +1,11 @@
 import { createError } from 'h3'
-import { supabase } from '@/utils/supabase'
 import { endOfDay, startOfDay } from 'date-fns'
-import { serverSupabaseClient } from '#supabase/server'
+import { serverSupabaseServiceRole } from '#supabase/server'
+
+// import XLSX from 'xlsx'
 
 export default defineEventHandler(async (event) => {
-  const client = await serverSupabaseClient(event)
+  const client = await serverSupabaseServiceRole(event)
   const path = getHeaders(event)
   const cookie = path.cookie
     ?.split(';')
@@ -45,7 +46,7 @@ export default defineEventHandler(async (event) => {
       `
       )
       .eq('id_address', query.q || '')
-    console.log(jimpitan)
+
     const result =
       data &&
       data?.map((item: any) => {
@@ -75,9 +76,25 @@ export default defineEventHandler(async (event) => {
                   new Date(item.created_at).getTime() <= endDate
               )
             : [],
+          by: {
+            name:
+              item.jimpitan.length > 0
+                ? item.jimpitan.filter(
+                    (item: any) =>
+                      new Date(item.created_at).getTime() >= startDate &&
+                      new Date(item.created_at).getTime() <= endDate
+                  )[0]?.by?.name
+                : null,
+          },
         }
       })
-    console.log(result, 'result')
+
+    // const dataDownload = XLSX.utils.json_to_sheet(jimpitan)
+    // const wb = XLSX.utils.book_new()
+    // XLSX.utils.book_append_sheet(wb, jimpitan, 'data')
+    // XLSX.writeFile(wb, 'demo.xlsx')
+    // console.log(dataDownload)
+
     let { data: patrol, error: errPatrol } = await client
       .from('db_patrol')
       .select(

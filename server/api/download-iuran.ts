@@ -21,7 +21,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     if (query.filter === 'all') {
-      let { data, error, count } = await client
+      let { data, error } = await client
         .from('db_contribution')
         .select(
           `
@@ -32,27 +32,21 @@ export default defineEventHandler(async (event) => {
       ...db_complex(
         house_complex
       )
-      `,
-          { count: 'exact' }
+      `
         )
         .eq('id_complex', query.v || '')
-        .ilike('db_user.name', `%${query.q}%`)
-        .range(from, to)
-        .order('created_at', { ascending: false })
-
       if (error) {
         throw createError({
           statusCode: 403,
           message: String(error.message),
         })
       }
+
       return {
-        data,
-        total: count,
-        page: Number(query.page),
+        data: data,
       }
     }
-    let { data, error, count } = await client
+    let { data, error } = await client
       .from('db_contribution')
       .select(
         `
@@ -63,13 +57,10 @@ export default defineEventHandler(async (event) => {
       ...db_complex(
         house_complex
       )
-      `,
-        { count: 'exact' }
+      `
       )
       .eq('id_complex', query.v || '')
       .eq('status', query.filter || '')
-      .ilike('db_user.name', `%${query.q}%`)
-      .range(from, to)
 
     if (error) {
       throw createError({
@@ -77,10 +68,9 @@ export default defineEventHandler(async (event) => {
         message: String(error.message),
       })
     }
+
     return {
-      data,
-      total: count,
-      page: Number(query.page),
+      data: data,
     }
   } catch (error) {
     return {

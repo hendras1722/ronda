@@ -1,9 +1,9 @@
 import { createError } from 'h3'
-import { serverSupabaseClient } from '#supabase/server'
+import { serverSupabaseServiceRole } from '#supabase/server'
 import { format } from 'date-fns'
 
 export default defineEventHandler(async (event) => {
-  const client = await serverSupabaseClient(event)
+  const client = await serverSupabaseServiceRole(event)
   const path = getHeaders(event)
   const query = getQuery(event)
 
@@ -111,6 +111,31 @@ export default defineEventHandler(async (event) => {
       )
       .eq('id_complex', query.v || '')
 
+    const danaMasuk = contribution
+      ?.filter((item) => item.status === 'true')
+      .reduce(
+        (acc: any, currentValue: any) => {
+          if (acc) {
+            return {
+              contribution: acc.contribution + currentValue.contribution,
+            }
+          }
+        },
+        { contribution: null }
+      )
+    const danaKeluar = contribution
+      ?.filter((item) => item.status === 'false')
+      .reduce(
+        (acc: any, currentValue: any) => {
+          if (acc) {
+            return {
+              contribution: acc.contribution + currentValue.contribution,
+            }
+          }
+        },
+        { contribution: null }
+      )
+
     if (errMoney || errWarga || errJimpitan) {
       throw createError({
         statusCode: 403,
@@ -126,6 +151,8 @@ export default defineEventHandler(async (event) => {
         warga,
         graphicData,
         graphicDate,
+        danaMasuk,
+        danaKeluar,
       },
     }
   } catch (error) {

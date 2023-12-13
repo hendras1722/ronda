@@ -23,11 +23,9 @@ async function logout() {
   if (error) {
     console.log(error)
   } else {
-    const sb_access = useCookie('sb_access_admin')
-    const sb_access_user = useCookie('sb_access')
+    const sbAccessToken = useCookie('sb-access-token')
     const token = useCookie('token')
-    sb_access.value = null
-    sb_access_user.value = null
+    sbAccessToken.value = null
     token.value = null
     if (currentRoute.includes('jimpitan')) {
       window.location.href = route.path + '/login'

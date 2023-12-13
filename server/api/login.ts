@@ -16,7 +16,10 @@ export default defineEventHandler(async (event) => {
     })
   }
   try {
-    let { data, error } = await supabase.auth.signInWithPassword(body)
+    // let { data, error } = await client.auth.signInWithPassword(body)
+    let { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+    })
 
     // let { data, error } = await supabase.auth.admin.inviteUserByEmail(
     //   'muhsyahendraa1722@gmail.com'

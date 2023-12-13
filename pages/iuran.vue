@@ -1,8 +1,9 @@
 <template>
   <div>
     <div class="text-2xl font-extrabold mb-5">Iuran Warga</div>
+
     <div class="grid grid-cols-12 grid-rows-1 gap-4 mb-7">
-      <div class="col-span-5">
+      <div class="md:col-span-5 col-span-12">
         <UInput
           v-model="search"
           name="search"
@@ -23,23 +24,39 @@
           </template>
         </UInput>
       </div>
-      <div class="col-span-2 col-start-12 flex justify-end">
-        <UButton variant="solid" color="green" @click="handleOpen"
+      <div class="md:col-span-2 md:col-start-12 col-span-12 flex justify-end">
+        <UButton
+          variant="solid"
+          color="green"
+          @click="handleOpen"
+          class="w-full ml-auto mr-auto block"
           >Tambah</UButton
         >
       </div>
-      <div class="col-span-3 col-start-9 row-start-1">
+      <div class="md:col-span-3 md:col-start-9 col-span-12 row-start-1">
         <USelect
           v-model="filterDana"
           name="filter"
           label="Filter"
           :options="[
-            { name: 'All', value: '' },
-            { name: 'Dana Masuk', value: true },
-            { name: 'Dana Keluar', value: false },
+            { name: 'All', value: 'all' },
+            { name: 'Dana Masuk', value: 'true' },
+            { name: 'Dana Keluar', value: 'false' },
           ]"
           option-attribute="name"
         />
+      </div>
+    </div>
+
+    <div class="grid grid-cols-12 grid-rows-1 gap-4 mb-7">
+      <div class="md:col-span-2 md:col-start-12 col-span-12 flex justify-end">
+        <UButton
+          variant="solid"
+          color="blue"
+          @click="handleDownload"
+          class="md:w-fit w-full block"
+          >Download</UButton
+        >
       </div>
     </div>
 
@@ -56,7 +73,9 @@
           <div>{{ convertDate(row.created_at) }}</div>
         </template>
         <template #status-data="{ row }">
-          <div v-if="row.status"><UBadge color="green">Dana Masuk</UBadge></div>
+          <div v-if="row.status === 'true'">
+            <UBadge color="green">Dana Masuk</UBadge>
+          </div>
           <div v-else><UBadge color="red">Dana Keluar</UBadge></div>
         </template>
         <template #actions-data="{ index, row }">
@@ -78,33 +97,33 @@
           </div>
         </template>
       </MSATable>
-      <div class="flex justify-center mt-3">
-        <UPagination
-          :max="limit"
-          :page-count="limit"
-          :total="total"
-          v-model="page"
-        >
-          <template #prev="{ onClick }">
-            <UButton
-              icon="i-heroicons-arrow-small-left-20-solid"
-              color="primary"
-              :ui="{ rounded: 'rounded-full' }"
-              class="rtl:[&_span:first-child]:rotate-180"
-              @click="onClick"
-            />
-          </template>
+    </div>
+    <div class="flex justify-center mt-3">
+      <UPagination
+        :max="limit"
+        :page-count="limit"
+        :total="total"
+        v-model="page"
+      >
+        <template #prev="{ onClick }">
+          <UButton
+            icon="i-heroicons-arrow-small-left-20-solid"
+            color="primary"
+            :ui="{ rounded: 'rounded-full' }"
+            class="rtl:[&_span:first-child]:rotate-180"
+            @click="onClick"
+          />
+        </template>
 
-          <template #next="{ onClick }">
-            <UButton
-              icon="i-heroicons-arrow-small-right-20-solid"
-              color="primary"
-              :ui="{ rounded: 'rounded-full' }"
-              class="rtl:[&_span:last-child]:rotate-180 ms-2"
-              @click="onClick"
-            /> </template
-        ></UPagination>
-      </div>
+        <template #next="{ onClick }">
+          <UButton
+            icon="i-heroicons-arrow-small-right-20-solid"
+            color="primary"
+            :ui="{ rounded: 'rounded-full' }"
+            class="rtl:[&_span:last-child]:rotate-180 ms-2"
+            @click="onClick"
+          /> </template
+      ></UPagination>
     </div>
 
     <UModal v-model="isOpenModal">
@@ -176,6 +195,7 @@
 
 <script setup lang="ts">
 import { format } from 'date-fns'
+import * as XLSX from 'xlsx'
 
 interface IMember {
   created_at: Date
@@ -225,7 +245,7 @@ const columns = ref([
 const options = ref<{ name: string; value: string }[]>([])
 const state = ref({
   id_warga: '',
-  contribution: '',
+  contribution: 0,
   id_complex: '',
   status: '',
   note: '',
@@ -236,7 +256,7 @@ const itemIuran = ref<IIuran[]>()
 const page = ref(1)
 const limit = ref(10)
 const total = ref(0)
-const filterDana = ref('')
+const filterDana = ref<any>('all')
 
 function handleOpen() {
   state.value.id_warga = user.user.data[0].id
@@ -317,12 +337,15 @@ if (data.value?.data) {
 
 async function submit() {
   state.value.id_complex = user.user && user.user.data[0].complex.id
+  state.value.contribution = Number(state.value.contribution)
   const { data } = await useFetch<{ data: any }>('/api/iuran', {
     method: 'POST',
     body: state.value,
     watch: false,
   })
   if (data.value) {
+    await getData()
+    isOpenModal.value = false
     // console.log(data.value)
   }
 }
@@ -330,6 +353,26 @@ async function submit() {
 function convertDate(e: any) {
   if (!e) return
   return format(new Date(e), 'dd MMMM yyyy')
+}
+
+async function handleDownload() {
+  const { data: iuran } = await useFetch<{ data: any }>('/api/download-iuran', {
+    query: {
+      v: user.user && user.user.data[0].complex.id,
+      filter: filterDana.value,
+    },
+  })
+  const data = XLSX.utils.json_to_sheet(iuran.value?.data)
+  const wb = XLSX.utils.book_new()
+  XLSX.utils.book_append_sheet(wb, data, 'data')
+  XLSX.writeFile(
+    wb,
+    filterDana.value === 'true'
+      ? 'Dana Masuk'
+      : filterDana.value === 'false'
+      ? 'Dana Keluar'
+      : 'Semua'
+  )
 }
 </script>
 
