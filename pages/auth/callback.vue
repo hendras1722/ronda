@@ -7,7 +7,9 @@ definePageMeta({
   layout: false,
 })
 onMounted(() => {
-  window.location.href = '/'
+  setTimeout(() => {
+    window.location.href = '/'
+  }, 300)
 })
 </script>
 
