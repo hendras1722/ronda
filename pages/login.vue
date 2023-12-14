@@ -107,11 +107,11 @@ async function submit(event: FormSubmitEvent<Schema>) {
     url = url.charAt(url.length - 1) === '/' ? url : `${url}`
     return url
   }
-  console.log(getURL())
+
   let { error, data } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: getURL(),
+      redirectTo: 'https://ronda.vercel.app/auth/callback',
     },
   })
   if (error) {
