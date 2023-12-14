@@ -195,7 +195,15 @@
 
 <script setup lang="ts">
 import { format } from 'date-fns'
-import * as XLSX from 'xlsx'
+
+useHead({
+  script: [
+    {
+      src: 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.2/xlsx.full.min.js',
+    },
+  ],
+})
+// import  XLSX from 'xlsx'
 
 interface IMember {
   created_at: Date
@@ -362,16 +370,22 @@ async function handleDownload() {
       filter: filterDana.value,
     },
   })
-  const data = XLSX.utils.json_to_sheet(iuran.value?.data)
+  const result = iuran.value?.data.map((item: any) => {
+    return {
+      ...item,
+      status: item.status === 'true' ? 'Dana Masuk' : 'Dana Keluar',
+    }
+  })
+  const data = XLSX.utils.json_to_sheet(result)
   const wb = XLSX.utils.book_new()
   XLSX.utils.book_append_sheet(wb, data, 'data')
   XLSX.writeFile(
     wb,
     filterDana.value === 'true'
-      ? 'Dana Masuk'
+      ? 'Dana Masuk.xlsx'
       : filterDana.value === 'false'
-      ? 'Dana Keluar'
-      : 'Semua'
+      ? 'Dana Keluar.xlsx'
+      : 'Semua.xlsx'
   )
 }
 </script>

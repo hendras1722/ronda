@@ -26,7 +26,7 @@
       />
       <div
         v-if="isFocus"
-        class="bg-white absolute shadow-md w-full rounded-lg p-5 mt-2"
+        class="bg-white absolute shadow-md w-full rounded-lg p-5 -mt-8"
       >
         <div v-if="isLoading">Data sedang dicari...</div>
         <UButton

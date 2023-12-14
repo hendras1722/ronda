@@ -29,8 +29,8 @@ export default defineEventHandler(async (event) => {
       .from('db_user')
       .select(
         `
-      *
-      `
+    *
+    `
       )
       .eq('id_complex', query.q || '')
 
@@ -38,12 +38,12 @@ export default defineEventHandler(async (event) => {
       .from('db_jimpitan')
       .select(
         `
-     id_warga,
-     created_at,
-     by: by(
-      name
-     )
-      `
+   id_warga,
+   created_at,
+   by: by(
+    name
+   )
+    `
       )
       .eq('id_address', query.q || '')
 
@@ -78,7 +78,7 @@ export default defineEventHandler(async (event) => {
             : [],
           by: {
             name:
-              item.jimpitan.length > 0
+              item.jimpitan && item.jimpitan.length > 0
                 ? item.jimpitan.filter(
                     (item: any) =>
                       new Date(item.created_at).getTime() >= startDate &&
@@ -88,6 +88,7 @@ export default defineEventHandler(async (event) => {
           },
         }
       })
+    console.log(jimpitan, 'iniresult')
 
     // const dataDownload = XLSX.utils.json_to_sheet(jimpitan)
     // const wb = XLSX.utils.book_new()
@@ -99,9 +100,9 @@ export default defineEventHandler(async (event) => {
       .from('db_patrol')
       .select(
         `
-        id,
-      day
-      `
+      id,
+    day
+    `
       )
       .eq('id_complex', query.q || '')
 

@@ -114,7 +114,6 @@ const popover = {
   visibility: 'click',
   placement: 'bottom-end',
 }
-console.log(user.user)
 
 const { data } = await useFetch<{ data: IGraphicCount }>('/api/dashboard', {
   query: {

@@ -22,7 +22,7 @@ export default defineNuxtPlugin(async (event) => {
           q: data.sub,
         },
       })
-      console.log(getUser, 'inigetuser')
+
       store.user.value = getUser || []
     } catch (error) {
       console.log(error)

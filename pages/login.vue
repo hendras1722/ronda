@@ -66,10 +66,11 @@ definePageMeta({
       if (!jwt) return
       const data = parseJwt(jwt)
       if (Date.now() <= data.exp * 1000 && jwt && from.path === '/login') {
-        if (process.client) {
-          window.location.href = '/'
-          return
-        }
+        // if (process.client) {
+        //   window.location.href = '/'
+        //   return
+        // }
+        return navigateTo('/')
       }
     },
   ],

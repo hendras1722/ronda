@@ -135,7 +135,7 @@
 definePageMeta({
   layout: false,
   middleware: [
-    async function (from, to, next) {
+    async function (from, to) {
       const user = useGetuser()
       const path = from.path.replace('jimpitan-', '')
       const regex = path.replace(/^\//gm, '')
@@ -146,8 +146,10 @@ definePageMeta({
       const address = user.user.data.filter(
         (item) => item.complex && item.complex.link === regex
       )
+      console.log(pathname, 'iinifrom')
       if (!jwt) {
-        return navigateTo(pathname)
+        window.location.href = pathname
+        return
       }
 
       if (address.length < 1) {
@@ -160,11 +162,12 @@ definePageMeta({
       if (process.client) {
         const data = parseJwt(jwt)
         if (Date.now() >= data.exp * 1000) {
-          sbAccessToken.value = null
           // return setTimeout(() => {
           //   navigateTo(pathname)
           // }, 300)
-          return navigateTo(pathname)
+          window.location.href = pathname
+          // return navigateTo(pathname)
+          return
         }
       }
     },
@@ -193,8 +196,8 @@ onMounted(() => {
   })
 })
 
-const sbAccessToken = useCookie('sb-access-token')
-sbAccessToken.value = null
+// const sbAccessToken = useCookie('sb-access-token')
+// sbAccessToken.value = null
 
 // Next/previous controls
 function plusSlides(n: number) {
@@ -258,7 +261,7 @@ async function logout() {
     const token = useCookie('token')
     sbAccessToken.value = null
     token.value = null
-    window.location.reload()
+    window.location.href = window.location.pathname + '/login'
   }
 }
 

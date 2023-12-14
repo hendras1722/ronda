@@ -14,6 +14,7 @@ export default defineNuxtRouteMiddleware(async (from, to) => {
   if (from.path.match(/\/jimpitan-(\w+)/gm)) {
     return
   }
+
   if (!jwt && from.path !== '/login') {
     if (process.client) {
       window.location.href = '/login'
