@@ -102,15 +102,16 @@ async function submit(event: FormSubmitEvent<Schema>) {
   const getURL = () => {
     let url = 'http://localhost:3000/auth/callback'
     // Make sure to include `https://` when not localhost.
-    url = url.includes('http') ? url : `https://${url}`
+    url = url.includes('http') ? url : `https://ronda.vercel.app/auth/callback`
     // Make sure to include a trailing `/`.
-    url = url.charAt(url.length - 1) === '/' ? url : `${url}/`
+    url = url.charAt(url.length - 1) === '/' ? url : `${url}`
     return url
   }
+  console.log(getURL())
   let { error, data } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: 'http://localhost:3000/auth/callback',
+      redirectTo: getURL(),
     },
   })
   if (error) {
