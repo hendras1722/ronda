@@ -22,7 +22,6 @@ export default defineNuxtPlugin(async (event) => {
           q: data.sub,
         },
       })
-
       store.user.value = getUser || []
     } catch (error) {
       console.log(error)
@@ -38,14 +37,16 @@ export default defineNuxtPlugin(async (event) => {
   store.userLogin.value = data
 
   try {
-    const getUser = await _fetch<IUser>('/api/get-user', {
-      baseURL: process.env.NUXT_API_BASE_URL,
-      query: {
-        q: user.value.id,
-      },
-    })
+    if (process.server) {
+      const getUser = await _fetch<IUser>('/api/get-user', {
+        baseURL: process.env.NUXT_API_BASE_URL,
+        query: {
+          q: user.value.id,
+        },
+      })
 
-    store.user.value = getUser || []
+      store.user.value = getUser || []
+    }
   } catch (error) {
     console.log(error)
   }

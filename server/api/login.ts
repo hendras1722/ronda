@@ -5,6 +5,16 @@ import { serverSupabaseServiceRole } from '#supabase/server'
 export default defineEventHandler(async (event) => {
   const client = serverSupabaseServiceRole(event)
   const path = getHeaders(event)
+
+  const route = getRequestHost(event)
+  const BASE_URL = process.env.BASE_URL
+
+  if (!route.includes(String(BASE_URL))) {
+    throw createError({
+      statusCode: 403,
+      message: 'Forbidden Access',
+    })
+  }
   // let { data, error } = await client.auth.admin.inviteUserByEmail(
   //   'hendrarmada2@gmail.com'
   // )

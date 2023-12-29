@@ -7,6 +7,16 @@ export default defineEventHandler(async (event) => {
   const path = getHeaders(event)
   const query = getQuery(event)
 
+  const route = getRequestHost(event)
+  const BASE_URL = process.env.BASE_URL
+
+  if (!route.includes(String(BASE_URL))) {
+    throw createError({
+      statusCode: 403,
+      message: 'Forbidden Access',
+    })
+  }
+
   if (path['postman-token']) {
     throw createError({
       statusCode: 403,
@@ -37,7 +47,7 @@ export default defineEventHandler(async (event) => {
       )
       .eq('id_address', query.v || '')
       .gte('created_at', query.dateStart || '')
-      .lte('created_at', query.dateEnd || '')
+      .lt('created_at', query.dateEnd || '')
 
     const money = contribution
       ?.filter((item) => item.status)
@@ -47,8 +57,8 @@ export default defineEventHandler(async (event) => {
     const result: { money: number; created_at: string }[] = []
     const resultNotDay: { money: number; created_at: string }[] = []
     let newArr = jimpitan || []
-
-    newArr.forEach((item, i, current) => {
+    console.log(jimpitan)
+    newArr.forEach((item, _, current) => {
       const filter = current.filter((data) => data.id !== item.id)
       const filterDate = filter.filter(
         (data) =>
@@ -70,27 +80,35 @@ export default defineEventHandler(async (event) => {
       }
     })
 
-    const i = result.reduce(
-      (acc: any, currentValue: any) => {
-        if (acc) {
-          return {
-            money: acc.money + currentValue.money,
-            created_at: currentValue.created_at,
-          }
-        }
-      },
-      { money: null }
-    )
+    // const i = result.reduce(
+    //   (acc: any, currentValue: any) => {
+    //     if (acc) {
+    //       return {
+    //         money: acc.money + currentValue.money,
+    //         created_at: currentValue.created_at,
+    //       }
+    //     }
+    //   },
+    //   { money: null }
+    // )
 
-    const resultIn = [...resultNotDay, i]
-      .filter(Boolean)
-      .sort(
-        (a: any, b: any) =>
-          new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-      )
-      .filter(Boolean)
+    const byCreatedAt =
+      jimpitan?.reduce((acc, current) => {
+        const key = new Date(current.created_at).toISOString().slice(0, 10) // Gunakan tanggal saja untuk pengelompokan
+        const value = acc.get(key) || 0
+        acc.set(key, value + current.money)
+        return acc
+      }, new Map()) || []
 
-    const graphicData = resultIn?.map((item) => item?.money)
+    const resultIn: { value: string; created_at: string }[] = []
+    for (const [key, value] of byCreatedAt) {
+      resultIn.push({
+        value: value,
+        created_at: key,
+      })
+    }
+
+    const graphicData = resultIn?.map((item) => item?.value)
     const graphicDate = resultIn
       ?.map(
         (item) =>
@@ -98,6 +116,7 @@ export default defineEventHandler(async (event) => {
           null
       )
       .filter(Boolean)
+
     let { count: warga, error: errWarga } = await client
       .from('db_user')
       .select(

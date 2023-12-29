@@ -146,7 +146,7 @@ definePageMeta({
       const address = user.user.data.filter(
         (item) => item.complex && item.complex.link === regex
       )
-      console.log(pathname, 'iinifrom')
+
       if (!jwt) {
         window.location.href = pathname
         return

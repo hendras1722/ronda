@@ -115,11 +115,18 @@ const popover = {
   placement: 'bottom-end',
 }
 
+const date1 = new Date(date.value.start)
+date1.setHours(0, 0, 0, 0)
+const date2 = new Date(date.value.end)
+date2.setHours(23, 59, 59, 999)
+
 const { data } = await useFetch<{ data: IGraphicCount }>('/api/dashboard', {
   query: {
     v: user.user && user.user.data[0]?.complex?.id,
-    dateStart: format(new Date(date.value.start), 'dd MMMM yyyy'),
-    dateEnd: format(new Date(date.value.end), 'dd MMMM yyyy'),
+    // dateStart: format(new Date(date.value.start), 'dd MMMM yyyy'),
+    dateStart: date1,
+    // dateEnd: format(new Date(date.value.end), 'dd MMMM yyyy'),
+    dateEnd: date2,
   },
 })
 countDashboard.value = data.value?.data
@@ -165,11 +172,17 @@ const series = ref([
 watch(
   () => date.value,
   async (newValue) => {
+    const date1 = new Date(newValue.start)
+    date1.setHours(0, 0, 0, 0)
+    const date2 = new Date(newValue.end)
+    date2.setHours(23, 59, 59, 999)
     const { data } = await useFetch<{ data: IGraphicCount }>('/api/dashboard', {
       query: {
         v: user.user && user.user.data[0]?.complex?.id,
-        dateStart: format(new Date(newValue.start), 'dd MMMM yyyy'),
-        dateEnd: format(new Date(newValue.end), 'dd MMMM yyyy'),
+        // dateStart: format(new Date(newValue.start), 'dd MMMM yyyy'),
+        dateStart: date1,
+        // dateEnd: format(new Date(newValue.end), 'dd MMMM yyyy'),
+        dateEnd: date2,
       },
     })
     countDashboard.value = data.value?.data

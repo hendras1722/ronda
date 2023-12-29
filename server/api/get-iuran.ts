@@ -6,7 +6,17 @@ export default defineEventHandler(async (event) => {
   const client = await serverSupabaseServiceRole(event)
   const path = getHeaders(event)
   const query = getQuery(event)
-  console.log(query)
+
+  const route = getRequestHost(event)
+  const BASE_URL = process.env.BASE_URL
+
+  if (!route.includes(String(BASE_URL))) {
+    throw createError({
+      statusCode: 403,
+      message: 'Forbidden Access',
+    })
+  }
+
   const { from, to } = getPagination(
     Number(query.page) - 1,
     Number(query.limit)
@@ -70,6 +80,7 @@ export default defineEventHandler(async (event) => {
       .eq('status', query.filter || '')
       .ilike('db_user.name', `%${query.q}%`)
       .range(from, to)
+      .order('created_at', { ascending: false })
 
     if (error) {
       throw createError({
