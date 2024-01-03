@@ -148,8 +148,9 @@ definePageMeta({
       )
 
       if (!jwt) {
-        window.location.href = pathname
-        return
+        return navigateTo(pathname)
+        // window.location.href = pathname
+        // return
       }
 
       if (address.length < 1) {
@@ -165,8 +166,8 @@ definePageMeta({
           // return setTimeout(() => {
           //   navigateTo(pathname)
           // }, 300)
-          window.location.href = pathname
-          // return navigateTo(pathname)
+          // window.location.href = pathname
+          return navigateTo(pathname)
           return
         }
       }

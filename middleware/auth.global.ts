@@ -16,11 +16,11 @@ export default defineNuxtRouteMiddleware(async (from, to) => {
   }
 
   if (!jwt && from.path !== '/login') {
-    if (process.client) {
-      window.location.href = '/login'
-      return
-    }
-    // return navigateTo('/login')
+    // if (process.client) {
+    //   window.location.href = '/login'
+    //   return
+    // }
+    return navigateTo('/login')
   }
 
   if (!jwt) return
@@ -31,15 +31,17 @@ export default defineNuxtRouteMiddleware(async (from, to) => {
     if (data && Date.now() >= data.exp * 1000 && from.path !== '/login') {
       token.value = null
       if (process.client) {
-        window.location.href = '/login'
-        return
+        // window.location.href = '/login'
+        // return
+        return navigateTo('/login')
       }
     }
   }
   if (!jwt && from.path !== '/login') {
     if (process.client) {
-      window.location.href = '/login'
-      return
+      // window.location.href = '/login'
+      // return
+      return navigateTo('/login')
     }
   }
   return

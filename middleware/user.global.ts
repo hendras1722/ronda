@@ -10,9 +10,9 @@ export default defineNuxtRouteMiddleware(async (from) => {
     )
   ) {
     if (process.client) {
-      window.location.href = '/register-profile'
-      return
-      // return navigateTo('/register-profile')
+      // window.location.href = '/register-profile'
+      // return
+      return navigateTo('/register-profile')
     }
   }
   return
