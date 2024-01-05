@@ -8,13 +8,13 @@ export default defineEventHandler(async (event) => {
 
   const route = getRequestHost(event)
   const BASE_URL = process.env.BASE_URL
-
-  // if (!route.includes(String(BASE_URL))) {
-  //  throw createError({
-  //  statusCode: 403,
-  // message: 'Forbidden Access',
-  // })
-  // }
+  console.log(BASE_URL, 'inibaseurl')
+  if (!route.includes(String(BASE_URL))) {
+    throw createError({
+      statusCode: 403,
+      message: 'Forbidden Access',
+    })
+  }
 
   const cookie = path.cookie
     ?.split(';')

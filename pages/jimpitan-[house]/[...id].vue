@@ -252,17 +252,18 @@ async function handleSubmit() {
     }
   }
 }
+const router = useRouter()
 
 async function logout() {
   let { error } = await supabase.auth.signOut()
-  if (error) {
-    console.log(error)
-  } else {
-    const sbAccessToken = useCookie('sb-access-token')
-    const token = useCookie('token')
-    sbAccessToken.value = null
-    token.value = null
+  console.log(error, 'iniv')
+  if (!error) {
+    // const sbAccessToken = useCookie('sb-access-token')
+    // const token = useCookie('token')
+    // sbAccessToken.value = null
+    // token.value = null
     window.location.href = window.location.pathname + '/login'
+    // router.push('/login')
   }
 }
 

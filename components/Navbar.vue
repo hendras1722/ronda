@@ -161,15 +161,11 @@ function handlePengaturan() {
 }
 
 async function logout() {
-  const sbAccessToken = useCookie('sb-access-token')
-  const token = useCookie('token')
   let { error } = await supabase.auth.signOut()
-  if (error) {
-    console.log(error)
-  } else {
-    navigateTo('/login')
-    sbAccessToken.value = null
-    token.value = null
+  if (!error) {
+    setTimeout(() => {
+      router.push('/login')
+    }, 300)
   }
 }
 defineExpose({

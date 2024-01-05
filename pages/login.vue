@@ -60,21 +60,27 @@ definePageMeta({
   layout: false,
   middleware: [
     function (to, from) {
-      const token = useCookie('sb-access-token')
-      const jwt = token.value
-
-      if (!jwt) return
-      const data = parseJwt(jwt)
-      if (Date.now() <= data.exp * 1000 && jwt && from.path === '/login') {
-        // if (process.client) {
-        //   window.location.href = '/'
-        //   return
-        // }
+      const user = useSupabaseUser()
+      console.log(user.value, 'iniuservalue')
+      if (user.value) {
         return navigateTo('/')
       }
     },
   ],
 })
+const user = useSupabaseUser()
+
+watch(
+  () => user.value,
+  (newValue) => {
+    if (newValue) {
+      window.location.href = '/'
+    }
+  },
+  {
+    deep: true,
+  }
+)
 
 const schema = object({
   email: string(),
@@ -110,9 +116,6 @@ async function submit(event: FormSubmitEvent<Schema>) {
 
   let { error, data } = await supabase.auth.signInWithOAuth({
     provider: 'google',
-    options: {
-      redirectTo: 'https://ronda.vercel.app/auth/callback',
-    },
   })
   if (error) {
     console.log(error)

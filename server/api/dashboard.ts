@@ -10,12 +10,12 @@ export default defineEventHandler(async (event) => {
   const route = getRequestHost(event)
   const BASE_URL = process.env.BASE_URL
   console.log(route, 'ininroute')
-  // if (!route.includes(String(BASE_URL))) {
-  //  throw createError({
-  //  statusCode: 403,
-  // message: 'Forbidden Access',
-  // })
-  // }
+  if (!route.includes(String(BASE_URL))) {
+    throw createError({
+      statusCode: 403,
+      message: 'Forbidden Access',
+    })
+  }
 
   if (path['postman-token']) {
     throw createError({
