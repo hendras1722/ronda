@@ -7,14 +7,14 @@ export default defineEventHandler(async (event) => {
   const path = getHeaders(event)
   const query = getQuery(event)
 
-  const route = getRequestHost(event)
+  const route = getHeaders(event)
   const BASE_URL = process.env.BASE_URL
-
-  if (!route.includes(String(BASE_URL))) {
-    // throw createError({
-    //   statusCode: 403,
-    //   message: 'Forbidden Access',
-    // })
+  console.log(route.host, 'iniroute')
+  if (route.host && !route.host.includes(String(BASE_URL))) {
+    throw createError({
+      statusCode: 403,
+      message: 'Forbidden Access',
+    })
   }
 
   if (path['postman-token']) {
@@ -172,7 +172,6 @@ export default defineEventHandler(async (event) => {
         graphicDate,
         danaMasuk,
         danaKeluar,
-        route: route.includes(String(BASE_URL)),
         BASE_URL,
       },
     }
