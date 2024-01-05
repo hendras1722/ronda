@@ -173,6 +173,7 @@ export default defineEventHandler(async (event) => {
         danaMasuk,
         danaKeluar,
         route,
+        BASE_URL,
       },
     }
   } catch (error) {
