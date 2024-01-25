@@ -1,20 +1,14 @@
 import { createError } from 'h3'
 import { serverSupabaseServiceRole } from '#supabase/server'
-import { format } from 'date-fns'
+import { format, parseISO } from 'date-fns'
+import { createArrayByDateRange } from '@/utils/DateOneMonth'
 
 export default defineEventHandler(async (event) => {
   const client = await serverSupabaseServiceRole(event)
   const path = getHeaders(event)
   const query = getQuery(event)
 
-  const BASE_URL = process.env.BASE_URL
-  // console.log(route.host, 'iniroute')
-  // if (route.host && !route.host.includes(String(BASE_URL))) {
-  //   throw createError({
-  //     statusCode: 403,
-  //     message: 'Forbidden Access',
-  //   })
-  // }
+  const dateAnalytic = createArrayByDateRange(query.dateStart, query.dateEnd)
 
   if (path['postman-token']) {
     throw createError({
@@ -56,7 +50,7 @@ export default defineEventHandler(async (event) => {
     const result: { money: number; created_at: string }[] = []
     const resultNotDay: { money: number; created_at: string }[] = []
     let newArr = jimpitan || []
-    console.log(jimpitan)
+
     newArr.forEach((item, _, current) => {
       const filter = current.filter((data) => data.id !== item.id)
       const filterDate = filter.filter(
@@ -79,18 +73,6 @@ export default defineEventHandler(async (event) => {
       }
     })
 
-    // const i = result.reduce(
-    //   (acc: any, currentValue: any) => {
-    //     if (acc) {
-    //       return {
-    //         money: acc.money + currentValue.money,
-    //         created_at: currentValue.created_at,
-    //       }
-    //     }
-    //   },
-    //   { money: null }
-    // )
-
     const byCreatedAt =
       jimpitan?.reduce((acc, current) => {
         const key = new Date(current.created_at).toISOString().slice(0, 10) // Gunakan tanggal saja untuk pengelompokan
@@ -107,14 +89,14 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    const graphicData = resultIn?.map((item) => item?.value)
-    const graphicDate = resultIn
-      ?.map(
-        (item) =>
-          (item?.created_at && format(new Date(item.created_at), 'dd/MM')) ||
-          null
-      )
-      .filter(Boolean)
+    const graphicData = dateAnalytic.map((item) => {
+      for (let i in resultIn) {
+        if (format(new Date(resultIn[i].created_at), 'dd-MM-yyyy') === item) {
+          return resultIn[i].value
+        }
+      }
+      return 0
+    })
 
     let { count: warga, error: errWarga } = await client
       .from('db_user')
@@ -168,10 +150,9 @@ export default defineEventHandler(async (event) => {
         contribution: money,
         warga,
         graphicData,
-        graphicDate,
+        graphicDate: dateAnalytic,
         danaMasuk,
         danaKeluar,
-        BASE_URL,
       },
     }
   } catch (error) {

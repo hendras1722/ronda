@@ -14,7 +14,8 @@ export function parseJwt(token: string) {
 }
 
 export function parseJwtServer(token: string) {
-  if (!Buffer) return
-  console.log(Buffer, 'inibur')
-  return JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString())
+  // if (!Buffer) return
+  // console.log(Buffer, 'inibur')
+  // return JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString())
+  return token
 }

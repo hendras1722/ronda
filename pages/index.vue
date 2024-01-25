@@ -119,14 +119,14 @@ const date1 = new Date(date.value.start)
 date1.setHours(0, 0, 0, 0)
 const date2 = new Date(date.value.end)
 date2.setHours(23, 59, 59, 999)
-
+console.log(date1, 'oioio')
 const { data } = await useFetch<{ data: IGraphicCount }>('/api/dashboard', {
   query: {
     v: user.user && user.user.data[0]?.complex?.id,
     // dateStart: format(new Date(date.value.start), 'dd MMMM yyyy'),
-    dateStart: date1,
-    // dateEnd: format(new Date(date.value.end), 'dd MMMM yyyy'),
-    dateEnd: date2,
+    dateStart: format(date1, 'yyyy-MM-dd'),
+    // dateEnd: format(new Date(newValue.end), 'dd MMMM yyyy'),
+    dateEnd: format(date2, 'yyyy-MM-dd'),
   },
 })
 countDashboard.value = data.value?.data
@@ -176,13 +176,14 @@ watch(
     date1.setHours(0, 0, 0, 0)
     const date2 = new Date(newValue.end)
     date2.setHours(23, 59, 59, 999)
+    console.log(date1, 'oioio')
     const { data } = await useFetch<{ data: IGraphicCount }>('/api/dashboard', {
       query: {
         v: user.user && user.user.data[0]?.complex?.id,
         // dateStart: format(new Date(newValue.start), 'dd MMMM yyyy'),
-        dateStart: date1,
+        dateStart: format(date1, 'yyyy-MM-dd'),
         // dateEnd: format(new Date(newValue.end), 'dd MMMM yyyy'),
-        dateEnd: date2,
+        dateEnd: format(date2, 'yyyy-MM-dd'),
       },
     })
     countDashboard.value = data.value?.data

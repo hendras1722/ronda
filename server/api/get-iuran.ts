@@ -31,6 +31,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     if (query.filter === 'all') {
+      console.log(query)
       let { data, error, count } = await client
         .from('db_contribution')
         .select(
@@ -46,6 +47,8 @@ export default defineEventHandler(async (event) => {
           { count: 'exact' }
         )
         .eq('id_complex', query.v || '')
+        .gte('created_at', query.dateStart || '')
+        .lt('created_at', query.dateEnd || '')
         .ilike('db_user.name', `%${query.q}%`)
         .range(from, to)
         .order('created_at', { ascending: false })
@@ -78,6 +81,8 @@ export default defineEventHandler(async (event) => {
       )
       .eq('id_complex', query.v || '')
       .eq('status', query.filter || '')
+      .gte('created_at', query.dateStart || '')
+      .lt('created_at', query.dateEnd || '')
       .ilike('db_user.name', `%${query.q}%`)
       .range(from, to)
       .order('created_at', { ascending: false })

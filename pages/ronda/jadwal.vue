@@ -29,6 +29,7 @@
 
     <div class="overflow-auto">
       <MSATable
+        :loading="pending"
         :columns="columns"
         :rows="item"
         :ui="{
@@ -188,6 +189,7 @@ const options = ref<{ name: string; value: string }[]>([])
 const item = ref<IJadwal[]>([])
 const user = useGetuser()
 const search = ref('')
+const pending = ref(false)
 
 async function handleAdd(e: any) {
   state.value.id_warga = e.id
@@ -256,6 +258,7 @@ function handleClose() {
 }
 
 async function getData(e?: string) {
+  pending.value = true
   const { data } = await useFetch<{ data: IJadwal[] }>('/api/get-ronda', {
     query: {
       v: user.user && user.user.data[0]?.complex.id,
@@ -273,6 +276,7 @@ async function getData(e?: string) {
         }
       })
   }
+  pending.value = false
 }
 getData()
 

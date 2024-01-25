@@ -3,6 +3,36 @@
     <div class="text-2xl font-extrabold mb-5">Iuran Warga</div>
 
     <div class="grid grid-cols-12 grid-rows-1 gap-4 mb-7">
+      <div class="md:col-span-2 md:col-start-10 col-span-12 flex justify-end">
+        <VDatePicker
+          :popover="{
+            visibility: 'click',
+            placement: 'bottom-end',
+          }"
+          v-model.range="date"
+          :locale="{ masks: { input: 'DD/MM/YYYY' } }"
+        >
+          <template #default="{ inputValue, inputEvents }">
+            <UInput
+              class="w-full"
+              :value="inputValue.start + '-' + inputValue.end"
+              v-on="inputEvents.start"
+            />
+          </template>
+        </VDatePicker>
+      </div>
+      <div class="md:col-span-2 md:col-start-12 col-span-12 flex justify-end">
+        <UButton
+          variant="solid"
+          color="blue"
+          @click="handleDownload"
+          class="md:w-full w-full block"
+          >Download</UButton
+        >
+      </div>
+    </div>
+
+    <div class="grid grid-cols-12 grid-rows-1 gap-4 mb-7">
       <div class="md:col-span-5 col-span-12">
         <UInput
           v-model="search"
@@ -48,20 +78,9 @@
       </div>
     </div>
 
-    <div class="grid grid-cols-12 grid-rows-1 gap-4 mb-7">
-      <div class="md:col-span-2 md:col-start-12 col-span-12 flex justify-end">
-        <UButton
-          variant="solid"
-          color="blue"
-          @click="handleDownload"
-          class="md:w-fit w-full block"
-          >Download</UButton
-        >
-      </div>
-    </div>
-
     <div class="overflow-auto">
       <MSATable
+        :loading="pending"
         :columns="columns"
         :rows="itemIuran"
         :ui="{
@@ -227,7 +246,8 @@ interface IIuran {
   note: string
 }
 
-const isOpen = ref(false)
+const datePrev = new Date()
+
 const isOpenModal = ref(false)
 const columns = ref([
   {
@@ -265,6 +285,14 @@ const page = ref(1)
 const limit = ref(10)
 const total = ref(0)
 const filterDana = ref<any>('all')
+const pending = ref(false)
+const date = ref({
+  start: format(
+    new Date(datePrev.setDate(datePrev.getDate() - 17)),
+    'dd MMMM yyyy'
+  ),
+  end: format(new Date(), 'yyyy-MM-dd'),
+})
 
 function handleOpen() {
   state.value.id_warga = user.user.data[0].id
@@ -278,6 +306,11 @@ function handleExpanded(e: number) {
 }
 
 async function getData() {
+  const date1 = new Date(date.value.start)
+  date1.setHours(0, 0, 0, 0)
+  const date2 = new Date(date.value.end)
+  date2.setHours(23, 59, 59, 999)
+  pending.value = true
   const { data: iuran } = await useFetch<{
     data: IIuran[]
     total: number
@@ -289,6 +322,8 @@ async function getData() {
       limit: limit.value,
       page: page.value || 1,
       filter: filterDana.value,
+      dateStart: date1,
+      dateEnd: date2,
     },
   })
 
@@ -300,6 +335,7 @@ async function getData() {
   })
   total.value = Number(iuran.value?.total) || 0
   page.value = Number(iuran.value?.page) || 0
+  pending.value = false
 }
 getData()
 
@@ -312,6 +348,13 @@ watch(
 watch(
   () => filterDana.value,
   () => {
+    getData()
+  }
+)
+
+watch(
+  () => date.value,
+  async () => {
     getData()
   }
 )
@@ -368,6 +411,9 @@ async function handleDownload() {
     query: {
       v: user.user && user.user.data[0].complex.id,
       filter: filterDana.value,
+
+      dateStart: new Date(date.value.start).toISOString(),
+      dateEnd: new Date(date.value.end).toISOString(),
     },
   })
   const result = iuran.value?.data.map((item: any) => {

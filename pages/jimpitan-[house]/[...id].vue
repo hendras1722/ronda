@@ -27,10 +27,11 @@
       v-else
       class="px-3 py-5 max-w-full bg-white shadow-md rounded-lg dark:bg-gray-900 dark:text-white dark:border dark:border-white"
     >
-      <div class="flex justify-center">Rumah dari:</div>
-      <div class="text-center mt-3">
-        {{ item?.[slideIndex - 1]?.name }}
+      <div class="flex justify-center">Jimpitan Hari</div>
+      <div class="text-center mt-3 text-2xl font-extrabold">
+        {{ getDaysNow() }}
       </div>
+
       <div class="text-center mt-5 grid place-items-center mb-5">
         <div class="flex justify-between items-center">
           <UButton @click="plusSlides(-1)">
@@ -42,13 +43,13 @@
           <div class="slideshow-container relative">
             <UIcon
               :name="'i-ion-ios-home'"
-              class="sm:text-[308px] text-[58px]"
+              class="sm:text-[308px] text-[88px]"
             ></UIcon>
             <div>
               <div
                 v-for="(itemData, index) in item"
                 :key="index"
-                class="absolute left-0 right-0 mx-0 top-0 bottom-0 my-0 sm:mt-32 mt-5 sm:text-xl text-[8px] uppercase text-white z-10"
+                class="absolute left-0 right-0 mx-0 top-0 bottom-0 my-0 sm:mt-32 mt-8 sm:text-xl text-[12px] uppercase text-white z-10"
               >
                 <div class="mySlides fade font-extrabold">
                   {{ itemData.blok }}
@@ -71,13 +72,18 @@
         </UInput>
 
         <div class="mt-5" v-if="item?.[slideIndex - 1]?.jimpitan.length < 1">
-          <UButton variant="solid" color="primary" @click="handleSubmit">
-            Ambil
+          <UButton
+            variant="solid"
+            color="primary"
+            @click="loading && handleSubmit"
+          >
+            {{ loading ? 'Loading...' : 'Ambil Jimpitan' }}
           </UButton>
         </div>
       </div>
 
       <MSATable
+        :loading="pending"
         :columns="columns"
         :rows="item"
         :ui="{
@@ -116,6 +122,7 @@
           </div>
         </template>
       </MSATable>
+
       <div>
         <UButton
           class="w-full ml-auto mr-auto block mt-5"
@@ -168,13 +175,13 @@ definePageMeta({
           // }, 300)
           // window.location.href = pathname
           return navigateTo(pathname)
-          return
         }
       }
     },
   ],
 })
 const route = useRoute()
+const loading = ref(false)
 const columns = ref([
   {
     key: 'blok',
@@ -190,6 +197,7 @@ const item = ref<any[]>([])
 const money = ref(0)
 const user = useGetuser()
 const checkJimpitanDay = ref(false)
+const pending = ref(false)
 
 onMounted(() => {
   nextTick(() => {
@@ -203,6 +211,12 @@ onMounted(() => {
 // Next/previous controls
 function plusSlides(n: number) {
   showSlides((slideIndex.value += n))
+}
+
+function getDaysNow() {
+  let data = ['Senin', 'Selasa', 'Rabu', 'Kamis', "Jum'at", 'Sabtu', 'Minggu']
+  let date = data[new Date().getDay() - 1]
+  return date
 }
 
 function showSlides(n: number) {
@@ -223,11 +237,13 @@ function showSlides(n: number) {
 }
 
 async function handleSubmit() {
+  loading.value = true
   const dataJimpitan = item.value[slideIndex.value - 1]
   const path = route.path.replace('jimpitan-', '')
   const regex = path.replace(/^\//gm, '')
 
   const address = user.user.data.filter((item) => item.complex.link === regex)
+
   let obj = {
     id_warga: dataJimpitan.id,
     id_address: dataJimpitan.id_complex,
@@ -251,12 +267,12 @@ async function handleSubmit() {
       item.value = getData.value?.data
     }
   }
+  loading.value = false
 }
 const router = useRouter()
 
 async function logout() {
   let { error } = await supabase.auth.signOut()
-  console.log(error, 'iniv')
   if (!error) {
     // const sbAccessToken = useCookie('sb-access-token')
     // const token = useCookie('token')
@@ -268,6 +284,7 @@ async function logout() {
 }
 
 async function getData() {
+  pending.value = true
   const path = route.path.replace('jimpitan-', '')
   const regex = path.replace(/^\//gm, '')
 
@@ -280,6 +297,7 @@ async function getData() {
       },
     }
   )
+  pending.value = false
 
   if (data.value?.day) {
     const getDay = data.value?.day.filter(

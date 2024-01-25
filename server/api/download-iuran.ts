@@ -45,6 +45,9 @@ export default defineEventHandler(async (event) => {
       `
         )
         .eq('id_complex', query.v || '')
+        .gte('created_at', query.dateStart || '')
+        .lt('created_at', query.dateEnd || '')
+
       if (error) {
         throw createError({
           statusCode: 403,

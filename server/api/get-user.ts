@@ -7,8 +7,6 @@ export default defineEventHandler(async (event) => {
   const path = getHeaders(event)
 
   const route = getRequestHost(event)
-  const BASE_URL = process.env.BASE_URL
-  console.log(BASE_URL, 'inibaseurl')
   // if (!route.includes(String(BASE_URL))) {
   //   throw createError({
   //     statusCode: 403,

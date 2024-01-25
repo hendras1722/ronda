@@ -54,6 +54,7 @@ import { object, string } from 'yup'
 import type { InferType } from 'yup'
 import type { FormSubmitEvent } from '@nuxt/ui/dist/runtime/types'
 import { supabase } from '@/utils/supabase'
+
 // import { supabase } from '@/utils/supabase';
 
 definePageMeta({

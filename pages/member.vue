@@ -31,6 +31,7 @@
 
     <div class="overflow-auto">
       <MSATable
+        :loading="pending"
         :columns="columns"
         :rows="item"
         :ui="{
@@ -108,6 +109,7 @@ interface datas {
 const user = useGetuser()
 const item = ref<IMember[]>()
 const search = ref('')
+const pending = ref(false)
 
 watchDebounced(
   () => search.value,
@@ -116,14 +118,16 @@ watchDebounced(
   },
   { debounce: 500 }
 )
-console.log(user.user.data)
+
 async function getData(e?: string) {
+  pending.value = true
   const { data } = await useFetch<{ data: IMember[] }>('/api/get-member', {
     query: {
       v: user.user && user.user.data[0]?.complex?.id,
       q: e ? e : '',
     },
   })
+  pending.value = false
   item.value = data.value?.data
 }
 getData()
