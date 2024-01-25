@@ -26,11 +26,14 @@
         divide: 'divide-y divide-[#ccc] dark:divide-white',
       }"
     >
+      <template #blok-data="{ row }">
+        <div>{{ row.block }}</div>
+      </template>
       <template #by-data="{ row }">
-        <div>{{ row?.by?.name }}</div>
+        <div>{{ row?.money?.by?.name }}</div>
       </template>
       <template #status-data="{ row }">
-        <div v-if="row?.jimpitan.length > 0">
+        <div v-if="row?.money">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="32"

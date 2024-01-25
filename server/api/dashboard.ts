@@ -40,7 +40,7 @@ export default defineEventHandler(async (event) => {
       )
       .eq('id_address', query.v || '')
       .gte('created_at', query.dateStart || '')
-      .lt('created_at', query.dateEnd || '')
+      .lte('created_at', query.dateEnd || '')
 
     const money = contribution
       ?.filter((item) => item.status)

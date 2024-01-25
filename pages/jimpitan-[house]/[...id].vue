@@ -75,9 +75,10 @@
           <UButton
             variant="solid"
             color="primary"
-            @click="loading && handleSubmit"
+            @click="handleSubmit"
+            :loading="loading"
           >
-            {{ loading ? 'Loading...' : 'Ambil Jimpitan' }}
+            Ambil Jimpitan
           </UButton>
         </div>
       </div>

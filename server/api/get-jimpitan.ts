@@ -38,11 +38,14 @@ export default defineEventHandler(async (event) => {
 
   try {
     let { data, error } = await client
-      .from('db_user')
+      .from('db_block')
       .select(
         `
-    *
-    `
+         id,
+         created_at,
+         block,
+         id_complex
+        `
       )
       .eq('id_complex', query.q || '')
 
@@ -50,73 +53,40 @@ export default defineEventHandler(async (event) => {
       .from('db_jimpitan')
       .select(
         `
-   id_warga,
-   created_at,
-   by: by(
-    name
-   )
-    `
+            id_address,
+            id_warga,
+            created_at,
+            money,
+            by: by(
+              name
+            )
+        `
       )
       .eq('id_address', query.q || '')
 
     const result =
       data &&
-      data?.map((item: any) => {
-        let newArr: any = []
-        jimpitan?.forEach((element) => {
-          if (item.id === element.id_warga) {
-            newArr.push(element)
-            item.jimpitan = newArr
-            item.by = element.by
+      data.map((item) => {
+        console.log(item, jimpitan)
+        for (let i in jimpitan) {
+          if (jimpitan[Number(i)].id_address === item.id_complex) {
+            return {
+              ...item,
+              date: jimpitan[Number(i)].created_at,
+            }
           }
-          // return {
-          //   ...item,
-          //   // jimpitan: item.jimpitan
-          // .filter(
-          //     (item: any) =>
-          //       new Date(item.created_at).getTime() >= startDate &&
-          //       new Date(item.created_at).getTime() <= endDate
-          //   ),
-          // }
-        })
-        return {
-          ...item,
-          jimpitan: item.jimpitan
-            ? item.jimpitan.filter(
-                (item: any) =>
-                  new Date(item.created_at).getTime() >= startDate &&
-                  new Date(item.created_at).getTime() <= endDate
-              )
-            : [],
-          by: {
-            name:
-              item.jimpitan && item.jimpitan.length > 0
-                ? item.jimpitan.filter(
-                    (item: any) =>
-                      new Date(item.created_at).getTime() >= startDate &&
-                      new Date(item.created_at).getTime() <= endDate
-                  )[0]?.by?.name
-                : null,
-          },
         }
       })
-    console.log(jimpitan, 'iniresult')
-
-    // const dataDownload = XLSX.utils.json_to_sheet(jimpitan)
-    // const wb = XLSX.utils.book_new()
-    // XLSX.utils.book_append_sheet(wb, jimpitan, 'data')
-    // XLSX.writeFile(wb, 'demo.xlsx')
-    // console.log(dataDownload)
+    console.log(result)
 
     let { data: patrol, error: errPatrol } = await client
-      .from('db_patrol')
+      .from('db_block')
       .select(
         `
-      id,
-    day
-    `
+         block
+        `
       )
-      .eq('id_complex', query.q || '')
+      .eq('id', query.q || '')
 
     if (error || errPatrol || errJimpitan) {
       throw createError({

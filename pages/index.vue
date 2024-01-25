@@ -116,10 +116,10 @@ const popover = {
 }
 
 const date1 = new Date(date.value.start)
-date1.setHours(0, 0, 0, 0)
+// date1.setHours(0, 0, 0, 0)
 const date2 = new Date(date.value.end)
-date2.setHours(23, 59, 59, 999)
-console.log(date1, 'oioio')
+// date2.setHours(0, 0, 0, 0)
+
 const { data } = await useFetch<{ data: IGraphicCount }>('/api/dashboard', {
   query: {
     v: user.user && user.user.data[0]?.complex?.id,
@@ -173,10 +173,10 @@ watch(
   () => date.value,
   async (newValue) => {
     const date1 = new Date(newValue.start)
-    date1.setHours(0, 0, 0, 0)
+    // date1.setHours(0, 0, 0, 0)
     const date2 = new Date(newValue.end)
-    date2.setHours(23, 59, 59, 999)
-    console.log(date1, 'oioio')
+    date2.setHours(23, 59, 59)
+
     const { data } = await useFetch<{ data: IGraphicCount }>('/api/dashboard', {
       query: {
         v: user.user && user.user.data[0]?.complex?.id,
