@@ -21,6 +21,7 @@ export default defineEventHandler(async (event) => {
       message: 'Forbidden Access',
     })
   }
+
   try {
     const { data, error } = await supabase
       .from('db_jimpitan')

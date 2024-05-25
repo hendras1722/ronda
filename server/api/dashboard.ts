@@ -39,8 +39,11 @@ export default defineEventHandler(async (event) => {
           `
       )
       .eq('id_address', query.v || '')
-      .gte('created_at', query.dateStart || '')
-      .lte('created_at', query.dateEnd || '')
+      .gte(
+        'created_at',
+        (query.dateStart && `${query.dateStart} 00:00:00`) || ''
+      )
+      .lte('created_at', (query.dateEnd && `${query.dateEnd} 23:59:59`) || '')
 
     const money = contribution
       ?.filter((item) => item.status)
@@ -123,6 +126,7 @@ export default defineEventHandler(async (event) => {
         },
         { contribution: null }
       )
+    console.log(contribution, 'contri')
     const danaKeluar = contribution
       ?.filter((item) => item.status === 'false')
       .reduce(

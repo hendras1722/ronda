@@ -366,7 +366,6 @@ watchDebounced(
   },
   { debounce: 500 }
 )
-console.log(user.user)
 
 const { data } = await useFetch<{
   data: IMember[]

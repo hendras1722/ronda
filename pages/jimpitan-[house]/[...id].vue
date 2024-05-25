@@ -52,7 +52,7 @@
                 class="absolute left-0 right-0 mx-0 top-0 bottom-0 my-0 sm:mt-32 mt-8 sm:text-xl text-[12px] uppercase text-white z-10"
               >
                 <div class="mySlides fade font-extrabold">
-                  {{ itemData.blok }}
+                  {{ itemData.block }}
                 </div>
               </div>
             </div>
@@ -71,7 +71,7 @@
           </template>
         </UInput>
 
-        <!-- <div class="mt-5" v-if="item?.[slideIndex - 1]?.jimpitan.length < 1">
+        <div class="mt-5" v-if="!item?.[slideIndex - 1]?.date">
           <UButton
             variant="solid"
             color="primary"
@@ -80,7 +80,7 @@
           >
             Ambil Jimpitan
           </UButton>
-        </div> -->
+        </div>
       </div>
 
       <MSATable
@@ -242,10 +242,10 @@ async function handleSubmit() {
   const address = user.user.data.filter((item) => item.complex.link === regex)
 
   let obj = {
-    id_warga: dataJimpitan.id,
     id_address: dataJimpitan.id_complex,
     money: money.value,
-    by: address[0].id,
+    by: user?.userLogin?.sub,
+    id_block: dataJimpitan.id,
   }
   const { data } = await useFetch<{ data: any }>('/api/jimpitan', {
     method: 'POST',
