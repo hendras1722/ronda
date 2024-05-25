@@ -62,9 +62,8 @@ definePageMeta({
   middleware: [
     function (to, from) {
       const user = useSupabaseUser()
-      console.log(user.value, 'iniuservalue')
       if (user.value) {
-        return navigateTo('/')
+        return (to.path = '/')
       }
     },
   ],

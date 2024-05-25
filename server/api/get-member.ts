@@ -24,23 +24,9 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    let { data, error } = await client
-      .from('db_user')
-      .select(
-        `
-          id,
-          name,
-          email,
-          role,
-          complex: id_complex(
-            *
-          ),
-          blok,
-          phone
-          `
-      )
-      .eq('id_complex', query.v || '')
-      .ilike('name', `%${query.q}%`)
+    let { data, error } = await client.from('user_view').select()
+    // .eq('id_complex', query.v || '')
+    // .ilike('name', `%${query.q}%`)
 
     if (error) {
       throw createError({

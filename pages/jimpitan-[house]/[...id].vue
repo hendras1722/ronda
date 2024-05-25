@@ -71,7 +71,7 @@
           </template>
         </UInput>
 
-        <div class="mt-5" v-if="item?.[slideIndex - 1]?.jimpitan.length < 1">
+        <!-- <div class="mt-5" v-if="item?.[slideIndex - 1]?.jimpitan.length < 1">
           <UButton
             variant="solid"
             color="primary"
@@ -80,7 +80,7 @@
           >
             Ambil Jimpitan
           </UButton>
-        </div>
+        </div> -->
       </div>
 
       <MSATable
@@ -94,7 +94,7 @@
       >
         <template #status-data="{ row }">
           <div>
-            <div v-if="row.jimpitan.length > 0">
+            <div v-if="row.date">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="32"
@@ -148,26 +148,22 @@ definePageMeta({
       const path = from.path.replace('jimpitan-', '')
       const regex = path.replace(/^\//gm, '')
       const sbAccessToken = useCookie('sb-access-token')
-
       const jwt = sbAccessToken.value
       const pathname = from.path + '/login'
       const address = user.user.data.filter(
         (item) => item.complex && item.complex.link === regex
       )
-
       if (!jwt) {
         return navigateTo(pathname)
         // window.location.href = pathname
         // return
       }
-
       if (address.length < 1) {
         return abortNavigation({
           statusCode: 403,
           statusMessage: 'Forbidden access',
         })
       }
-
       if (process.client) {
         const data = parseJwt(jwt)
         if (Date.now() >= data.exp * 1000) {
@@ -185,7 +181,7 @@ const route = useRoute()
 const loading = ref(false)
 const columns = ref([
   {
-    key: 'blok',
+    key: 'block',
     label: 'Rumah Blok',
   },
   {
@@ -299,19 +295,19 @@ async function getData() {
     }
   )
   pending.value = false
-
-  if (data.value?.day) {
-    const getDay = data.value?.day.filter(
-      (item: { day: number }) => item.day === new Date().getDay()
-    )
-    if (getDay.length < 1) {
-      checkJimpitanDay.value = true
-    }
-  }
+  console.log(data.value, 'inidata')
+  // if (data.value?.day) {
+  //   const getDay = data.value?.day.filter(
+  //     (item: { day: number }) => item.day === new Date().getDay()
+  //   )
+  //   if (getDay.length < 1) {
+  //     checkJimpitanDay.value = true
+  //   }
+  // }
 
   if (data.value?.data) {
-    item.value = data.value?.data
-    slideIndex.value = data.value?.data.length || 0
+    item.value = data.value.data
+    // slideIndex.value = data.value?.data?.length || 0
   }
 }
 await getData()

@@ -30,10 +30,10 @@
         <div>{{ row.block }}</div>
       </template>
       <template #by-data="{ row }">
-        <div>{{ row?.money?.by?.name }}</div>
+        <div>{{ row?.name }}</div>
       </template>
       <template #status-data="{ row }">
-        <div v-if="row?.money">
+        <div v-if="row?.date">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="32"
@@ -130,7 +130,6 @@ const stateBlock = ref(['', ''])
 function handleOpen() {
   isOpen.value = true
 }
-
 const { data } = await useFetch<{ data: any[] }>('/api/get-jimpitan', {
   query: {
     q: user.user && user.user.data[0]?.complex.id,

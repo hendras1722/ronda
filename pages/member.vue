@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="text-2xl font-extrabold mb-5">
-      Warga: {{ user.user.data[0].complex.house_complex }}
+      <!-- Warga: {{ (item || [])[0]?.house }} -->
     </div>
     <div class="mb-5">
       <div class="grid grid-cols-12 grid-rows-1 gap-4">
@@ -93,19 +93,28 @@ const columns = ref([
   },
 ])
 
-interface IMember {
-  data: datas[]
+export interface IMember {
+  email: string
+  name: string
+  phone: null
+  role: null
+  blok: null
+  house: string
 }
 
-interface datas {
-  created_at: Date
-  id_complex: string
-  phone: number | null
-  id: string
-  id_warga: string
-  name_warga: string
-  blok: string
-}
+// interface IMember {
+//   data: datas[]
+// }
+
+// interface datas {
+//   created_at: Date
+//   id_complex: string
+//   phone: number | null
+//   id: string
+//   id_warga: string
+//   name_warga: string
+//   blok: string
+// }
 const user = useGetuser()
 const item = ref<IMember[]>()
 const search = ref('')

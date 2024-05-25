@@ -1,9 +1,10 @@
 <script setup lang="ts">
 const nuxtApp = useNuxtApp()
 const store = useLoading(nuxtApp.$pinia)
-
+const qwe = ref(false)
 store.pendingLoadingPages()
 nuxtApp.hook('app:created', () => {
+  qwe.value = true
   store.pendingLoadingPages()
 })
 nuxtApp.hook('page:finish', () => {

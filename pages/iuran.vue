@@ -317,7 +317,7 @@ async function getData() {
     page: number
   }>('/api/get-iuran', {
     query: {
-      v: user.user && user.user.data[0].complex.id,
+      v: user.user && user.user?.data?.[0]?.complex.id,
       q: search.value ? search.value : '',
       limit: limit.value,
       page: page.value || 1,
@@ -366,13 +366,14 @@ watchDebounced(
   },
   { debounce: 500 }
 )
+console.log(user.user)
 
 const { data } = await useFetch<{
   data: IMember[]
 }>('/api/get-member', {
   method: 'GET',
   query: {
-    v: user.user && user.user.data[0].complex.id,
+    v: user.user && user.user.data?.[0]?.complex.id,
     q: '',
   },
 })
@@ -387,7 +388,7 @@ if (data.value?.data) {
 }
 
 async function submit() {
-  state.value.id_complex = user.user && user.user.data[0].complex.id
+  state.value.id_complex = user.user && user.user.data?.[0]?.complex.id
   state.value.contribution = Number(state.value.contribution)
   const { data } = await useFetch<{ data: any }>('/api/iuran', {
     method: 'POST',
@@ -409,7 +410,7 @@ function convertDate(e: any) {
 async function handleDownload() {
   const { data: iuran } = await useFetch<{ data: any }>('/api/download-iuran', {
     query: {
-      v: user.user && user.user.data[0].complex.id,
+      v: user.user && user.user.data?.[0]?.complex.id,
       filter: filterDana.value,
 
       dateStart: new Date(date.value.start).toISOString(),

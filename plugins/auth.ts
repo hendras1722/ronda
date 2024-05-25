@@ -28,15 +28,15 @@ export default defineNuxtPlugin(async (event) => {
     }
     return
   }
-
+  // console.log(user.value, 'iniauthplugin')
   if (!user.value) return
-  const jwt = token.value
-  const tokens: string[] = jwt?.split('.') || []
-  const data = JSON.parse(atob(tokens[1]))
-  delete data.iss
-  store.userLogin.value = data
-
   try {
+    const jwt = token.value
+    const tokens: string[] = jwt?.split('.') || []
+    const data = JSON.parse(atob(tokens[1]))
+    delete data.iss
+    store.userLogin.value = data
+    console.log(user.value.id)
     if (process.server) {
       const getUser = await _fetch<IUser>('/api/get-user', {
         baseURL: process.env.NUXT_API_BASE_URL,
@@ -44,7 +44,6 @@ export default defineNuxtPlugin(async (event) => {
           q: user.value.id,
         },
       })
-
       store.user.value = getUser || []
     }
   } catch (error) {
