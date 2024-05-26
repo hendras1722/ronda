@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
       .select(`*`)
       .eq('id', body.v || '')
       .eq('block', body.block || '')
-    console.log(data, 'inique')
+    // console.log(data, 'inique')
     if (data) {
       // throw Error('Block already exist')
     }

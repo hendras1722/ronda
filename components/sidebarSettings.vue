@@ -7,7 +7,7 @@
       <div>
         <div class="flex justify-center items-center my-3 h-14 overflow-hidden">
           <div>
-            <NuxtLink to="/">
+            <NuxtLink to="/admin/dashboard">
               <img class="w-16" src="/msa_logo.jpeg" alt="Logo MSA" />
             </NuxtLink>
           </div>
@@ -232,7 +232,7 @@ function handleSidebar() {
 }
 
 function handleQuit() {
-  router.push('/')
+  router.push('/admin/dashboard')
 }
 
 const handlePushRouter = (href: string) => {

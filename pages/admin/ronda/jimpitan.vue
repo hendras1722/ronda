@@ -161,7 +161,7 @@ async function handleAdd() {
       block: itemBlock,
     },
   })
-  console.log(data.value)
+  // console.log(data.value)
 }
 </script>
 

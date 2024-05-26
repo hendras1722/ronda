@@ -63,7 +63,9 @@ definePageMeta({
     function (to, from) {
       const user = useSupabaseUser()
       if (user.value) {
-        return (to.path = '/')
+        // if (process.client) {
+        return navigateTo('/admin/dashboard')
+        // }
       }
     },
   ],
@@ -74,7 +76,7 @@ watch(
   () => user.value,
   (newValue) => {
     if (newValue) {
-      window.location.href = '/'
+      window.location.href = '/admin/dashboard'
     }
   },
   {
@@ -105,14 +107,14 @@ const sbAccessToken = useCookie('sb-access-token')
 // let { data, error } = await supabase.auth.auth.inviteUserByEmail('someone@email.com')
 
 async function submit(event: FormSubmitEvent<Schema>) {
-  const getURL = () => {
-    let url = 'http://localhost:3000/auth/callback'
-    // Make sure to include `https://` when not localhost.
-    url = url.includes('http') ? url : `https://ronda.vercel.app/auth/callback`
-    // Make sure to include a trailing `/`.
-    url = url.charAt(url.length - 1) === '/' ? url : `${url}`
-    return url
-  }
+  // const getURL = () => {
+  //   let url = 'http://localhost:3000/auth/callback'
+  //   // Make sure to include `https://` when not localhost.
+  //   url = url.includes('http') ? url : `https://ronda.vercel.app/auth/callback`
+  //   // Make sure to include a trailing `/`.
+  //   url = url.charAt(url.length - 1) === '/' ? url : `${url}`
+  //   return url
+  // }
 
   let { error, data } = await supabase.auth.signInWithOAuth({
     provider: 'google',

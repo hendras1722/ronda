@@ -31,7 +31,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     if (query.filter === 'all') {
-      console.log(query)
+      // console.log(query)
       let { data, error, count } = await client
         .from('db_contribution')
         .select(

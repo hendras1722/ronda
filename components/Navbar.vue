@@ -164,7 +164,7 @@ async function logout() {
   let { error } = await supabase.auth.signOut()
   if (!error) {
     setTimeout(() => {
-      router.push('/login')
+      window.location.href = '/login'
     }, 300)
   }
 }

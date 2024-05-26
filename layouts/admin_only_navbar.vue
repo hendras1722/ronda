@@ -23,19 +23,21 @@ async function handleOut() {
     sbAccessToken.value = null
     token.value = null
 
-    navigateTo('/login')
+    window.location.href = '/login'
   }
 }
 </script>
 
 <template>
-  <div>
+  <div class="min-h-screen">
     <div class="flex justify-end p-3 bg-white">
       <div>
         <UButton class="text-lg" @click="handleOut">Logout</UButton>
       </div>
     </div>
-    <slot />
+    <div class="overflow-auto">
+      <slot />
+    </div>
   </div>
 </template>
 

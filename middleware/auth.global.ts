@@ -11,19 +11,25 @@ interface IUser {
 
 export default defineNuxtRouteMiddleware(async (from, to) => {
   const user = useSupabaseUser()
+
   const checkUserRegister = storeToRefs(useGetuser())
-  console.log(checkUserRegister.user.value.data)
-  if (!user.value && from.path !== '/login') {
+  console.log(checkUserRegister.user.value, 'in')
+  if (!user.value && from.path.includes('admin')) {
     return (to.path = '/login')
   }
 
-  // if (user.value && from.path === '/login') {
-  //   return (to.path = '/')
-  // }
+  if (process.client) {
+    if (user.value && from.path === '/') {
+      return (window.location.href = '/admin/dashboard')
+    }
+  }
+
   if (
     user.value &&
     checkUserRegister.user.value.data.length < 1 &&
-    from.path === '/'
+    (from.path.includes('admin') ||
+      to.path.includes('admin') ||
+      from.path === '/')
   ) {
     return (to.path = '/register-profile')
   }

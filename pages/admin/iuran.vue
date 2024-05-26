@@ -378,6 +378,7 @@ const { data } = await useFetch<{
 })
 if (data.value?.data) {
   const item = data.value?.data.map((item) => {
+    console.log(item)
     return {
       name: item.name,
       value: item.id,

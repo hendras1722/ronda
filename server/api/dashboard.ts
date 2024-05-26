@@ -126,7 +126,7 @@ export default defineEventHandler(async (event) => {
         },
         { contribution: null }
       )
-    console.log(contribution, 'contri')
+
     const danaKeluar = contribution
       ?.filter((item) => item.status === 'false')
       .reduce(

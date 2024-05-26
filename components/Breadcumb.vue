@@ -33,7 +33,7 @@ const handleHref = (handleHref: string) => {
 watch(
   () => route.fullPath,
   (newValue) => {
-    const routeMap = newValue.split('/').filter(Boolean)
+    const routeMap = newValue.split('/admin/dashboard').filter(Boolean)
     const newBreadcumb = routeMap.map((item) => {
       const Capitalized = item.slice(0, 1).toUpperCase()
       return {
@@ -51,7 +51,7 @@ watch(
     })
     breadcumb.value = [
       {
-        href: '/',
+        href: '/admin/dashboard',
         text: 'Dashboard',
         disabled: false,
       },

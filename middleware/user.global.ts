@@ -3,12 +3,7 @@ export default defineNuxtRouteMiddleware(async (from) => {
   if (from.path.match(/\/jimpitan-(\w+)/gm)) {
     return
   }
-  if (
-    !user.value.isComplex &&
-    ['/iuran', '/member', '/ronda/jadwal', '/ronda/jimpitan', '/'].includes(
-      from.path
-    )
-  ) {
+  if (!user.value.isComplex && from.path.includes('admin')) {
     if (process.client) {
       // window.location.href = '/register-profile'
       // return

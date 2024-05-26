@@ -48,7 +48,7 @@
 
             <div
               v-if="isFocus"
-              class="bg-white absolute shadow-md w-full rounded-lg p-5 mt-2"
+              class="bg-white absolute shadow-md w-full rounded-lg p-5 -mt-8"
             >
               <div v-if="isLoading">Data sedang dicari...</div>
               <UButton
@@ -228,9 +228,10 @@ definePageMeta({
   layout: 'admin-only-navbar',
   middleware: [
     function () {
-      const { user } = storeToRefs(useGetuser())
-      if (user.value.isComplex) {
-        return navigateTo('/')
+      const checkUserRegister = storeToRefs(useGetuser())
+      // console.log(checkUserRegister.user.value.data, 'oioi')
+      if (checkUserRegister.user.value.data.length > 0) {
+        return navigateTo('/admin/dashboard')
       }
     },
   ],
@@ -327,7 +328,7 @@ async function handleSave(e: number) {
     if (address.value?.data) {
       step.value = 2
     }
-    console.log(address.value?.data, 'inipros')
+    // console.log(address.value?.data, 'inipros')
     window.location.reload()
     return
   }
@@ -378,6 +379,8 @@ watchDebounced(
   async (newValue) => {
     if (!newValue) return
     isLoading.value = true
+    getResult.value = []
+
     const { data } = await useFetch<{ data: any[] }>('/api/search-address', {
       method: 'GET',
       query: {
@@ -387,7 +390,9 @@ watchDebounced(
     isLoading.value = false
     if (data.value && data.value?.data.length > 0) {
       getResult.value = data.value.data
+      return
     }
+    getResult.value = []
   },
   { debounce: 500 }
 )

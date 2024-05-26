@@ -295,7 +295,7 @@ async function getData() {
     }
   )
   pending.value = false
-  console.log(data.value, 'inidata')
+  // console.log(data.value, 'inidata')
   // if (data.value?.day) {
   //   const getDay = data.value?.day.filter(
   //     (item: { day: number }) => item.day === new Date().getDay()

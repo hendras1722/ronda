@@ -6,8 +6,9 @@ export default defineEventHandler(async (event) => {
   const path = getHeaders(event)
   const query = getQuery(event)
 
-  const route = getRequestHost(event)
+  const route = getRequestHeaders(event)
   const BASE_URL = process.env.BASE_URL
+  console.log(route.referer, 'iniroute')
 
   // if (!route.includes(String(BASE_URL))) {
   //   throw createError({
@@ -24,9 +25,11 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    let { data, error } = await client.from('user_view').select()
-    // .eq('id_complex', query.v || '')
-    // .ilike('name', `%${query.q}%`)
+    let { data, error } = await client
+      .from('user_view')
+      .select(route.referer?.includes('/iuran') ? `id,name,id_house` : '*')
+      .eq('id_house', query.v || '')
+      .ilike('name', `%${query.q}%`)
 
     if (error) {
       throw createError({
@@ -35,7 +38,17 @@ export default defineEventHandler(async (event) => {
       })
     }
     return {
-      data,
+      data: data?.map((item: any) => {
+        if (route.referer?.includes('/iuran')) {
+          return {
+            id: item.id,
+            name: item.name,
+          }
+        }
+        return {
+          ...item,
+        }
+      }),
     }
   } catch (error) {
     return {
