@@ -153,7 +153,8 @@ const popover = {
 async function getDataDebounce() {
   const date1 = new Date(date.value.start)
   const date2 = new Date(date.value.end)
-  const { data } = await useFetch<{ data: IGraphicCount }>('/api/dashboard', {
+  const data = await $fetch<{ data: IGraphicCount }>('/api/dashboard', {
+    method: 'GET',
     query: {
       v: user.user && user.user.data[0]?.complex?.id,
       // dateStart: format(new Date(date.value.start), 'dd MMMM yyyy'),
@@ -163,11 +164,11 @@ async function getDataDebounce() {
     },
   })
   nextTick(() => {
-    countDashboard.value = data.value?.data
+    countDashboard.value = data.data
     series.value = [
       {
         name: 'Jimpitan',
-        data: data.value?.data?.graphicData || [],
+        data: data.data?.graphicData || [],
       },
     ]
     chartOptions.value = {
@@ -183,7 +184,7 @@ async function getDataDebounce() {
         mode: colorMode.value,
       },
       xaxis: {
-        categories: data.value?.data?.graphicDate || [],
+        categories: data.data?.graphicDate || [],
         lines: {
           show: true,
         },
