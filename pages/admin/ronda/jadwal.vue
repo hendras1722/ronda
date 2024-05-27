@@ -175,7 +175,7 @@ const daysItems = [
   },
   {
     label: 'Minggu',
-    value: 0,
+    value: 7,
   },
 ]
 
@@ -203,6 +203,7 @@ function handleDays(e: number) {
 
 async function handleSubmit() {
   state.value.id_complex = (user.user && user.user.data[0]?.complex.id) || ''
+
   const { error } = await useFetch<{ data: IJadwal }>('/api/ronda', {
     method: 'POST',
     body: state.value,
@@ -294,7 +295,7 @@ function useDays(e: number) {
       return 'Jumat'
     case 6:
       return 'Sabtu'
-    case 0:
+    default:
       return 'Minggu'
   }
 }
