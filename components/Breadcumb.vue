@@ -5,11 +5,12 @@
         variant="ghost"
         color="link"
         :disabled="item?.disabled"
-        class="disabled:text-black dark:bg-transparent dark:text-white"
+        class="disabled:text-gray-500 dark:bg-transparent dark:text-white p-0"
         @click="handleHref(item && item.href ? item.href : '')"
-        >{{ item?.text }}
+      >
+        {{ item?.text }}
       </UButton>
-      <span v-if="i !== breadcumb.length - 1">/</span>
+      <span v-if="i !== breadcumb.length - 1"> /&nbsp;</span>
     </div>
   </div>
 </template>
@@ -33,6 +34,7 @@ const handleHref = (handleHref: string) => {
 watch(
   () => route.fullPath,
   (newValue) => {
+    console.log(newValue, 'inivalue')
     const routeMap = newValue.split('/admin/dashboard').filter(Boolean)
     const newBreadcumb = routeMap.map((item) => {
       const Capitalized = item.slice(0, 1).toUpperCase()
@@ -40,15 +42,18 @@ watch(
         href: '',
         text: item
           .replace(/^\w/gm, Capitalized)
-          .split('-')
+          .split('/')
           .map((items) => {
+            console.log(items, 'iniitem')
             const Capitalized2 = items.slice(0, 1).toUpperCase()
             return items.replace(/^\w/gm, Capitalized2)
           })
-          .join(' '),
+          .filter(Boolean)
+          .join(' / '),
         disabled: true,
       }
     })
+    console.log(newBreadcumb, 'inbread')
     breadcumb.value = [
       {
         href: '/admin/dashboard',
