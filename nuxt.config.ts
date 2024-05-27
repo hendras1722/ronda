@@ -12,7 +12,7 @@ export default defineNuxtConfig({
   },
   devtools: { enabled: true, vscode: {} },
   supabase: {
-    redirect: false,
+    redirect: true,
     // redirectOptions: {
     //   login: '/login',
     //   callback: '/auth/callback',

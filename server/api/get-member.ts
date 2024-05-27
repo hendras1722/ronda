@@ -8,7 +8,6 @@ export default defineEventHandler(async (event) => {
 
   const route = getRequestHeaders(event)
   const BASE_URL = process.env.BASE_URL
-  console.log(route.referer, 'iniroute')
 
   // if (!route.includes(String(BASE_URL))) {
   //   throw createError({

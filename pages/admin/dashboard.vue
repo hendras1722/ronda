@@ -11,7 +11,7 @@
           >
             <div class="block text-center">
               <div class="text-5xl font-extrabold">
-                {{ countDashboard?.warga }}
+                {{ countDashboard?.warga || 0 }}
               </div>
               <div>Total Warga</div>
             </div>
@@ -25,7 +25,7 @@
               <div class="flex items-center">
                 <div>
                   <div class="text-4xl font-extrabold">
-                    {{ countDashboard?.contribution }}
+                    {{ countDashboard?.contribution || 0 }}
                   </div>
                   <div>Total Iuran</div>
                 </div>
@@ -87,8 +87,8 @@
 
 <script lang="ts" setup>
 import { format } from 'date-fns'
-const colorMode = useColorMode()
-const renderKey = ref(0)
+import debounce from '@/utils/debounce'
+
 interface IGraphicCount {
   contribution: number
   warga: number
@@ -97,6 +97,8 @@ interface IGraphicCount {
   danaMasuk: { contribution: number[] }
   danaKeluar: { contribution: number[] }
 }
+const colorMode = useColorMode()
+const renderKey = ref(0)
 const datePrev = new Date()
 
 const date = ref({
@@ -107,32 +109,6 @@ const date = ref({
   end: format(new Date(), 'dd MMMM yyyy'),
 })
 const countDashboard = ref<IGraphicCount>()
-
-const user = useGetuser()
-
-const popover = {
-  visibility: 'click',
-  placement: 'bottom-end',
-}
-
-const date1 = new Date(date.value.start)
-const date2 = new Date(date.value.end)
-
-const { data } = await useFetch<{ data: IGraphicCount }>('/api/dashboard', {
-  query: {
-    v: user.user && user.user.data[0]?.complex?.id,
-    // dateStart: format(new Date(date.value.start), 'dd MMMM yyyy'),
-    dateStart: format(date1, 'yyyy-MM-dd'),
-    // dateEnd: format(new Date(newValue.end), 'dd MMMM yyyy'),
-    dateEnd: format(date2, 'yyyy-MM-dd'),
-  },
-})
-countDashboard.value = data.value?.data
-
-const renderTimeout = setTimeout(() => {
-  renderKey.value = 100
-  clearTimeout(renderTimeout)
-}, 100)
 
 const chartOptions = ref({
   chart: {
@@ -167,31 +143,33 @@ const series = ref([
   },
 ])
 
-watch(
-  () => date.value,
-  async (newValue) => {
-    const date1 = new Date(newValue.start)
-    // date1.setHours(0, 0, 0, 0)
-    const date2 = new Date(newValue.end)
-    date2.setHours(23, 59, 59)
+const user = useGetuser()
 
-    const { data } = await useFetch<{ data: IGraphicCount }>('/api/dashboard', {
-      query: {
-        v: user.user && user.user.data[0]?.complex?.id,
-        // dateStart: format(new Date(newValue.start), 'dd MMMM yyyy'),
-        dateStart: format(date1, 'yyyy-MM-dd'),
-        // dateEnd: format(new Date(newValue.end), 'dd MMMM yyyy'),
-        dateEnd: format(date2, 'yyyy-MM-dd'),
-      },
-    })
+const popover = {
+  visibility: 'click',
+  placement: 'bottom-end',
+}
+
+async function getDataDebounce() {
+  const date1 = new Date(date.value.start)
+  const date2 = new Date(date.value.end)
+  const { data } = await useFetch<{ data: IGraphicCount }>('/api/dashboard', {
+    query: {
+      v: user.user && user.user.data[0]?.complex?.id,
+      // dateStart: format(new Date(date.value.start), 'dd MMMM yyyy'),
+      dateStart: format(date1, 'yyyy-MM-dd'),
+      // dateEnd: format(new Date(newValue.end), 'dd MMMM yyyy'),
+      dateEnd: format(date2, 'yyyy-MM-dd'),
+    },
+  })
+  nextTick(() => {
     countDashboard.value = data.value?.data
     series.value = [
       {
         name: 'Jimpitan',
-        data: countDashboard.value?.graphicData || [],
+        data: data.value?.data?.graphicData || [],
       },
     ]
-
     chartOptions.value = {
       chart: {
         id: 'vuechart-example',
@@ -205,7 +183,7 @@ watch(
         mode: colorMode.value,
       },
       xaxis: {
-        categories: countDashboard.value?.graphicDate || [],
+        categories: data.value?.data?.graphicDate || [],
         lines: {
           show: true,
         },
@@ -217,6 +195,28 @@ watch(
         },
       ],
     }
+  })
+}
+
+const debounceGetData = debounce(getDataDebounce, 500)
+
+async function getData() {
+  debounceGetData()
+}
+await getData()
+
+const renderTimeout = setTimeout(() => {
+  renderKey.value = 100
+  clearTimeout(renderTimeout)
+}, 100)
+
+watch(
+  () => date.value,
+  async () => {
+    getData()
+  },
+  {
+    deep: true,
   }
 )
 

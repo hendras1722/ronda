@@ -63,26 +63,26 @@ definePageMeta({
     function (to, from) {
       const user = useSupabaseUser()
       if (user.value) {
-        // if (process.client) {
-        return navigateTo('/admin/dashboard')
-        // }
+        if (process.client) {
+          return (window.location.href = '/admin/dashboard')
+        }
       }
     },
   ],
 })
-const user = useSupabaseUser()
+// const user = useSupabaseUser()
 
-watch(
-  () => user.value,
-  (newValue) => {
-    if (newValue) {
-      window.location.href = '/admin/dashboard'
-    }
-  },
-  {
-    deep: true,
-  }
-)
+// watch(
+//   () => user.value,
+//   (newValue) => {
+//     if (newValue) {
+//       window.location.href = '/admin/dashboard'
+//     }
+//   },
+//   {
+//     deep: true,
+//   }
+// )
 
 const schema = object({
   email: string(),
