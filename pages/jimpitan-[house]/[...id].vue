@@ -13,20 +13,20 @@
           <UButton
             class="w-full ml-auto mr-auto block mt-5"
             variant="solid"
-            color="red"
+            color="blue"
             size="lg"
-            @click="logout"
+            @click="handlePush"
           >
-            Keluar
+            Masuk Dashboard
           </UButton>
           <UButton
             class="w-full ml-auto mr-auto block mt-5"
             variant="solid"
             color="red"
             size="lg"
-            @click="handlePush"
+            @click="logout"
           >
-            Masuk Dashboard
+            Keluar
           </UButton>
         </div>
       </div>
@@ -134,6 +134,15 @@
       </MSATable>
 
       <div>
+        <UButton
+          class="w-full ml-auto mr-auto block mt-5"
+          variant="solid"
+          color="blue"
+          size="lg"
+          @click="handlePush"
+        >
+          Masuk Dashboard
+        </UButton>
         <UButton
           class="w-full ml-auto mr-auto block mt-5"
           variant="solid"

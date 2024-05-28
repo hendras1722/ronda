@@ -92,7 +92,7 @@
       <div class="p-4">
         <UForm :state="state" @submit="handleSubmit">
           <UFormGroup label="" name="day" autocomplete="false" required>
-            <div class="flex justify-between">
+            <div class="flex justify-between overflow-auto">
               <UButton
                 :id="'days_' + item.value"
                 v-for="(item, index) in daysItems"
