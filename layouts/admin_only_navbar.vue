@@ -29,13 +29,13 @@ async function handleOut() {
 </script>
 
 <template>
-  <div class="min-h-screen">
+  <div class="max-h-screen">
     <div class="flex justify-end p-3 bg-white">
       <div>
         <UButton class="text-lg" @click="handleOut">Logout</UButton>
       </div>
     </div>
-    <div class="overflow-auto">
+    <div class="overflow-auto max-h-screen pb-[54px]">
       <slot />
     </div>
   </div>

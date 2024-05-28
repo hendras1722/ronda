@@ -25,7 +25,17 @@ export default defineEventHandler(async (event) => {
   try {
     let r = (Math.random() + 1).toString(36).substring(7)
     const blok = body.blok
+    const email = body.email
+    const id = body.id
+    const name = body.name
+    const phone = body.phone
     delete body.blok
+    delete body.email
+    delete body.role
+    delete body.id_complex
+    delete body.name
+    delete body.phone
+    delete body.id
     const { data: db_complex, error: db_complex_error } = await supabase
       .from('db_complex')
       .upsert({
@@ -36,19 +46,24 @@ export default defineEventHandler(async (event) => {
           r,
       })
       .select()
-    console.log(db_complex_error, 'inidb_complex_error')
+    console.log(db_complex)
     if (db_complex && db_complex.length > 0) {
       // console.log(db_complex)
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('db_user')
-        .update({
+        .upsert({
+          id: id,
           id_complex: db_complex[0]?.id,
           role: 'admin',
-          blok: blok,
+          blok,
+          email,
+          name,
+          phone,
         })
-        .eq('id', path.id)
+        // .eq('id', path.id)
         .select()
-      console.log(error, 'iniwewe')
+      console.log(data, error, path, 'iniwe')
+
       if (error) {
         throw createError({
           statusCode: 403,

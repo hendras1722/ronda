@@ -8,7 +8,7 @@ definePageMeta({
 })
 onMounted(() => {
   setTimeout(() => {
-    window.location.href = '/admin/dashboard'
+    window.location.href = '/'
   }, 300)
 })
 </script>

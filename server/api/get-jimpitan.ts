@@ -59,6 +59,16 @@ export default defineEventHandler(async (event) => {
       )
       .eq('id_complex', query.q || '')
 
+    let { data: date } = await client
+      .from('db_patrol')
+      .select(
+        `
+       *
+        `
+      )
+      .eq('id_complex', query.q || '')
+      .eq('id_warga', query.id || '')
+
     const result =
       list_block &&
       list_block.map((item) => {
@@ -84,6 +94,7 @@ export default defineEventHandler(async (event) => {
 
     return {
       data: result,
+      day: date,
     }
   } catch (error) {
     return {

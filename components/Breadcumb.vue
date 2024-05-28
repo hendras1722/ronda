@@ -34,7 +34,6 @@ const handleHref = (handleHref: string) => {
 watch(
   () => route.fullPath,
   (newValue) => {
-    console.log(newValue, 'inivalue')
     const routeMap = newValue.split('/admin/dashboard').filter(Boolean)
     const newBreadcumb = routeMap.map((item) => {
       const Capitalized = item.slice(0, 1).toUpperCase()
@@ -44,7 +43,6 @@ watch(
           .replace(/^\w/gm, Capitalized)
           .split('/')
           .map((items) => {
-            console.log(items, 'iniitem')
             const Capitalized2 = items.slice(0, 1).toUpperCase()
             return items.replace(/^\w/gm, Capitalized2)
           })
@@ -53,7 +51,6 @@ watch(
         disabled: true,
       }
     })
-    console.log(newBreadcumb, 'inbread')
     breadcumb.value = [
       {
         href: '/admin/dashboard',

@@ -14,24 +14,28 @@ export default defineNuxtRouteMiddleware(async (from, to) => {
 
   const checkUserRegister = storeToRefs(useGetuser())
 
+  if (from.path.match(/jimpitan-[\w-]+$/gm)) {
+    return
+  }
+
   if (!user.value && from.path.includes('admin')) {
     return (to.path = '/login')
   }
 
-  if (process.client) {
-    if (user.value && from.path === '/') {
-      return (to.path = '/admin/dashboard')
-    }
-    if (
-      user.value &&
-      checkUserRegister.user.value.data.length < 1 &&
-      (from.path.includes('admin') ||
-        to.path.includes('admin') ||
-        from.path === '/')
-    ) {
-      return (to.path = '/register-profile')
-    }
+  // if (process.client) {
+  // if (user.value && from.path === '/') {
+  //   return (to.path = '/admin/dashboard')
+  // }
+  if (
+    user.value &&
+    checkUserRegister.user.value.data.length < 1 &&
+    (from.path.includes('admin') ||
+      to.path.includes('admin') ||
+      from.path === '/')
+  ) {
+    return (to.path = '/register-profile')
   }
+  // }
 
   // if (user.value && from.path === '/login') {
   //   return (to.path = '/')

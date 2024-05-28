@@ -1,7 +1,9 @@
 <template>
-  <div class="h-screen sm:flex sm:justify-center grid place-items-center p-5">
+  <div
+    class="h-screen sm:flex sm:justify-center grid place-items-center p-5 bg-[#c8d8f6]"
+  >
     <div
-      class="sm:w-96 sm:rounded-tl-lg sm:rounded-bl-lg h-80 p-8 flex justify-center items-center border border-gray-200"
+      class="glass sm:w-96 sm:rounded-tl-lg sm:rounded-bl-lg h-80 p-8 flex justify-center items-center border border-gray-200"
     >
       <div class="w-full">
         <div class="text-center text-2xl font-bold">Ronda Indonesia</div>
@@ -64,7 +66,7 @@ definePageMeta({
       const user = useSupabaseUser()
       if (user.value) {
         if (process.client) {
-          return (window.location.href = '/admin/dashboard')
+          return (window.location.href = '/')
         }
       }
     },
@@ -157,4 +159,13 @@ async function handleRegister() {
 
 <style lang="scss">
 @import url('@/assets/scss/input_login.scss');
+.glass {
+  /* From https://css.glass */
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
 </style>

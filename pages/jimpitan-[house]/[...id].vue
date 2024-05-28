@@ -19,6 +19,15 @@
           >
             Keluar
           </UButton>
+          <UButton
+            class="w-full ml-auto mr-auto block mt-5"
+            variant="solid"
+            color="red"
+            size="lg"
+            @click="handlePush"
+          >
+            Masuk Dashboard
+          </UButton>
         </div>
       </div>
     </div>
@@ -65,7 +74,7 @@
           </UButton>
         </div>
 
-        <UInput type="telp" v-model="money">
+        <UInput type="telp" v-model="money" v-money>
           <template #leading>
             <div>Rp</div>
           </template>
@@ -191,7 +200,7 @@ const columns = ref([
 ])
 const slideIndex = ref(0)
 const item = ref<any[]>([])
-const money = ref(0)
+const money = ref('')
 const user = useGetuser()
 const checkJimpitanDay = ref(false)
 const pending = ref(false)
@@ -243,7 +252,7 @@ async function handleSubmit() {
 
   let obj = {
     id_address: dataJimpitan.id_complex,
-    money: money.value,
+    money: money.value.replace(/\W/gm, ''),
     by: user?.userLogin?.sub,
     id_block: dataJimpitan.id,
   }
@@ -266,7 +275,11 @@ async function handleSubmit() {
   }
   loading.value = false
 }
+
 const router = useRouter()
+function handlePush() {
+  router.push('/admin/dashboard')
+}
 
 async function logout() {
   let { error } = await supabase.auth.signOut()
@@ -280,30 +293,57 @@ async function logout() {
   }
 }
 
+function vMoney(e: HTMLInputElement) {
+  e.addEventListener('input', (event) => {
+    let input = (event.target as any).value.replace(/\D/g, '') // Hanya angka
+    if (/^0/gm.test(input)) {
+      ;(event.target as any).value = ''
+      return
+    }
+    let formattedInput = ''
+
+    // Mengatur input seperti format uang Rupiah (IDR)
+    if (input.length <= 3) {
+      formattedInput = input
+    } else {
+      let remainder = input.length % 3
+      formattedInput = input.substr(0, remainder)
+
+      for (let i = remainder; i < input.length; i += 3) {
+        if (i !== 0) formattedInput += '.'
+        formattedInput += input.substr(i, 3)
+      }
+    }
+
+    ;(event.target as any).value = formattedInput
+  })
+}
+
 async function getData() {
   pending.value = true
   const path = route.path.replace('jimpitan-', '')
   const regex = path.replace(/^\//gm, '')
-
+  const idSupabase = useSupabaseUser()
   const address = user.user.data.filter((item) => item.complex.link === regex)
   const { data } = await useFetch<{ data: any[]; day: any[] }>(
     '/api/get-jimpitan',
     {
       query: {
         q: address[0].complex.id,
+        id: idSupabase.value?.id,
       },
     }
   )
   pending.value = false
-  // console.log(data.value, 'inidata')
-  // if (data.value?.day) {
-  //   const getDay = data.value?.day.filter(
-  //     (item: { day: number }) => item.day === new Date().getDay()
-  //   )
-  //   if (getDay.length < 1) {
-  //     checkJimpitanDay.value = true
-  //   }
-  // }
+
+  if (data.value?.day && data.value?.day.length > 0) {
+    const getDay = data.value?.day.filter(
+      (item: { day: number }) => item.day === new Date().getDay()
+    )
+    if (getDay.length < 1) {
+      checkJimpitanDay.value = true
+    }
+  }
 
   if (data.value?.data) {
     item.value = data.value.data

@@ -21,13 +21,15 @@ export default defineEventHandler(async (event) => {
       message: 'Forbidden Access',
     })
   }
-
   try {
-    console.log(body.id)
     const { data, error } = await supabase
-      .from('db_user')
-      .update({ name: body.name, phone: body.phone })
-      .eq('id', body.id)
+      .from('db_patrol')
+      .update({
+        day: body.day,
+        id_complex: body.id_complex,
+        id_warga: body.id_warga,
+      })
+      .eq('id_warga', body.id_warga)
       .select()
 
     if (error) {

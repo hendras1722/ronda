@@ -63,10 +63,7 @@
         </template>
         <template #actions-data="{ row }">
           <div>
-            <div
-              v-if="row.day && row.day >= 0"
-              class="flex justify-between w-40"
-            >
+            <div v-if="row.day" class="flex justify-between w-40">
               <UButton
                 :variant="'solid'"
                 color="blue"
@@ -190,8 +187,10 @@ const item = ref<IJadwal[]>([])
 const user = useGetuser()
 const search = ref('')
 const pending = ref(false)
+const update = ref(false)
 
 async function handleAdd(e: any) {
+  update.value = false
   state.value.id_warga = e.id
   state.value.id_complex = e.complex.id
   isOpen.value = true
@@ -203,9 +202,20 @@ function handleDays(e: number) {
 
 async function handleSubmit() {
   state.value.id_complex = (user.user && user.user.data[0]?.complex.id) || ''
-
+  if (!update.value) {
+    const { error } = await useFetch<{ data: IJadwal }>('/api/ronda', {
+      method: 'POST',
+      body: state.value,
+      watch: false,
+    })
+    if (!error.value) {
+      isOpen.value = false
+      getData()
+    }
+    return
+  }
   const { error } = await useFetch<{ data: IJadwal }>('/api/ronda', {
-    method: 'POST',
+    method: 'PUT',
     body: state.value,
     watch: false,
   })
@@ -230,6 +240,7 @@ interface Complex {
 }
 
 async function handleUpdate(e: IUpdate) {
+  update.value = true
   state.value.id_warga = e.id
   state.value.day = e.day
   state.value.id_complex = e.complex.id

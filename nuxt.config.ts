@@ -13,11 +13,11 @@ export default defineNuxtConfig({
   devtools: { enabled: true, vscode: {} },
   supabase: {
     redirect: true,
-    // redirectOptions: {
-    //   login: '/login',
-    //   callback: '/auth/callback',
-    //   exclude: ['/login', '/'],
-    // },
+    redirectOptions: {
+      login: '/login',
+      callback: '/auth/callback',
+      exclude: ['/jimpitan-**', '/'],
+    },
   },
   modules: [
     '@nuxt/content',

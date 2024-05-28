@@ -168,7 +168,11 @@
             autocomplete="false"
             required
           >
-            <UInput v-model="state.contribution" />
+            <UInput v-model="state.contribution" type="telp" v-money>
+              <template #leading>
+                <span>Rp.</span>
+              </template>
+            </UInput>
           </UFormGroup>
           <UFormGroup
             class="mt-3"
@@ -273,7 +277,7 @@ const columns = ref([
 const options = ref<{ name: string; value: string }[]>([])
 const state = ref({
   id_warga: '',
-  contribution: 0,
+  contribution: '',
   id_complex: '',
   status: '',
   note: '',
@@ -378,7 +382,6 @@ const { data } = await useFetch<{
 })
 if (data.value?.data) {
   const item = data.value?.data.map((item) => {
-    console.log(item)
     return {
       name: item.name,
       value: item.id,
@@ -389,7 +392,7 @@ if (data.value?.data) {
 
 async function submit() {
   state.value.id_complex = user.user && user.user.data?.[0]?.complex.id
-  state.value.contribution = Number(state.value.contribution)
+  state.value.contribution = state.value.contribution
   const { data } = await useFetch<{ data: any }>('/api/iuran', {
     method: 'POST',
     body: state.value,
@@ -434,6 +437,32 @@ async function handleDownload() {
       ? 'Dana Keluar.xlsx'
       : 'Semua.xlsx'
   )
+}
+
+function vMoney(e: HTMLInputElement) {
+  e.addEventListener('input', (event) => {
+    let input = (event.target as any).value.replace(/\D/g, '') // Hanya angka
+    if (/^0/gm.test(input)) {
+      ;(event.target as any).value = ''
+      return
+    }
+    let formattedInput = ''
+
+    // Mengatur input seperti format uang Rupiah (IDR)
+    if (input.length <= 3) {
+      formattedInput = input
+    } else {
+      let remainder = input.length % 3
+      formattedInput = input.substr(0, remainder)
+
+      for (let i = remainder; i < input.length; i += 3) {
+        if (i !== 0) formattedInput += '.'
+        formattedInput += input.substr(i, 3)
+      }
+    }
+
+    ;(event.target as any).value = formattedInput
+  })
 }
 </script>
 

@@ -57,7 +57,8 @@ definePageMeta({
   layout: false,
   middleware: [
     function (from) {
-      const sbAccessToken = useCookie('sb-access-token')
+      const userSupa = useSupabaseUser()
+      // const sbAccessToken = useCookie('sb-access-token')
       const user = useGetuser()
       const path = from.path.replace('jimpitan-', '')
       const regex = path.split(/[\/-]/gm).filter(Boolean)
@@ -66,7 +67,7 @@ definePageMeta({
         (item) => item.complex?.link === regex[0]
       )
 
-      if (sbAccessToken.value && address.length > 0) {
+      if (userSupa.value) {
         return navigateTo('/jimpitan-' + address[0].complex?.link)
       }
     },
@@ -86,17 +87,38 @@ const state = ref({
 
 const sbAccessToken = useCookie('sb-access-token')
 async function submit(event: FormSubmitEvent<Schema>) {
+  const getURL = () => {
+    let url =
+      process?.env?.NEXT_PUBLIC_SITE_URL ?? // Set this to your site URL in production env.
+      process?.env?.NEXT_PUBLIC_VERCEL_URL ?? // Automatically set by Vercel.
+      'http://localhost:3000/'
+    // Make sure to include `https://` when not localhost.
+    url = url.includes('http') ? url : `https://${url}`
+    // Make sure to include a trailing `/`.
+    url = url.charAt(url.length - 1) === '/' ? url : `${url}/`
+    return url
+  }
+  let { error, data } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: getURL(),
+    },
+  })
+  if (error) {
+    console.log(error)
+    // window.location.reload()
+  }
   // Do something with event.data
   // console.log(event.data)
-  const { data } = await useFetch<{ data: any }>('/api/login', {
-    method: 'POST',
-    body: event.data,
-    watch: false,
-  })
-  if (data.value) {
-    sbAccessToken.value = data.value?.data.session.access_token
-    window.location.reload()
-  }
+  // const { data } = await useFetch<{ data: any }>('/api/login', {
+  //   method: 'POST',
+  //   body: event.data,
+  //   watch: false,
+  // })
+  // if (data.value) {
+  //   sbAccessToken.value = data.value?.data.session.access_token
+  //   window.location.reload()
+  // }
 }
 async function handleRegister() {
   const { data } = await useFetch('/api/invite-member')

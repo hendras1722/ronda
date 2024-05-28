@@ -64,7 +64,7 @@
 
     <UModal v-model="isOpen">
       <div class="p-5 flex justify-center">
-        <UForm>
+        <UForm :state="{ block: '' }" @submit="handleAdd">
           <UFormGroup label="Block Rumah | Nomer Rumah" name="block">
             <div class="flex">
               <div v-for="(_, i) in stateBlock" :key="i">
@@ -90,12 +90,7 @@
           </UFormGroup>
 
           <div class="flex justify-center mt-5">
-            <UButton
-              type="submit"
-              color="green"
-              variant="solid"
-              @click="handleAdd"
-            >
+            <UButton type="submit" color="green" variant="solid">
               Submit
             </UButton>
           </div>

@@ -231,7 +231,7 @@ definePageMeta({
       const checkUserRegister = storeToRefs(useGetuser())
       // console.log(checkUserRegister.user.value.data, 'oioi')
       if (checkUserRegister.user.value.data.length > 0) {
-        return navigateTo('/admin/dashboard')
+        return navigateTo('/')
       }
     },
   ],
@@ -265,6 +265,7 @@ const formPersonal = ref({
   role: '',
   email: userLogin.value?.email,
   blok: '',
+  id_complex: '',
 })
 
 const formAddress = ref({
@@ -307,7 +308,7 @@ async function handleSave(e: number) {
           },
         }
       )
-      console.log(profile.value?.data, 'inipros')
+
       if (profile.value?.data) {
         window.location.reload()
       }
@@ -317,21 +318,26 @@ async function handleSave(e: number) {
       '/api/settings-address',
       {
         method: 'post',
-        body: { ...formAddress.value, blok: formPersonal.value.blok },
+        body: {
+          ...formAddress.value,
+          ...formPersonal.value,
+          blok: formPersonal.value.blok,
+        },
         server: false,
         headers: {
           'Content-Type': 'application/json',
-          id: userLogin.value?.sub || '',
         },
       }
     )
     if (address.value?.data) {
-      step.value = 2
+      step.value = 1
     }
     // console.log(address.value?.data, 'inipros')
-    window.location.reload()
+    // window.location.reload()
     return
   }
+  console.log(formPersonal.value, 'iniva')
+
   const { data: profile } = await useFetch<{
     data: {
       id_complex: string
@@ -343,12 +349,14 @@ async function handleSave(e: number) {
     }[]
   }>('/api/settings-profile', {
     method: 'POST',
-    body: formPersonal.value,
+    body: (formPersonal.value = {
+      ...formPersonal.value,
+    }),
     server: false,
     watch: false,
   })
   if (profile.value?.data) {
-    step.value = 2
+    window.location.href = '/admin/dashboard'
   }
 }
 

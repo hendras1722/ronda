@@ -69,8 +69,6 @@ export default defineEventHandler(async (event) => {
       return obj
     })
 
-    console.log(result, 'iniresult23')
-
     if (error || errUser) {
       throw createError({
         statusCode: 403,
