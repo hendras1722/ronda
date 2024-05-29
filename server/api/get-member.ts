@@ -24,9 +24,12 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
+    const select = route.referer?.includes('/iuran')
+      ? `id, name, id_house`
+      : '*'
     let { data, error } = await client
       .from('user_view')
-      .select(route.referer?.includes('/iuran') ? `id,name,id_house` : '*')
+      .select(select)
       .eq('id_house', query.v || '')
       .ilike('name', `%${query.q}%`)
 

@@ -62,7 +62,6 @@ export default defineEventHandler(async (event) => {
         })
         // .eq('id', path.id)
         .select()
-      console.log(data, error, path, 'iniwe')
 
       if (error) {
         throw createError({

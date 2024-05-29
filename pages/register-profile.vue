@@ -295,7 +295,7 @@ async function handleSave(e: number) {
       const { data: profile } = await useFetch<{ data: TopLevel[] }>(
         '/api/settings-profile',
         {
-          method: 'put',
+          method: 'POST',
           body: {
             house: id_complex.value,
             id: userLogin.value?.sub,
@@ -310,7 +310,7 @@ async function handleSave(e: number) {
       )
 
       if (profile.value?.data) {
-        window.location.reload()
+        step.value = 1
       }
       return
     }
@@ -330,14 +330,30 @@ async function handleSave(e: number) {
       }
     )
     if (address.value?.data) {
-      step.value = 1
+      window.location.href = '/admin/dashboard'
     }
-    // console.log(address.value?.data, 'inipros')
-    // window.location.reload()
     return
   }
-  console.log(formPersonal.value, 'iniva')
-
+  if (stepSearchAddress.value === 1) {
+    const { data: address } = await useFetch<{ data: TopLevel[] }>(
+      '/api/settings-profile',
+      {
+        method: 'PUT',
+        body: (formPersonal.value = {
+          ...formPersonal.value,
+          id_complex: formPersonal.value.id_complex
+            ? formPersonal.value.id_complex
+            : id_complex.value,
+        }),
+        server: false,
+        watch: false,
+      }
+    )
+    if (address.value?.data) {
+      window.location.href = '/admin/dashboard'
+    }
+    return
+  }
   const { data: profile } = await useFetch<{
     data: {
       id_complex: string
@@ -351,6 +367,9 @@ async function handleSave(e: number) {
     method: 'POST',
     body: (formPersonal.value = {
       ...formPersonal.value,
+      id_complex: formPersonal.value.id_complex
+        ? formPersonal.value.id_complex
+        : id_complex.value,
     }),
     server: false,
     watch: false,

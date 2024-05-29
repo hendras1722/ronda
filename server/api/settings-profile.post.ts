@@ -23,11 +23,14 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    console.log(body.id)
     const { data, error } = await supabase
       .from('db_user')
-      .update({ name: body.name, phone: body.phone })
-      .eq('id', body.id)
+      .upsert({
+        id_complex: body.house,
+        role: 'user',
+        blok: body.blok,
+        id: body.id,
+      })
       .select()
 
     if (error) {
