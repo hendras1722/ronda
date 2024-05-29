@@ -50,8 +50,64 @@
         <template #phone-data="{ row }">
           <div>{{ row.phone }}</div>
         </template>
+
+        <template #email-data="{ row }">
+          <div>{{ row.email }}</div>
+        </template>
+        <template #actions-data="{ row }">
+          <UButton
+            v-if="row.id === user.user.data[0].id"
+            :variant="'soft'"
+            color="green"
+            @click="openModal(row)"
+            >Edit</UButton
+          >
+          <div v-else></div>
+        </template>
       </MSATable>
     </div>
+
+    <UModal v-model="isOpenModal">
+      <div class="p-4">
+        <UForm
+          :validate="validate"
+          @submit="handleUpdate"
+          :state="updateMemberState"
+        >
+          <UFormGroup
+            class="mt-3"
+            label="Nama"
+            name="name"
+            autocomplete="false"
+            required
+          >
+            <UInput v-model="updateMemberState.name" />
+          </UFormGroup>
+
+          <UFormGroup
+            class="mt-3"
+            label="Nomer Handphone"
+            name="phone"
+            autocomplete="false"
+            required
+          >
+            <UInput v-model="updateMemberState.phone" v-number />
+          </UFormGroup>
+
+          <div class="mt-4">
+            <UButton
+              class="w-full ml-auto mr-auto block"
+              type="submit"
+              variant="soft"
+              color="blue"
+              size="lg"
+            >
+              Submit
+            </UButton>
+          </div>
+        </UForm>
+      </div>
+    </UModal>
     <USlideover v-model="isOpen">
       <UCard
         class="flex flex-col flex-1"
@@ -83,6 +139,7 @@
 </template>
 
 <script setup lang="ts">
+import type { FormError, FormSubmitEvent } from '#ui/types'
 const isOpen = ref(false)
 
 const columns = ref([
@@ -102,12 +159,17 @@ const columns = ref([
     key: 'email',
     label: 'Email',
   },
+  {
+    key: 'actions',
+    label: '',
+  },
 ])
 
 export interface IMember {
+  id: string
   email: string
   name: string
-  phone: null
+  phone: string
   role: null
   blok: null
   house: string
@@ -130,6 +192,27 @@ const user = useGetuser()
 const item = ref<IMember[]>()
 const search = ref('')
 const pending = ref(false)
+const isOpenModal = ref(false)
+const updateMemberState = ref({
+  name: '',
+  id: '',
+  phone: '',
+})
+
+const vNumber = (e: HTMLDivElement) => {
+  e.addEventListener('keydown', (event: KeyboardEvent) => {
+    const checkNumber = event.key.match(/[0-9]/gm)
+
+    const allowedKeys = ['Delete', 'Backspace', 'ArrowLeft', 'ArrowRight']
+
+    if (!checkNumber && !allowedKeys.includes(event.key)) {
+      event.preventDefault()
+      return false
+    }
+
+    return true
+  })
+}
 
 watchDebounced(
   () => search.value,
@@ -151,6 +234,33 @@ async function getData(e?: string) {
   item.value = data.value?.data
 }
 getData()
+
+const validate = (state: any): FormError[] => {
+  const errors = []
+  if (!state.name) errors.push({ path: 'name', message: 'Name Required' })
+  if (!state.phone) errors.push({ path: 'phone', message: 'Phone Required' })
+  return errors
+}
+
+function openModal(e: IMember) {
+  isOpenModal.value = true
+  updateMemberState.value = {
+    id: e.id,
+    name: e.name,
+    phone: e.phone,
+  }
+}
+
+async function handleUpdate() {
+  const { status } = await useFetch<{ data: any }>('/api/settings-profile', {
+    method: 'PUT',
+    body: updateMemberState.value,
+  })
+  if (status.value === 'success') {
+    isOpenModal.value = false
+    getData()
+  }
+}
 </script>
 
 <style lang="scss" scoped></style>
