@@ -24,6 +24,36 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
+    if (query.q) {
+      const select = route.referer?.includes('/iuran')
+        ? `id, name, id_house`
+        : '*'
+      let { data, error } = await client
+        .from('user_view')
+        .select(select)
+        .eq('id_house', query.v || '')
+        .ilike('name', `%${query.q}%`)
+
+      if (error) {
+        throw createError({
+          statusCode: 403,
+          message: String(error.message),
+        })
+      }
+      return {
+        data: data?.map((item: any) => {
+          if (route.referer?.includes('/iuran')) {
+            return {
+              id: item.id,
+              name: item.name,
+            }
+          }
+          return {
+            ...item,
+          }
+        }),
+      }
+    }
     const select = route.referer?.includes('/iuran')
       ? `id, name, id_house`
       : '*'
@@ -31,7 +61,6 @@ export default defineEventHandler(async (event) => {
       .from('user_view')
       .select(select)
       .eq('id_house', query.v || '')
-      .ilike('name', `%${query.q}%`)
 
     if (error) {
       throw createError({

@@ -39,6 +39,17 @@
           divide: 'divide-y divide-[#ccc] dark:divide-gray-800',
         }"
       >
+        <template #name-data="{ row }">
+          <div>{{ row.name }}</div>
+        </template>
+
+        <template #blok-data="{ row }">
+          <div>{{ row.blok }}</div>
+        </template>
+
+        <template #phone-data="{ row }">
+          <div>{{ row.phone }}</div>
+        </template>
       </MSATable>
     </div>
     <USlideover v-model="isOpen">

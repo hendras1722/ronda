@@ -284,6 +284,7 @@ const isFocus = ref(false)
 
 const user = useGetuser()
 onMounted(() => {
+  console.log(user.user, 'iniuser.user')
   if (!user.user.isComplex) {
     step.value = 2
   }

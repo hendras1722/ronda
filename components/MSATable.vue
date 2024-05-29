@@ -131,8 +131,8 @@
               </slot>
             </td>
           </tr>
-          <tr>
-            <td :colspan="columns.length" v-if="row.isExpanded">
+          <tr v-if="row.isExpanded">
+            <td :colspan="columns.length">
               <slot name="expanded" :index="index" :rows="row" />
             </td>
           </tr>
