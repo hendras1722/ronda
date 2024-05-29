@@ -66,7 +66,7 @@ definePageMeta({
       const user = useSupabaseUser()
       if (user.value) {
         if (process.client) {
-          return (window.location.href = '/')
+          return (to.path = '/')
         }
       }
     },
