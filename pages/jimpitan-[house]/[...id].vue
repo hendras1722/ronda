@@ -350,7 +350,7 @@ async function getData() {
     const getDay = data.value?.day.filter(
       (item: { day: number }) => item.day === new Date().getDay()
     )
-    if (data.value?.day[0].day && getDay.length < 1) {
+    if (!data.value?.day[0].day && getDay.length < 1) {
       checkJimpitanDay.value = true
     }
   }
