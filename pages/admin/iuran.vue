@@ -392,7 +392,7 @@ if (data.value?.data) {
 
 async function submit() {
   state.value.id_complex = user.user && user.user.data?.[0]?.complex.id
-  state.value.contribution = state.value.contribution
+  state.value.contribution = state.value.contribution.replace(/\W/gm, '')
   const { data } = await useFetch<{ data: any }>('/api/iuran', {
     method: 'POST',
     body: state.value,
@@ -401,7 +401,6 @@ async function submit() {
   if (data.value) {
     await getData()
     isOpenModal.value = false
-    // console.log(data.value)
   }
 }
 
