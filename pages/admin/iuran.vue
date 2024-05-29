@@ -88,6 +88,9 @@
           divide: 'divide-y divide-[#ccc] dark:divide-gray-800',
         }"
       >
+        <template #contribution-data="{ row }">
+          <div>{{ formatMoney(row.contribution) }}</div>
+        </template>
         <template #created_at-data="{ row }">
           <div>{{ convertDate(row.created_at) }}</div>
         </template>
@@ -409,6 +412,18 @@ function convertDate(e: any) {
   return format(new Date(e), 'dd MMMM yyyy')
 }
 
+function formatMoney(e: string) {
+  const formatter = new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+
+    // These options are needed to round to whole numbers if that's what you want.
+    //minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
+    //maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
+  })
+  return formatter.format(Number(e))
+}
+
 async function handleDownload() {
   const { data: iuran } = await useFetch<{ data: any }>('/api/download-iuran', {
     query: {
@@ -425,6 +440,7 @@ async function handleDownload() {
       status: item.status === 'true' ? 'Dana Masuk' : 'Dana Keluar',
     }
   })
+
   const data = XLSX.utils.json_to_sheet(result)
   const wb = XLSX.utils.book_new()
   XLSX.utils.book_append_sheet(wb, data, 'data')
