@@ -346,10 +346,11 @@ async function getData() {
   pending.value = false
 
   if (data.value?.day && data.value?.day.length > 0) {
+    console.log(data.value?.day[0].day, 'inidata.value?.day')
     const getDay = data.value?.day.filter(
       (item: { day: number }) => item.day === new Date().getDay()
     )
-    if (getDay.length < 1) {
+    if (data.value?.day[0].day && getDay.length < 1) {
       checkJimpitanDay.value = true
     }
   }
