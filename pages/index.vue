@@ -28,7 +28,7 @@
 const router = useRouter()
 
 definePageMeta({
-  layout: false,
+  layout: 'admin-only-navbar',
   middleware: [
     function (from, to) {
       const user = useGetuser()
