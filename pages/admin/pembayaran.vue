@@ -294,13 +294,13 @@ function snapMidtrans(e: string) {
 }
 
 async function handleSnap(e?: string) {
-  const history = await $fetch<{ data: history[] }>('/api/history', {
-    method: 'POST',
-    body: {
-      gross_amount: '22000',
-      id_complex: 'd4843528-fdc6-426a-953d-90dafca289a2',
-    },
-  })
+  // const history = await $fetch<{ data: history[] }>('/api/history', {
+  //   method: 'POST',
+  //   body: {
+  //     gross_amount: '22000',
+  //     id_complex: 'd4843528-fdc6-426a-953d-90dafca289a2',
+  //   },
+  // })
 
   // if (transaction.value.length > 0) {
   //   $fetch('/api/history', {
@@ -312,23 +312,45 @@ async function handleSnap(e?: string) {
   // }
 
   if (history) {
-    const { data } = await useFetch<{ data: string }>('/api/payment', {
+    const { data } = await useFetch<{ data: string }>('/api/payment-manual', {
       method: 'POST',
       body: {
         transaction_details: {
-          order_id: history.data[0].id,
-          gross_amount: history.data[0].gross_amount,
+          order_id: 'order-id-12348',
+          gross_amount: '2000',
         },
-        credit_card: {
-          secure: true,
+        payment_type: 'bank_transfer',
+        bank_transfer: {
+          bank: 'bni',
         },
       },
     })
-    if (data.value?.data) {
-      await snapMidtrans(data.value.data)
-    } else {
-      console.error('Transaction data is undefined')
-    }
+    // "payment_type": "bank_transfer",
+    //     "transaction_details": {
+    //         "order_id": "order-id-" + new Date().getTime(),
+    //         "gross_amount": amount
+    //     },
+    //     "bank_transfer": {
+    //         "bank": bank
+    //     }
+    console.log(data)
+    // const { data } = await useFetch<{ data: string }>('/api/payment', {
+    //   method: 'POST',
+    //   body: {
+    //     transaction_details: {
+    //       order_id: history.data[0].id,
+    //       gross_amount: history.data[0].gross_amount,
+    //     },
+    //     credit_card: {
+    //       secure: true,
+    //     },
+    //   },
+    // })
+    // if (data.value?.data) {
+    //   await snapMidtrans(data.value.data)
+    // } else {
+    //   console.error('Transaction data is undefined')
+    // }
   }
 }
 onMounted(() => {})
