@@ -63,7 +63,10 @@
         </template>
         <template #actions-data="{ row }">
           <div>
-            <div v-if="row.day" class="flex justify-between w-40">
+            <div
+              v-if="row.day && row.id === user.user.data[0].id"
+              class="flex justify-between w-40"
+            >
               <UButton
                 :variant="'solid'"
                 color="blue"
@@ -79,7 +82,7 @@
                 Delete</UButton
               >
             </div>
-            <div v-else>
+            <div v-else-if="row.id === user.user.data[0].id">
               <UButton variant="solid" color="green" @click="handleAdd(row)"
                 >Update
               </UButton>

@@ -10,7 +10,11 @@
           <div class="flex justify-center items-center h-14 overflow-hidden">
             <div>
               <NuxtLink to="/admin/dashboard">
-                <img class="w-16" src="/msa_logo.jpeg" alt="Logo MSA" />
+                <img
+                  class="w-16 mix-blend-multiply dark:mix-blend-normal"
+                  src="/msa_logo.png"
+                  alt="Logo MSA"
+                />
               </NuxtLink>
             </div>
           </div>

@@ -3,12 +3,19 @@
     v-if="loadingPages"
     class="relative flex justify-center items-center h-screen"
   >
-    <img src="/msa_logo.jpeg" class="h-32 rounded-lg absolute" />
+    <img
+      src="/msa_logo.png"
+      class="h-32 rounded-lg absolute mix-blend-multiply dark:mix-blend-normal"
+    />
     <div class="custom-loader"></div>
   </div>
   <div v-show="loading" class="loading-overlay">
     <div class="loading-container">
-      <img class="loading-item" src="/msa_logo.jpeg" alt="Icon MSA" />
+      <img
+        class="loading-item mix-blend-multiply dark:mix-blend-normal"
+        src="/msa_logo.png"
+        alt="Icon MSA"
+      />
     </div>
   </div>
 </template>
