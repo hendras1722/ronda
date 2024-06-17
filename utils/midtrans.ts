@@ -8,8 +8,8 @@ let snap = new midtransClient.Snap({
 
 let coreApi = new midtransClient.CoreApi({
   isProduction: false, // Set to true for production environment
-  serverKey: '',
-  clientKey: '',
+  serverKey: process.env.SERVER_KEY_MIDTRANS,
+  clientKey: process.env.CLIENT_KEY_MIDTRANS,
 })
 
 export { snap, coreApi }
