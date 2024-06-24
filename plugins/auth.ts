@@ -38,17 +38,14 @@ export default defineNuxtPlugin(async (event) => {
     const data = JSON.parse(atob(tokens[1]))
     delete data.iss
     store.userLogin.value = data
-    if (process.server) {
-      // console.log(user.value.id)
-      const getUser = await _fetch<IUser>('/api/get-user', {
-        baseURL: process.env.NUXT_API_BASE_URL,
-        query: {
-          q: user.value.id,
-        },
-      })
-      // console.log(getUse/r, user.value.id, 'ingetuser')
-      store.user.value = getUser || []
-    }
+
+    const getUser = await _fetch<IUser>('/api/get-user', {
+      baseURL: process.env.NUXT_API_BASE_URL,
+      query: {
+        q: user.value.id,
+      },
+    })
+    store.user.value = getUser || []
   } catch (error) {
     console.log(error)
   }

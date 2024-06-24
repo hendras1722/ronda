@@ -41,9 +41,9 @@ definePageMeta({
 function pushLink(e: string) {
   const user = useGetuser()
   if (e === 'dashboard') {
-    router.push('/admin/dashboard')
+    window.location.href = '/admin/dashboard'
     return
   }
-  router.push('jimpitan-' + user.user.data[0].complex?.link)
+  window.location.href = 'jimpitan-' + user.user.data[0].complex?.link
 }
 </script>

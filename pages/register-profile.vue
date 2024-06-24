@@ -229,7 +229,7 @@ definePageMeta({
   middleware: [
     function () {
       const checkUserRegister = storeToRefs(useGetuser())
-      // console.log(checkUserRegister.user.value.data, 'oioi')
+
       if (checkUserRegister.user.value.data.length > 0) {
         return navigateTo('/')
       }
