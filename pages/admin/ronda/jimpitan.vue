@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="overflow-x-scroll">
     <div class="text-2xl font-extrabold mb-5">Ambil Jimpitan</div>
 
     <div class="flex justify-between items-center">
@@ -125,12 +125,15 @@ const stateBlock = ref(['', ''])
 function handleOpen() {
   isOpen.value = true
 }
-const { data } = await useFetch<{ data: any[] }>('/api/get-jimpitan', {
-  query: {
-    q: user.user && user.user.data[0]?.complex.id,
-  },
-})
-item.value = data.value?.data
+async function getData() {
+  const { data } = await useFetch<{ data: any[] }>('/api/get-jimpitan', {
+    query: {
+      q: user.user && user.user.data[0]?.complex.id,
+    },
+  })
+  item.value = data.value?.data
+}
+getData()
 
 const vNumber = (e: HTMLDivElement) => {
   e.addEventListener('keydown', (event: KeyboardEvent) => {
@@ -149,13 +152,17 @@ const vNumber = (e: HTMLDivElement) => {
 
 async function handleAdd() {
   const itemBlock = stateBlock.value.join('')
-  const { data } = await useFetch('/api/block', {
+  const { data } = await useFetch<{ data: any }>('/api/block', {
     method: 'POST',
     body: {
-      v: user.user && user.user.data[0]?.complex?.id,
+      id_complex: user.user && user.user.data[0]?.complex?.id,
       block: itemBlock,
     },
   })
+  if (data.value?.data) {
+    getData()
+    isOpen.value = false
+  }
   // console.log(data.value)
 }
 </script>

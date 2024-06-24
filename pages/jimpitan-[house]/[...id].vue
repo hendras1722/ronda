@@ -1,5 +1,5 @@
 <template>
-  <div class="p-10">
+  <div class="p-10 overflow-auto max-h-screen">
     <div
       v-if="checkJimpitanDay"
       class="flex justify-center items-center min-h-screen"
@@ -133,6 +133,8 @@
         </template>
       </MSATable>
 
+      <p class="mt-3">Total: {{ totalMoney }}</p>
+
       <div>
         <UButton
           class="w-full ml-auto mr-auto block mt-5"
@@ -213,6 +215,7 @@ const money = ref('')
 const user = useGetuser()
 const checkJimpitanDay = ref(false)
 const pending = ref(false)
+const totalMoney = ref(0)
 
 onMounted(() => {
   nextTick(() => {
@@ -226,6 +229,7 @@ onMounted(() => {
 // Next/previous controls
 function plusSlides(n: number) {
   showSlides((slideIndex.value += n))
+  money.value = ''
 }
 
 function getDaysNow() {
@@ -270,7 +274,7 @@ async function handleSubmit() {
     body: obj,
   })
   if (data.value?.data) {
-    const { data: getData } = await useFetch<{ data: any }>(
+    const { data: getData } = await useFetch<{ data: any; money: number }>(
       '/api/get-jimpitan',
       {
         query: {
@@ -303,7 +307,7 @@ async function logout() {
 }
 
 function vMoney(e: HTMLInputElement) {
-  e.addEventListener('input', (event) => {
+  e.addEventListener('keyup', (event) => {
     let input = (event.target as any).value.replace(/\D/g, '') // Hanya angka
     if (/^0/gm.test(input)) {
       ;(event.target as any).value = ''
@@ -334,7 +338,7 @@ async function getData() {
   const regex = path.replace(/^\//gm, '')
   const idSupabase = useSupabaseUser()
   const address = user.user.data.filter((item) => item.complex.link === regex)
-  const { data } = await useFetch<{ data: any[]; day: any[] }>(
+  const { data } = await useFetch<{ data: any[]; day: any[]; money: number }>(
     '/api/get-jimpitan',
     {
       query: {
@@ -361,6 +365,8 @@ async function getData() {
 
   if (data.value?.data) {
     item.value = data.value.data
+    totalMoney.value = data.value?.money
+
     // slideIndex.value = data.value?.data?.length || 0
   }
 }

@@ -28,15 +28,25 @@ export default defineEventHandler(async (event) => {
     let { data, error: errBlock } = await client
       .from('db_block')
       .select(`*`)
-      .eq('id', body.v || '')
+      .eq('id', body.id_complex || '')
       .eq('block', body.block || '')
-    // console.log(data, 'inique')
-    if (data) {
-      // throw Error('Block already exist')
+    console.log(data, 'inidata')
+    if (data && (data || [])?.length > 0) {
+      throw Error('Block already exist')
+    }
+
+    let { data: block, error: errAddress } = await client
+      .from('db_block')
+      .upsert(body)
+      .select()
+
+    console.log(errAddress)
+    if (errAddress || errBlock) {
+      throw Error('Failed to create block')
     }
 
     return {
-      data: data,
+      data: block,
     }
   } catch (error) {
     return {

@@ -80,6 +80,7 @@ export default defineEventHandler(async (event) => {
           ) {
             return {
               ...item,
+              money: jimpitan[Number(i)].money,
               name: (jimpitan[Number(i)].by as any).name,
               date: isToday(new Date(jimpitan[Number(i)].created_at)),
             }
@@ -87,12 +88,17 @@ export default defineEventHandler(async (event) => {
         }
         return {
           ...item,
+          money: 0,
           name: null,
           date: null,
         }
       })
+    const countMoney = result
+      ?.map((item) => item.money)
+      .reduce((a, b) => a + b, 0)
 
     return {
+      money: countMoney,
       data: result,
       day: date,
     }

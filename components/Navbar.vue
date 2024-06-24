@@ -36,7 +36,9 @@
             <div class="text-left">
               <p>Signed in as</p>
               <div class="flex items-center gap-3 mt-3">
-                <p class="truncate font-medium text-gray-900 dark:text-white">
+                <p
+                  class="truncate font-medium text-gray-900 dark:text-white w-[160px]"
+                >
                   {{ item.label }}
                 </p>
               </div>

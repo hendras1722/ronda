@@ -220,7 +220,7 @@
 </template>
 
 <script setup lang="ts">
-import { format } from 'date-fns'
+import { format, startOfMonth, endOfMonth } from 'date-fns'
 
 useHead({
   script: [
@@ -294,11 +294,8 @@ const total = ref(0)
 const filterDana = ref<any>('all')
 const pending = ref(false)
 const date = ref({
-  start: format(
-    new Date(datePrev.setDate(datePrev.getDate() - 17)),
-    'dd MMMM yyyy'
-  ),
-  end: format(new Date(), 'yyyy-MM-dd'),
+  start: startOfMonth(new Date()),
+  end: endOfMonth(new Date()),
 })
 
 function handleOpen() {
