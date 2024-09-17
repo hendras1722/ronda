@@ -284,6 +284,7 @@ async function handleSubmit() {
     )
     if (getData.value?.data) {
       item.value = getData.value?.data
+      totalMoney.value = data.value?.money
     }
   }
   loading.value = false
