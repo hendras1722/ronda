@@ -32,7 +32,7 @@ async function handleOut() {
   <div class="max-h-screen">
     <div class="flex justify-end p-3 bg-white">
       <div>
-        <UButton class="text-lg" @click="handleOut">Logout</UButton>
+        <UButton class="text-lg" @click="handleOut" variant="outline" color="primary">Logout</UButton>
       </div>
     </div>
     <div class="overflow-auto max-h-screen pb-[54px]">

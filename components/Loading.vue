@@ -4,7 +4,7 @@
     class="relative flex justify-center items-center h-screen"
   >
     <img
-      src="/msa_logo.png"
+      src="/ronda.png"
       class="h-32 rounded-lg absolute mix-blend-multiply dark:mix-blend-normal"
     />
     <div class="custom-loader"></div>
@@ -13,7 +13,7 @@
     <div class="loading-container">
       <img
         class="loading-item mix-blend-multiply dark:mix-blend-normal"
-        src="/msa_logo.png"
+        src="/ronda.png"
         alt="Icon MSA"
       />
     </div>
