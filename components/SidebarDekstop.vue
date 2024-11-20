@@ -10,7 +10,7 @@
             <NuxtLink to="/admin/dashboard">
               <img
                 class="w-16 mix-blend-multiply dark:mix-blend-normal"
-                src="/msa_logo.png"
+                src="/ronda.png"
                 alt="Logo MSA"
               />
             </NuxtLink>
