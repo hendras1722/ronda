@@ -169,7 +169,7 @@ const handleAccordion = (href: string) => {
   handlePushRouter(href)
   if (!accordion.value || accordion.value.length < 1) return
 
-  accordion.value.forEach((element) => {
+  accordion.value.forEach((element: any) => {
     const buttonRefsElement: { buttonRefs: { close: Function }[] } = element
     buttonRefsElement.buttonRefs.forEach((buttonrefs) => {
       buttonrefs.close()
