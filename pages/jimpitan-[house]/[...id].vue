@@ -82,7 +82,12 @@
             />
 
             <template #panel="{ close }">
-              <Datepicker v-model="date" is-required @close="close" />
+              <Datepicker
+                v-model="date"
+                is-required
+                @close="close"
+                :max-date="new Date()"
+              />
             </template>
           </UPopover>
 

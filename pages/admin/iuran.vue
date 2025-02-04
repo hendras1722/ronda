@@ -11,6 +11,7 @@
           }"
           v-model.range="date"
           :locale="{ masks: { input: 'DD/MM/YYYY' } }"
+          :max-date="new Date()"
         >
           <template #default="{ inputValue, inputEvents }">
             <UInput

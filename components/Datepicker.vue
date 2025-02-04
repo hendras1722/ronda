@@ -18,6 +18,10 @@ const props = defineProps({
     >,
     default: null,
   },
+  maxDate: {
+    type: Date,
+    default: null,
+  },
 })
 
 const emit = defineEmits(['update:model-value', 'close'])
@@ -57,6 +61,7 @@ function onDayClick(_: any, event: MouseEvent): void {
     v-model="date"
     v-bind="{ ...attrs, ...$attrs }"
     @dayclick="onDayClick"
+    :max-date="props.maxDate"
   />
 </template>
 

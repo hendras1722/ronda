@@ -2,8 +2,8 @@
   <div class="overflow-x-scroll">
     <div class="text-2xl font-extrabold mb-5">Ambil Jimpitan</div>
 
-    <div class="flex justify-between items-center">
-      <div class="mb-5">
+    <div class="flex justify-between items-center flex-wrap mb-5 mt-5 gap-3">
+      <div>
         Link jimpitan:
         <a
           class="text-blue-500"
