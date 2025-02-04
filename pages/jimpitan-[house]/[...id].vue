@@ -87,7 +87,10 @@
           </UPopover>
 
           <div>
-            <UInput
+            <InputCurrency v-model="money">
+              <template #append> Rp </template>
+            </InputCurrency>
+            <!-- <UInput
               type="telp"
               v-model="money"
               @input="keyPress"
@@ -96,7 +99,7 @@
               <template #leading>
                 <div class="text-gray-400">Rp</div>
               </template>
-            </UInput>
+            </UInput> -->
           </div>
 
           <div class="mt-5" v-if="!item?.[slideIndex - 1]?.date">
@@ -105,6 +108,7 @@
               color="primary"
               @click="handleSubmit"
               :loading="loading"
+              :disabled="loading"
             >
               Ambil Jimpitan
             </UButton>
@@ -401,7 +405,10 @@ async function getData() {
     // slideIndex.value = data.value?.data?.length || 0
   }
 }
-await getData()
+
+nextTick(() => {
+  getData()
+})
 
 const formatUang = (value: string): string => {
   // Hapus karakter selain angka
