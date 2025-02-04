@@ -13,14 +13,27 @@
         >
       </div>
 
-      <UButton variant="solid" color="green" @click="handleOpen"
-        >Tambah</UButton
-      >
+      <div class="flex items-center gap-3">
+        <UPopover :popper="{ placement: 'bottom-start' }">
+          <UButton
+            icon="i-heroicons-calendar-days-20-solid"
+            :label="format(date, 'd MMM, yyy')"
+          />
+
+          <template #panel="{ close }">
+            <Datepicker v-model="date" is-required @close="close" />
+          </template>
+        </UPopover>
+        <UButton variant="solid" color="green" @click="handleOpen"
+          >Tambah</UButton
+        >
+      </div>
     </div>
 
     <MSATable
       :columns="columns"
       :rows="item"
+      :loading="loading"
       :ui="{
         base: 'rounded-lg border border-collapse border-tools-table-outline border-[#ccc] border-1 w-full',
         divide: 'divide-y divide-[#ccc] dark:divide-white',
@@ -101,6 +114,8 @@
 </template>
 
 <script setup lang="ts">
+import { endOfDay, format, startOfDay } from 'date-fns'
+
 const columns = ref([
   {
     key: 'blok',
@@ -121,19 +136,25 @@ const isOpen = ref(false)
 
 const item = ref<any>([])
 const stateBlock = ref(['', ''])
+const date = ref(new Date())
+const loading = ref(false)
 
 function handleOpen() {
   isOpen.value = true
 }
 async function getData() {
+  loading.value = true
   const { data } = await useFetch<{ data: any[] }>('/api/get-jimpitan', {
     query: {
       q: user.user && user.user.data[0]?.complex.id,
+      dateStart: startOfDay(date.value),
+      dateEnd: endOfDay(date.value),
     },
   })
+  loading.value = false
   item.value = data.value?.data
 }
-getData()
+await getData()
 
 const vNumber = (e: HTMLDivElement) => {
   e.addEventListener('keydown', (event: KeyboardEvent) => {
@@ -165,6 +186,13 @@ async function handleAdd() {
   }
   // console.log(data.value)
 }
+
+watch(
+  () => date.value,
+  async () => {
+    getData()
+  }
+)
 </script>
 
 <style lang="scss" scoped></style>

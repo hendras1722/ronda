@@ -47,12 +47,14 @@ export default defineEventHandler(async (event) => {
         `
       )
       .eq('id_address', query.q || '')
+      .gte('created_at', query.dateStart || '')
+      .lt('created_at', query.dateEnd || '')
 
     let { data: list_block, error: errPatrol } = await client
       .from('db_block')
       .select(
         `
-      id,
+        id,
         id_complex,
          block
         `
@@ -75,14 +77,13 @@ export default defineEventHandler(async (event) => {
         for (let i in jimpitan) {
           if (
             jimpitan[Number(i)].id_block === item.id &&
-            jimpitan[Number(i)].created_at &&
-            isToday(new Date(jimpitan[Number(i)].created_at))
+            jimpitan[Number(i)].created_at
           ) {
             return {
               ...item,
               money: jimpitan[Number(i)].money,
               name: (jimpitan[Number(i)].by as any).name,
-              date: isToday(new Date(jimpitan[Number(i)].created_at)),
+              date: new Date(jimpitan[Number(i)].created_at),
             }
           }
         }
@@ -93,6 +94,7 @@ export default defineEventHandler(async (event) => {
           date: null,
         }
       })
+
     const countMoney = result
       ?.map((item) => item.money)
       .reduce((a, b) => a + b, 0)

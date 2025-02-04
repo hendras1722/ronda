@@ -1,24 +1,41 @@
 <template>
   <div class="p-10 overflow-auto max-h-screen">
-    <div v-if="checkJimpitanDay" class="flex justify-center items-center min-h-screen">
+    <div
+      v-if="checkJimpitanDay"
+      class="flex justify-center items-center min-h-screen"
+    >
       <div>
         <img src="/undraw_departing_re_mlq3.svg" width="430" alt="ronda_logo" />
         <div class="mt-8 text-2xl text-center">
           Ini bukan hari mu untuk jimpitan
         </div>
         <div>
-          <UButton class="w-full ml-auto mr-auto block mt-5" variant="solid" color="blue" size="lg" @click="handlePush">
+          <UButton
+            class="w-full ml-auto mr-auto block mt-5"
+            variant="solid"
+            color="blue"
+            size="lg"
+            @click="handlePush"
+          >
             Masuk Dashboard
           </UButton>
-          <UButton class="w-full ml-auto mr-auto block mt-5" variant="solid" color="red" size="lg" @click="logout">
+          <UButton
+            class="w-full ml-auto mr-auto block mt-5"
+            variant="solid"
+            color="red"
+            size="lg"
+            @click="logout"
+          >
             Keluar
           </UButton>
         </div>
       </div>
     </div>
 
-    <UContainer v-else
-      class="px-3 py-5 max-w-full bg-white shadow-md rounded-lg dark:bg-gray-900 dark:text-white dark:border dark:border-white">
+    <UContainer
+      v-else
+      class="px-3 py-5 max-w-full bg-white shadow-md rounded-lg dark:bg-gray-900 dark:text-white dark:border dark:border-white"
+    >
       <div class="flex justify-center">Jimpitan Hari</div>
       <div class="text-center mt-3 text-2xl font-extrabold">
         {{ getDaysNow() }}
@@ -27,13 +44,22 @@
       <div class="text-center mt-5 grid place-items-center mb-5">
         <div class="flex justify-between items-center">
           <UButton @click="plusSlides(-1)">
-            <UIcon :name="'i-ion-caret-back-outline'" class="sm:text-[58px] text-[32px]"></UIcon>
+            <UIcon
+              :name="'i-ion-caret-back-outline'"
+              class="sm:text-[58px] text-[32px]"
+            ></UIcon>
           </UButton>
           <div class="slideshow-container relative">
-            <UIcon :name="'i-ion-ios-home'" class="sm:text-[308px] text-[88px]"></UIcon>
+            <UIcon
+              :name="'i-ion-ios-home'"
+              class="sm:text-[308px] text-[88px]"
+            ></UIcon>
             <div>
-              <div v-for="(itemData, index) in item" :key="index"
-                class="absolute left-0 right-0 mx-0 top-0 bottom-0 my-0 sm:mt-32 mt-8 sm:text-xl text-[12px] uppercase text-white z-10">
+              <div
+                v-for="(itemData, index) in item"
+                :key="index"
+                class="absolute left-0 right-0 mx-0 top-0 bottom-0 my-0 sm:mt-32 mt-8 sm:text-xl text-[12px] uppercase text-white z-10"
+              >
                 <div class="mySlides fade font-extrabold">
                   {{ itemData.block }}
                 </div>
@@ -41,39 +67,86 @@
             </div>
           </div>
           <UButton @click="plusSlides(1)">
-            <UIcon :name="'i-ion-caret-forward-outline'" class="sm:text-[58px] text-[32px]"></UIcon>
+            <UIcon
+              :name="'i-ion-caret-forward-outline'"
+              class="sm:text-[58px] text-[32px]"
+            ></UIcon>
           </UButton>
         </div>
 
-        <UInput type="telp" v-model="money" @input="keyPress">
-          <template #leading>
-            <div>Rp</div>
-          </template>
-        </UInput>
+        <div class="grid place-items-center mt-5">
+          <UPopover :popper="{ placement: 'bottom-start' }">
+            <UButton
+              icon="i-heroicons-calendar-days-20-solid"
+              :label="format(date, 'd MMM, yyy')"
+            />
 
-        <div class="mt-5" v-if="!item?.[slideIndex - 1]?.date">
-          <UButton variant="solid" color="primary" @click="handleSubmit" :loading="loading">
-            Ambil Jimpitan
-          </UButton>
+            <template #panel="{ close }">
+              <Datepicker v-model="date" is-required @close="close" />
+            </template>
+          </UPopover>
+
+          <div>
+            <UInput
+              type="telp"
+              v-model="money"
+              @input="keyPress"
+              class="mt-5 relative"
+            >
+              <template #leading>
+                <div class="text-gray-400">Rp</div>
+              </template>
+            </UInput>
+          </div>
+
+          <div class="mt-5" v-if="!item?.[slideIndex - 1]?.date">
+            <UButton
+              variant="solid"
+              color="primary"
+              @click="handleSubmit"
+              :loading="loading"
+            >
+              Ambil Jimpitan
+            </UButton>
+          </div>
         </div>
       </div>
 
-      <MSATable :loading="pending" :columns="columns" :rows="item" :ui="{
+      <MSATable
+        :loading="pending"
+        :columns="columns"
+        :rows="item"
+        :ui="{
           base: 'rounded-lg border border-collapse border-tools-table-outline border-[#ccc] border-1 w-full',
           divide: 'divide-y divide-[#ccc] dark:divide-white',
-        }">
+        }"
+      >
         <template #status-data="{ row }">
           <div>
             <div v-if="row.date">
-              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 512 512">
-                <path fill="#61e563"
-                  d="M400 48H112a64.07 64.07 0 0 0-64 64v288a64.07 64.07 0 0 0 64 64h288a64.07 64.07 0 0 0 64-64V112a64.07 64.07 0 0 0-64-64Zm-35.75 138.29l-134.4 160a16 16 0 0 1-12 5.71h-.27a16 16 0 0 1-11.89-5.3l-57.6-64a16 16 0 1 1 23.78-21.4l45.29 50.32l122.59-145.91a16 16 0 0 1 24.5 20.58Z" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="32"
+                height="32"
+                viewBox="0 0 512 512"
+              >
+                <path
+                  fill="#61e563"
+                  d="M400 48H112a64.07 64.07 0 0 0-64 64v288a64.07 64.07 0 0 0 64 64h288a64.07 64.07 0 0 0 64-64V112a64.07 64.07 0 0 0-64-64Zm-35.75 138.29l-134.4 160a16 16 0 0 1-12 5.71h-.27a16 16 0 0 1-11.89-5.3l-57.6-64a16 16 0 1 1 23.78-21.4l45.29 50.32l122.59-145.91a16 16 0 0 1 24.5 20.58Z"
+                />
               </svg>
             </div>
             <div v-else>
-              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 512 512">
-                <path fill="#fafafa"
-                  d="M400 48H112a64.07 64.07 0 0 0-64 64v288a64.07 64.07 0 0 0 64 64h288a64.07 64.07 0 0 0 64-64V112a64.07 64.07 0 0 0-64-64Zm-35.75 138.29l-134.4 160a16 16 0 0 1-12 5.71h-.27a16 16 0 0 1-11.89-5.3l-57.6-64a16 16 0 1 1 23.78-21.4l45.29 50.32l122.59-145.91a16 16 0 0 1 24.5 20.58Z" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="32"
+                height="32"
+                viewBox="0 0 512 512"
+              >
+                <path
+                  fill="#fafafa"
+                  d="M400 48H112a64.07 64.07 0 0 0-64 64v288a64.07 64.07 0 0 0 64 64h288a64.07 64.07 0 0 0 64-64V112a64.07 64.07 0 0 0-64-64Zm-35.75 138.29l-134.4 160a16 16 0 0 1-12 5.71h-.27a16 16 0 0 1-11.89-5.3l-57.6-64a16 16 0 1 1 23.78-21.4l45.29 50.32l122.59-145.91a16 16 0 0 1 24.5 20.58Z"
+                />
               </svg>
             </div>
           </div>
@@ -83,10 +156,22 @@
       <p class="mt-3">Total: {{ totalMoney }}</p>
 
       <div>
-        <UButton class="w-full ml-auto mr-auto block mt-5" variant="solid" color="blue" size="lg" @click="handlePush">
+        <UButton
+          class="w-full ml-auto mr-auto block mt-5"
+          variant="solid"
+          color="blue"
+          size="lg"
+          @click="handlePush"
+        >
           Masuk Dashboard
         </UButton>
-        <UButton class="w-full ml-auto mr-auto block mt-5" variant="solid" color="red" size="lg" @click="logout">
+        <UButton
+          class="w-full ml-auto mr-auto block mt-5"
+          variant="solid"
+          color="red"
+          size="lg"
+          @click="logout"
+        >
           Keluar
         </UButton>
       </div>
@@ -95,6 +180,8 @@
 </template>
 
 <script setup lang="ts">
+import { endOfDay, format, set, startOfDay } from 'date-fns'
+
 definePageMeta({
   layout: false,
   middleware: [
@@ -151,6 +238,7 @@ const user = useGetuser()
 const checkJimpitanDay = ref(false)
 const pending = ref(false)
 const totalMoney = ref(0)
+const date = ref(new Date())
 
 onMounted(() => {
   nextTick(() => {
@@ -203,6 +291,7 @@ async function handleSubmit() {
     money: money.value.replace(/\W/gm, ''),
     by: user?.userLogin?.sub,
     id_block: dataJimpitan.id,
+    created_at: new Date(date.value).toISOString(),
   }
   const { data } = await useFetch<{ data: any }>('/api/jimpitan', {
     method: 'POST',
@@ -214,6 +303,7 @@ async function handleSubmit() {
       {
         query: {
           q: address[0].complex.id,
+          created_at: date.value,
         },
       }
     )
@@ -223,6 +313,7 @@ async function handleSubmit() {
     }
   }
   loading.value = false
+  getData()
 }
 
 const router = useRouter()
@@ -274,15 +365,19 @@ async function getData() {
   const regex = path.replace(/^\//gm, '')
   const idSupabase = useSupabaseUser()
   const address = user.user.data.filter((item) => item.complex.link === regex)
+
   const { data } = await useFetch<{ data: any[]; day: any[]; money: number }>(
     '/api/get-jimpitan',
     {
       query: {
         q: address[0].complex.id,
         id: idSupabase.value?.id,
+        dateStart: startOfDay(date.value),
+        dateEnd: endOfDay(date.value),
       },
     }
   )
+
   pending.value = false
 
   if (data.value && data.value?.day.length < 1) {
@@ -328,8 +423,15 @@ function keyPress(e: any) {
   // Pastikan input tidak dimulai dengan banyak nol
   rawInput.value = cleanedValue.replace(/^0+(?!$)/, '')
   // Format nilai untuk ditampilkan
- input.value = String(formatUang(rawInput.value)) // Format nilai input
+  input.value = String(formatUang(rawInput.value)) // Format nilai input
 }
+
+watch(
+  () => date.value,
+  async () => {
+    getData()
+  }
+)
 </script>
 
 <style scoped lang="scss">
