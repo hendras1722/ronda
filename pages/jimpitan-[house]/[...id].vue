@@ -86,7 +86,7 @@
             </template>
           </UPopover>
 
-          <div>
+          <div class="mt-3">
             <InputCurrency v-model="money">
               <template #append> Rp </template>
             </InputCurrency>
@@ -184,7 +184,8 @@
 </template>
 
 <script setup lang="ts">
-import { endOfDay, format, set, startOfDay } from 'date-fns'
+import { endOfDay, format, startOfDay } from 'date-fns'
+import { useCycleList } from '@vueuse/core'
 
 definePageMeta({
   layout: false,
@@ -243,12 +244,6 @@ const checkJimpitanDay = ref(false)
 const pending = ref(false)
 const totalMoney = ref(0)
 const date = ref(new Date())
-
-onMounted(() => {
-  nextTick(() => {
-    showSlides(slideIndex.value)
-  })
-})
 
 // const sbAccessToken = useCookie('sb-access-token')
 // sbAccessToken.value = null
@@ -311,10 +306,13 @@ async function handleSubmit() {
         },
       }
     )
-    if (getData.value?.data) {
-      item.value = getData.value?.data
-      totalMoney.value = data.value?.money
-    }
+    nextTick(() => {
+      if (getData.value?.data) {
+        item.value = getData.value?.data
+        totalMoney.value = data.value?.money
+        showSlides(1)
+      }
+    })
   }
   loading.value = false
   getData()
@@ -401,13 +399,14 @@ async function getData() {
   if (data.value?.data) {
     item.value = data.value.data
     totalMoney.value = data.value?.money
-
     // slideIndex.value = data.value?.data?.length || 0
   }
 }
-
-nextTick(() => {
-  getData()
+onMounted(() => {
+  nextTick(async () => {
+    await getData()
+    plusSlides(1)
+  })
 })
 
 const formatUang = (value: string): string => {
