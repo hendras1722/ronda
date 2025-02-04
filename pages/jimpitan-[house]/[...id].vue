@@ -79,6 +79,7 @@
             <UButton
               icon="i-heroicons-calendar-days-20-solid"
               :label="format(date, 'd MMM, yyy')"
+              class="border boder-black"
             />
 
             <template #panel="{ close }">
@@ -91,23 +92,16 @@
             </template>
           </UPopover>
 
-          <div class="mt-3">
+          <div class="mt-3" v-if="isTwoDaysAgo">
             <InputCurrency v-model="money">
               <template #append> Rp </template>
             </InputCurrency>
-            <!-- <UInput
-              type="telp"
-              v-model="money"
-              @input="keyPress"
-              class="mt-5 relative"
-            >
-              <template #leading>
-                <div class="text-gray-400">Rp</div>
-              </template>
-            </UInput> -->
           </div>
 
-          <div class="mt-5" v-if="!item?.[slideIndex - 1]?.date">
+          <div
+            class="mt-5"
+            v-if="!item?.[slideIndex - 1]?.date && isTwoDaysAgo"
+          >
             <UButton
               variant="solid"
               color="primary"
@@ -189,8 +183,15 @@
 </template>
 
 <script setup lang="ts">
-import { endOfDay, format, startOfDay } from 'date-fns'
-import { useCycleList } from '@vueuse/core'
+import {
+  endOfDay,
+  format,
+  isSameDay,
+  isWithinInterval,
+  startOfDay,
+  sub,
+  subDays,
+} from 'date-fns'
 
 definePageMeta({
   layout: false,
@@ -249,6 +250,12 @@ const checkJimpitanDay = ref(false)
 const pending = ref(false)
 const totalMoney = ref(0)
 const date = ref(new Date())
+const isTwoDaysAgo = computed(() => {
+  return isWithinInterval(new Date(date.value), {
+    start: subDays(new Date(), 3),
+    end: new Date(),
+  })
+})
 
 // const sbAccessToken = useCookie('sb-access-token')
 // sbAccessToken.value = null
