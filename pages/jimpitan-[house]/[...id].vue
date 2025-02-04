@@ -75,7 +75,7 @@
         </div>
 
         <div class="grid place-items-center mt-5">
-          <UPopover :popper="{ placement: 'bottom-start' }">
+          <UPopover :popper="{ placement: 'bottom' }">
             <UButton
               icon="i-heroicons-calendar-days-20-solid"
               :label="format(date, 'd MMM, yyy')"
