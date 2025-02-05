@@ -253,7 +253,8 @@ const isTwoDaysAgo = computed(() => {
 
 // Next/previous controls
 function plusSlides(n: number) {
-  showSlides((slideIndex.value += n))
+  slideIndex.value += n
+  showSlides(slideIndex.value)
   money.value = ''
 }
 
