@@ -1,94 +1,39 @@
 <template>
   <div class="p-10 overflow-auto max-h-screen">
-    <div
-      v-if="checkJimpitanDay"
-      class="flex justify-center items-center min-h-screen"
-    >
+    <div v-if="checkJimpitanDay" class="flex justify-center items-center min-h-screen">
       <div>
         <img src="/undraw_departing_re_mlq3.svg" width="430" alt="ronda_logo" />
         <div class="mt-8 text-2xl text-center">
           Ini bukan hari mu untuk jimpitan
         </div>
         <div>
-          <UButton
-            class="w-full ml-auto mr-auto block mt-5"
-            variant="solid"
-            color="blue"
-            size="lg"
-            @click="handlePush"
-          >
+          <UButton class="w-full ml-auto mr-auto block mt-5" variant="solid" color="blue" size="lg" @click="handlePush">
             Masuk Dashboard
           </UButton>
-          <UButton
-            class="w-full ml-auto mr-auto block mt-5"
-            variant="solid"
-            color="red"
-            size="lg"
-            @click="logout"
-          >
+          <UButton class="w-full ml-auto mr-auto block mt-5" variant="solid" color="red" size="lg" @click="logout">
             Keluar
           </UButton>
         </div>
       </div>
     </div>
 
-    <UContainer
-      v-else
-      class="px-3 py-5 max-w-full bg-white shadow-md rounded-lg dark:bg-gray-900 dark:text-white dark:border dark:border-white"
-    >
+    <UContainer v-else
+      class="px-3 py-5 max-w-full bg-white shadow-md rounded-lg dark:bg-gray-900 dark:text-white dark:border dark:border-white">
       <div class="flex justify-center">Jimpitan Hari</div>
       <div class="text-center mt-3 text-2xl font-extrabold">
         {{ getDaysNow() }}
       </div>
 
       <div class="text-center mt-5 grid place-items-center mb-5">
-        <div class="flex justify-between items-center">
-          <UButton @click="plusSlides(-1)">
-            <UIcon
-              :name="'i-ion-caret-back-outline'"
-              class="sm:text-[58px] text-[32px]"
-            ></UIcon>
-          </UButton>
-          <div class="slideshow-container relative">
-            <UIcon
-              :name="'i-ion-ios-home'"
-              class="sm:text-[308px] text-[88px]"
-            ></UIcon>
-            <div>
-              <div
-                v-for="(itemData, index) in item"
-                :key="index"
-                class="absolute left-0 right-0 mx-0 top-0 bottom-0 my-0 sm:mt-32 mt-8 sm:text-xl text-[12px] uppercase text-white z-10"
-              >
-                <div class="mySlides fade font-extrabold">
-                  {{ itemData.block }}
-                </div>
-              </div>
-            </div>
-          </div>
-          <UButton @click="plusSlides(1)">
-            <UIcon
-              :name="'i-ion-caret-forward-outline'"
-              class="sm:text-[58px] text-[32px]"
-            ></UIcon>
-          </UButton>
-        </div>
+        <ImageSlider :item="item" v-model="slideIndex" />
 
         <div class="grid place-items-center mt-5">
           <UPopover :popper="{ placement: 'bottom' }">
-            <UButton
-              icon="i-heroicons-calendar-days-20-solid"
-              :label="format(date, 'd MMM, yyy')"
-              class="border boder-black"
-            />
+            <UButton icon="i-heroicons-calendar-days-20-solid" :label="format(date, 'd MMM, yyy')"
+              class="border boder-black" />
 
             <template #panel="{ close }">
-              <Datepicker
-                v-model="date"
-                is-required
-                @close="close"
-                :max-date="new Date()"
-              />
+              <Datepicker v-model="date" is-required @close="close" :max-date="new Date()" />
             </template>
           </UPopover>
 
@@ -98,58 +43,30 @@
             </InputCurrency>
           </div>
 
-          <div
-            class="mt-5"
-            v-if="!item?.[slideIndex - 1]?.date && isTwoDaysAgo"
-          >
-            <UButton
-              variant="solid"
-              color="primary"
-              @click="handleSubmit"
-              :loading="loading"
-              :disabled="loading"
-            >
+          <div class="mt-5" v-if="!slideIndex?.date && isTwoDaysAgo">
+            <UButton variant="solid" color="primary" @click="handleSubmit" :loading="loading" :disabled="loading">
               Ambil Jimpitan
             </UButton>
           </div>
         </div>
       </div>
 
-      <MSATable
-        :loading="pending"
-        :columns="columns"
-        :rows="item"
-        :ui="{
-          base: 'rounded-lg border border-collapse border-tools-table-outline border-[#ccc] border-1 w-full',
-          divide: 'divide-y divide-[#ccc] dark:divide-white',
-        }"
-      >
+      <MSATable :loading="pending" :columns="columns" :rows="item" :ui="{
+        base: 'rounded-lg border border-collapse border-tools-table-outline border-[#ccc] border-1 w-full',
+        divide: 'divide-y divide-[#ccc] dark:divide-white',
+      }">
         <template #status-data="{ row }">
           <div>
             <div v-if="row.date">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="32"
-                height="32"
-                viewBox="0 0 512 512"
-              >
-                <path
-                  fill="#61e563"
-                  d="M400 48H112a64.07 64.07 0 0 0-64 64v288a64.07 64.07 0 0 0 64 64h288a64.07 64.07 0 0 0 64-64V112a64.07 64.07 0 0 0-64-64Zm-35.75 138.29l-134.4 160a16 16 0 0 1-12 5.71h-.27a16 16 0 0 1-11.89-5.3l-57.6-64a16 16 0 1 1 23.78-21.4l45.29 50.32l122.59-145.91a16 16 0 0 1 24.5 20.58Z"
-                />
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 512 512">
+                <path fill="#61e563"
+                  d="M400 48H112a64.07 64.07 0 0 0-64 64v288a64.07 64.07 0 0 0 64 64h288a64.07 64.07 0 0 0 64-64V112a64.07 64.07 0 0 0-64-64Zm-35.75 138.29l-134.4 160a16 16 0 0 1-12 5.71h-.27a16 16 0 0 1-11.89-5.3l-57.6-64a16 16 0 1 1 23.78-21.4l45.29 50.32l122.59-145.91a16 16 0 0 1 24.5 20.58Z" />
               </svg>
             </div>
             <div v-else>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="32"
-                height="32"
-                viewBox="0 0 512 512"
-              >
-                <path
-                  fill="#fafafa"
-                  d="M400 48H112a64.07 64.07 0 0 0-64 64v288a64.07 64.07 0 0 0 64 64h288a64.07 64.07 0 0 0 64-64V112a64.07 64.07 0 0 0-64-64Zm-35.75 138.29l-134.4 160a16 16 0 0 1-12 5.71h-.27a16 16 0 0 1-11.89-5.3l-57.6-64a16 16 0 1 1 23.78-21.4l45.29 50.32l122.59-145.91a16 16 0 0 1 24.5 20.58Z"
-                />
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 512 512">
+                <path fill="#fafafa"
+                  d="M400 48H112a64.07 64.07 0 0 0-64 64v288a64.07 64.07 0 0 0 64 64h288a64.07 64.07 0 0 0 64-64V112a64.07 64.07 0 0 0-64-64Zm-35.75 138.29l-134.4 160a16 16 0 0 1-12 5.71h-.27a16 16 0 0 1-11.89-5.3l-57.6-64a16 16 0 1 1 23.78-21.4l45.29 50.32l122.59-145.91a16 16 0 0 1 24.5 20.58Z" />
               </svg>
             </div>
           </div>
@@ -159,22 +76,10 @@
       <p class="mt-3">Total: {{ totalMoney }}</p>
 
       <div>
-        <UButton
-          class="w-full ml-auto mr-auto block mt-5"
-          variant="solid"
-          color="blue"
-          size="lg"
-          @click="handlePush"
-        >
+        <UButton class="w-full ml-auto mr-auto block mt-5" variant="solid" color="blue" size="lg" @click="handlePush">
           Masuk Dashboard
         </UButton>
-        <UButton
-          class="w-full ml-auto mr-auto block mt-5"
-          variant="solid"
-          color="red"
-          size="lg"
-          @click="logout"
-        >
+        <UButton class="w-full ml-auto mr-auto block mt-5" variant="solid" color="red" size="lg" @click="logout">
           Keluar
         </UButton>
       </div>
@@ -191,6 +96,17 @@ import {
   subDays,
 } from 'date-fns'
 
+
+export interface InterfaceSlideindex {
+  id: string;
+  id_complex: string;
+  block: string;
+  money: number;
+  name: null;
+  date: null;
+}
+
+
 definePageMeta({
   layout: false,
   middleware: [
@@ -206,7 +122,7 @@ definePageMeta({
       )
       if (!jwt) {
         return navigateTo(pathname)
-       
+
       }
       if (address.length < 1) {
         return abortNavigation({
@@ -217,7 +133,7 @@ definePageMeta({
       if (process.client) {
         const data = parseJwt(jwt)
         if (Date.now() >= data.exp * 1000) {
-      
+
           return navigateTo(pathname)
         }
       }
@@ -236,7 +152,7 @@ const columns = ref([
     label: 'Status',
   },
 ])
-const slideIndex = ref(0)
+const slideIndex = ref<InterfaceSlideindex>()
 const item = ref<any[]>([])
 const money = ref('')
 const user = useGetuser()
@@ -251,12 +167,6 @@ const isTwoDaysAgo = computed(() => {
   })
 })
 
-// Next/previous controls
-function plusSlides(n: number) {
-  slideIndex.value += n
-  showSlides(slideIndex.value)
-  money.value = ''
-}
 
 function getDaysNow() {
   let data = ['Senin', 'Selasa', 'Rabu', 'Kamis', "Jum'at", 'Sabtu', 'Minggu']
@@ -264,26 +174,11 @@ function getDaysNow() {
   return date
 }
 
-function showSlides(n: number) {
-  if (item.value.length < 1) return
-  let i
-  let slides = document.getElementsByClassName('mySlides') as any
-  if (n > slides.length) {
-    slideIndex.value = 1
-  }
-  if (n < 1) {
-    slideIndex.value = slides.length
-  }
-  for (i = 0; i < slides.length; i++) {
-    slides[i].style.display = 'none'
-  }
-  if (!slides[slideIndex.value - 1]) return
-  slides[slideIndex.value - 1].style.display = 'block'
-}
-
 async function handleSubmit() {
   loading.value = true
-  const dataJimpitan = item.value[slideIndex.value - 1]
+  totalMoney.value = 0
+  const dataJimpitan = slideIndex.value as InterfaceSlideindex
+
   const path = route.path.replace('jimpitan-', '')
   const regex = path.replace(/^\//gm, '')
 
@@ -296,6 +191,7 @@ async function handleSubmit() {
     id_block: dataJimpitan.id,
     created_at: new Date(date.value).toISOString(),
   }
+
   const { data } = await useFetch<{ data: any }>('/api/jimpitan', {
     method: 'POST',
     body: obj,
@@ -312,9 +208,26 @@ async function handleSubmit() {
     )
     nextTick(() => {
       if (getData.value?.data) {
-        item.value = getData.value?.data
+        item.value = getData.value?.data.sort((a: any, b: any) => {
+          const blockA = a.block.toUpperCase(); // Mengabaikan case
+          const blockB = b.block.toUpperCase(); // Mengabaikan case
+
+          // Pertama, urutkan berdasarkan huruf (H atau I)
+          if (blockA[0] < blockB[0]) {
+            return -1;
+          }
+          if (blockA[0] > blockB[0]) {
+            return 1;
+          }
+
+          // Jika huruf sama, urutkan berdasarkan angka
+          const numberA = parseInt(blockA.slice(1)); // Ambil angka setelah huruf
+          const numberB = parseInt(blockB.slice(1)); // Ambil angka setelah huruf
+
+          return numberA - numberB;
+        });
         totalMoney.value = (data.value as { data: any; money: number })?.money
-        showSlides(1)
+        // showSlides(1)
       }
     })
   }
@@ -338,7 +251,7 @@ function vMoney(e: HTMLInputElement) {
   e.addEventListener('keyup', (event) => {
     let input = (event.target as any).value.replace(/\D/g, '') // Hanya angka
     if (/^0/gm.test(input)) {
-      ;(event.target as any).value = ''
+      ; (event.target as any).value = ''
       return
     }
     let formattedInput = ''
@@ -356,7 +269,7 @@ function vMoney(e: HTMLInputElement) {
       }
     }
 
-    ;(event.target as any).value = formattedInput
+    ; (event.target as any).value = formattedInput
   })
 }
 
@@ -396,14 +309,31 @@ async function getData() {
   }
 
   if (data.value?.data) {
-    item.value = data.value.data
+    item.value = data.value.data.sort((a: any, b: any) => {
+      const blockA = a.block.toUpperCase(); // Mengabaikan case
+      const blockB = b.block.toUpperCase(); // Mengabaikan case
+
+      // Pertama, urutkan berdasarkan huruf (H atau I)
+      if (blockA[0] < blockB[0]) {
+        return -1;
+      }
+      if (blockA[0] > blockB[0]) {
+        return 1;
+      }
+
+      // Jika huruf sama, urutkan berdasarkan angka
+      const numberA = parseInt(blockA.slice(1)); // Ambil angka setelah huruf
+      const numberB = parseInt(blockB.slice(1)); // Ambil angka setelah huruf
+
+      return numberA - numberB;
+    });
     totalMoney.value = data.value?.money
   }
 }
 onMounted(() => {
   nextTick(async () => {
     await getData()
-    plusSlides(1)
+    // plusSlides(1)
   })
 })
 
@@ -422,6 +352,8 @@ function keyPress(e: any) {
   rawInput.value = cleanedValue.replace(/^0+(?!$)/, '')
   input.value = String(formatUang(rawInput.value)) // Format nilai input
 }
+
+
 
 watch(
   () => date.value,
@@ -520,6 +452,7 @@ watch(
   from {
     opacity: 0.4;
   }
+
   to {
     opacity: 1;
   }
