@@ -208,8 +208,7 @@ definePageMeta({
       )
       if (!jwt) {
         return navigateTo(pathname)
-        // window.location.href = pathname
-        // return
+       
       }
       if (address.length < 1) {
         return abortNavigation({
@@ -220,10 +219,7 @@ definePageMeta({
       if (process.client) {
         const data = parseJwt(jwt)
         if (Date.now() >= data.exp * 1000) {
-          // return setTimeout(() => {
-          //   navigateTo(pathname)
-          // }, 300)
-          // window.location.href = pathname
+      
           return navigateTo(pathname)
         }
       }
@@ -256,9 +252,6 @@ const isTwoDaysAgo = computed(() => {
     end: new Date(),
   })
 })
-
-// const sbAccessToken = useCookie('sb-access-token')
-// sbAccessToken.value = null
 
 // Next/previous controls
 function plusSlides(n: number) {
@@ -321,7 +314,7 @@ async function handleSubmit() {
     nextTick(() => {
       if (getData.value?.data) {
         item.value = getData.value?.data
-        totalMoney.value = data.value?.money
+        totalMoney.value = (data.value as { data: any; money: number })?.money
         showSlides(1)
       }
     })
@@ -338,12 +331,7 @@ function handlePush() {
 async function logout() {
   let { error } = await supabase.auth.signOut()
   if (!error) {
-    // const sbAccessToken = useCookie('sb-access-token')
-    // const token = useCookie('token')
-    // sbAccessToken.value = null
-    // token.value = null
     window.location.href = window.location.pathname + '/login'
-    // router.push('/login')
   }
 }
 
@@ -411,7 +399,6 @@ async function getData() {
   if (data.value?.data) {
     item.value = data.value.data
     totalMoney.value = data.value?.money
-    // slideIndex.value = data.value?.data?.length || 0
   }
 }
 onMounted(() => {
@@ -422,25 +409,18 @@ onMounted(() => {
 })
 
 const formatUang = (value: string): string => {
-  // Hapus karakter selain angka
   const angkaBersih = value.replace(/[^\d]/g, '')
-  // Pastikan angka kosong tidak menghasilkan "0"
   if (angkaBersih === '') return ''
-  // Tambahkan titik sebagai pemisah ribuan
   return angkaBersih.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
 }
 
 const rawInput = ref('') // Input asli sebelum diformat
-// const formattedInput = ref('') // Input yang sudah diformat
 
 function keyPress(e: any) {
   if (!e) return
   const input = e.target as HTMLInputElement
-  // Simpan nilai asli tanpa format
   const cleanedValue = input.value.replace(/[^\d]/g, '')
-  // Pastikan input tidak dimulai dengan banyak nol
   rawInput.value = cleanedValue.replace(/^0+(?!$)/, '')
-  // Format nilai untuk ditampilkan
   input.value = String(formatUang(rawInput.value)) // Format nilai input
 }
 
