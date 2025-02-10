@@ -16,13 +16,12 @@
           {{ getImageUrl(currentSetIndex + imageIndex)?.block }}
         </span>
         <span v-else-if="imageIndex === 0 && !isActiveImage(imageIndex)"
-          class="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center z-0 text-white text-[10px] -mt-2 lg:text-[30px]"
-          @click="changeImage(1)">
+          class="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center z-0 text-white text-[10px] -mt-2 lg:text-[30px]">
           {{ getImageUrl(currentSetIndex + imageIndex)?.block }}
         </span>
         <span v-else
           class="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center z-0 text-white text-[10px] -mt-2 lg:text-[30px]"
-          @click="changeImage(1)">
+          @click="changeImage(-1)">
           {{ getImageUrl(currentSetIndex + imageIndex)?.block }}
         </span>
       </div>
